@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".process.ManualProcessPackageActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/ic_baseline_close_24"
+        android:background="@color/purple_700">
+
+
+
+
+        <TextView
+
+            android:layout_gravity="center"
+
+            android:id="@+id/headertext"
+            android:textSize="19.74sp"
+            android:textColor="#FBFBFB"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.16"
+            android:text="@string/process" />
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:id="@+id/profile"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/syncnew"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <LinearLayout
+        android:background="@drawable/step1bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:letterSpacing="0.05"
+
+            android:id="@+id/step1"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:textColor="#DE000000"
+            android:height="24dp"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.74"
+            android:text="Step 1 of 2"
+            android:width="149dp" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/filledTextField"
+        android:layout_marginTop="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Tracking #">
+
+        <!--this is the actual edit text which takes the input-->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text"
+            android:textSize="13.82sp"
+            android:padding="3dp"
+            android:inputType="textEmailAddress"
+
+
+            android:textColor="@color/black"
+
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>

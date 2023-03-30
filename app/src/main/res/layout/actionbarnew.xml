@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:id="@+id/toolbar"
+    app:navigationIcon="@drawable/navigation_back"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/purple_700">
+
+
+
+
+        <TextView
+
+
+            android:id="@+id/headertext"
+            android:textSize="19.74sp"
+            android:textColor="#FBFBFB"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.16"
+            android:text="@string/process" />
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:id="@+id/profile"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/syncnew"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+
+
+</androidx.appcompat.widget.Toolbar>

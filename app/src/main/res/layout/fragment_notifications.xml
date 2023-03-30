@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.notifications.NotificationsFragment">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/toolbar"
+        android:background="@color/purple_700">
+
+
+
+
+        <TextView
+            android:fontFamily="@font/open_sans"
+
+            android:layout_gravity="center"
+
+            android:id="@+id/headertext"
+            android:textSize="19.74sp"
+            android:textColor="#FBFBFB"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.16"
+            android:text="@string/checkin" />
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:id="@+id/profile"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/syncnew"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+    <RelativeLayout
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="33dp"
+
+        android:layout_marginStart="24dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/building">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:textSize="13.82sp"
+                android:padding="10dp"
+                android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+
+
+                android:textColor="@color/black"
+
+                android:layout_width="235dp"
+                android:layout_height="40dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+
+
+
+            android:src="@drawable/scanblue"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/barcode">
+
+        </ImageView>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="16dp"
+            android:fontFamily="@font/open_sans_bold"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.18"
+            android:text="CHECK IN"
+            android:textColor="#007CBB"
+            android:textSize="13.55sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="16dp"
+            android:height="16dp"
+            android:fontFamily="@font/open_sans_bold"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.18"
+            android:text="CHECK OUT"
+            android:textColor="#007CBB"
+            android:textSize="13.55sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>

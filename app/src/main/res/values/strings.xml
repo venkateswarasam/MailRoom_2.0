@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">xCarrier 2.0</string>
+    <string name="sign_in">sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="by_clicking_sign_in_you_accept_the_elemica_privacy_policy">By clicking Sign In you accept the \n Elemica Privacy Policy.</string>
+    <string name="elemica_com"><u>elemica.com</u></string>
+    <string name="enter_your_email_address_and_we_ll_send_you_link_to_reset_your_password">Enter your email address and we’ll send you link to reset \n your password.</string>
+    <string name="resetpassword">Reset Password</string>
+    <string name="user_settings">User Settings</string>
+    <string name="firstname">First Name</string>
+    <string name="lastname">Last Name</string>
+    <string name="address1">Address1</string>
+    <string name="address2">Address2</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="country">Country</string>
+    <string name="postal">Postal code</string>
+    <string name="phone">Phone</string>
+    <string name="oldpassword">Old Password</string>
+    <string name="newpass">New Password</string>
+    <string name="confirmpass">Confirm Password</string>
+    <string name="autoscan">Auto Scan</string>
+    <string name="notidy">Notify Me</string>
+    <string name="received">Received</string>
+    <string name="delivered">Delivered</string>
+    <string name="except">Exceptions</string>
+    <string name="allstatuses">All Statuses</string>
+    <string name="sms">SMS</string>
+    <string name="notidyothers">Notify Others</string>
+    <string name="logout">Log out</string>
+    <string name="goodafter">Good Afternoon, User!</string>
+    <string name="title_activity_bottom_navigation">BottomNavigationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="search">Search</string>
+    <string name="checkin">Check</string>
+    <string name="checkinbutton">CHECK IN</string>
+    <string name="checkoutbutton">CHECK OUT</string>
+    <string name="searchpack">Search Packages</string>
+    <string name="backtosign">Back to Sign In</string>
+    <string name="process">Process Package</string>
+    <string name="next">NEXT</string>
+    <string name="manual">Manual Entry</string>
+    <string name="building">Building</string>
+    <string name="there_are_no_pending_deliveries_to_show">There are no pending deliveries to show</string>
+
+    <string-array name="building">
+
+        <item>Building</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="selectstatus">Select Status</string>
+    <string name="mailst">Mail stop</string>
+    <string name="bin">bin</string>
+    <string name="storage_loc">Storage location</string>
+    <string name="docnumber">Dock Number</string>
+    <string name="signedby">Signed by</string>
+    <string name="signedhere">Sign Here</string>
+    <string name="enternotes">Enter notes here</string>
+    <string name="manual_entry">Manual Entry</string>
+    <string name="scanner">Scanner</string>
+    <string name="conslidate_msg">Choosing to consolidate these packages will create bulk ID. A single status must be applied to consolidated packages.</string>
+    <string name="ok">Ok</string>
+    <string name="back">BACK</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="areusure">Are you sure?</string>
+    <string name="trackinginfo">The tracking information will be removed. You cannot undo this action</string>
+    <string name="location">Location</string>
+    <string name="dribername">Driver Name</string>
+    <string name="carrersign">Carrier Signature</string>
+    <string name="reason">Reason</string>
+    <string name="route">Route</string>
+    <string name="locker">Locker</string>
+    <string name="processtext">To Process a package add a tracking ID.</string>
+
+
+</resources>

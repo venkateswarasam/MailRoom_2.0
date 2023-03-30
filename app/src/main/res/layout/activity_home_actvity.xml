@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeActvity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:background="@color/purple_700"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+
+        <TextView
+            android:height="24dp"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.22"
+            android:text="Good Afternoon, User!"
+            android:width="235dp" />
+
+        <ImageView
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/profilewhite"
+            android:layout_width="32dp"
+            android:layout_height="32dp"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <ImageView
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="89dp"
+        android:src="@drawable/scanbarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:textStyle="bold"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:textColor="@color/white"
+        android:background="@drawable/buttonshape"
+        android:layout_marginTop="61dp"
+        android:gravity="center"
+        android:height="16dp"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:lineSpacingMultiplier="1.18"
+        android:text="SCAN BARCODES"
+        android:width="236dp" />
+
+
+    <TextView
+        android:layout_marginTop="26dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:gravity="center"
+        android:height="16dp"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:lineSpacingMultiplier="1.18"
+        android:text="ADD PACKAGES MANUALLY"
+        android:width="248dp" />
+
+
+</LinearLayout>

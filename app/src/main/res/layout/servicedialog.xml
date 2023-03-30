@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+
+    android:layout_gravity="bottom">
+
+
+
+    <LinearLayout
+        android:id="@+id/manual_entry"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:background="#F7F7F7"
+            android:gravity="center"
+
+            android:layout_gravity="center"
+            android:textSize="11.85sp"
+            android:textColor="#DE000000"
+            android:height="16dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.35"
+            android:text="Manual Entry"
+            android:width="83dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            app:backgroundTint="#E6E6E6"
+            android:layout_marginStart="16dp"
+            app:tint="#8A000000"
+
+
+            android:layout_width="wrap_content"
+
+
+
+            android:layout_height="wrap_content"
+
+
+            android:src="@drawable/ic_baseline_create_24" />
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/scanner_entry"
+
+        android:layout_marginEnd="16dp"
+
+        android:gravity="end"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:gravity="center"
+            android:background="#F7F7F7"
+            android:layout_gravity="center"
+            android:textSize="11.85sp"
+            android:textColor="#DE000000"
+            android:height="16dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.35"
+            android:text="Scanner"
+            android:width="83dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            app:backgroundTint="#E6E6E6"
+            app:tint="#8A000000"
+
+
+            android:layout_width="wrap_content"
+
+            android:layout_marginStart="16dp"
+
+
+            android:layout_height="wrap_content"
+
+
+            android:src="@drawable/ic_baseline_qr_code_2_24" />
+
+
+
+    </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        android:id="@+id/close_fab"
+        android:layout_width="wrap_content"
+
+        app:tint="@android:color/white"
+
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_baseline_close_24" />
+
+</LinearLayout>
