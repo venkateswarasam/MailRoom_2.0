@@ -61,6 +61,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/profileimage"
                 android:src="@drawable/account_circle_blue"
                 android:layout_width="33.33dp"
                 android:layout_height="33.33dp"/>
@@ -1474,9 +1475,65 @@
             android:textStyle="bold" />
 
 
-        <RelativeLayout
-            android:visibility="visible"
+        <LinearLayout
+
             android:id="@+id/savechanges"
+            android:layout_marginTop="32dp"
+
+            android:layout_marginBottom="72dp"
+
+            android:layout_marginStart="49dp"
+            android:layout_marginEnd="48dp"
+            android:background="@drawable/buttonshape"
+
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_marginStart="59dp"
+                android:layout_gravity="center_vertical"
+                android:layout_centerInParent="true"
+
+                android:layout_toStartOf="@+id/savebutton"
+
+
+                android:src="@drawable/ic_baseline_save_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"/>
+
+            <TextView
+
+                android:layout_marginStart="15dp"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:id="@+id/savebutton"
+
+
+                android:textSize="13.5sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/open_sans"
+                android:layout_gravity="center_vertical"
+                android:height="16dp"
+                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:letterSpacing="0.125"
+                android:lineSpacingMultiplier="1.18"
+                android:text="SAVE CHANGES"
+                android:width="116dp" />
+
+
+
+
+        </LinearLayout>
+
+
+
+        <RelativeLayout
+
+            android:visibility="gone"
             android:layout_marginTop="32dp"
 
             android:layout_marginBottom="72dp"
@@ -1504,7 +1561,6 @@
                 android:layout_marginStart="15dp"
                 android:gravity="center"
                 android:layout_centerInParent="true"
-                android:id="@+id/savebutton"
 
 
                 android:textSize="13.5sp"

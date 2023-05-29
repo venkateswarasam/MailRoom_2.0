@@ -53,11 +53,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selectstatus">Select Status</string>
-    <string name="mailst">Mail stop</string>
-    <string name="bin">bin</string>
-    <string name="storage_loc">Storage location</string>
+    <string name="mailst">Mail Stop</string>
+    <string name="bin">Bin</string>
+    <string name="storage_loc">Storage Location</string>
     <string name="docnumber">Dock Number</string>
-    <string name="signedby">Signed by</string>
+    <string name="signedby">Signed By</string>
     <string name="signedhere">Sign Here</string>
     <string name="enternotes">Enter notes here</string>
     <string name="manual_entry">Manual Entry</string>
@@ -68,14 +68,56 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="areusure">Are you sure?</string>
-    <string name="trackinginfo">The tracking information will be removed. You cannot undo this action</string>
+    <string name="trackinginfo">The tracking information will be removed. You cannot undo this action.</string>
     <string name="location">Location</string>
     <string name="dribername">Driver Name</string>
     <string name="carrersign">Carrier Signature</string>
     <string name="reason">Reason</string>
     <string name="route">Route</string>
     <string name="locker">Locker</string>
-    <string name="processtext">To Process a package add a tracking ID.</string>
+    <string name="processtext">To process a package add a tracking ID.</string>
+    <string name="takemoreimage">Take one or more pictures for proof of delivery</string>
+    <string name="yes">Yes</string>
+
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_message">You must grant permission to access camera and external storage to run this application.</string>
+    <string name="permission_warning">All permissions are required.</string>
+    <string name="digital_sign">Digital Signature</string>
+    <string name="retake">RETAKE</string>
+    <string name="send">SEND</string>
+    <string name="pending">Pending Deliveries</string>
+    <string name="loadmore">Load more</string>
+    <string name="no">No</string>
+
+
+
+
+
+    <string name="activity_intent_filter_action">com.elemica.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action2">com.elemicaprocess.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action3">com.elemicabulk.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action4">com.elemicabatch.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action5">com.elemicacheckIn.datawedge.kotlin.ACTION</string>
+
+
+
+    <string name="datawedge_intent_key_source">com.symbol.datawedge.source</string>
+    <string name="datawedge_intent_key_label_type">com.symbol.datawedge.label_type</string>
+    <string name="datawedge_intent_key_data">com.symbol.datawedge.data_string</string>
+    <string name="msgstatus">Application Needs Your Permission. Please Grant Permission</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </resources>

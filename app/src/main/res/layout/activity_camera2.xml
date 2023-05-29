@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/baraction"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/barcodebg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/cancelled"
+            android:layout_marginTop="21dp"
+            android:layout_marginStart="21dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+
+            android:layout_marginStart="52dp"
+            android:layout_marginEnd="35dp"
+            android:textColor="@color/white"
+            android:textSize="13.82sp"
+            android:layout_marginTop="21dp"
+            android:height="48dp"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.74"
+            android:text="@string/takemoreimage"
+            android:width="273dp" />
+
+
+
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_below="@+id/baraction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <RelativeLayout
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="5dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp">
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_marginStart="5dp"
+
+                android:layout_marginTop="10dp"
+                app:shapeAppearanceOverlay="@style/RoundedSquare"
+
+
+                android:id="@+id/image1IV"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="fitXY" />
+
+
+            <ImageView
+                android:visibility="invisible"
+
+                android:id="@+id/cancel_img1"
+
+                android:layout_marginTop="-8dp"
+                android:layout_alignTop="@+id/image1IV"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/baseline_cancel_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+        <RelativeLayout
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="5dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp">
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_marginStart="5dp"
+
+                android:layout_marginTop="10dp"
+                app:shapeAppearanceOverlay="@style/RoundedSquare"
+
+
+                android:id="@+id/image2IV"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="fitXY" />
+
+
+            <ImageView
+                android:visibility="invisible"
+
+                android:id="@+id/cancel_img2"
+
+                android:layout_marginTop="-8dp"
+                android:layout_alignTop="@+id/image2IV"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/baseline_cancel_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="5dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp">
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_marginStart="5dp"
+
+                android:layout_marginTop="10dp"
+                app:shapeAppearanceOverlay="@style/RoundedSquare"
+
+
+
+                android:id="@+id/image3IV"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="fitXY" />
+
+
+            <ImageView
+                android:visibility="invisible"
+
+                android:id="@+id/cancel_img3"
+
+                android:layout_marginTop="-8dp"
+                android:layout_alignTop="@+id/image3IV"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/baseline_cancel_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/takeIV"
+
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@id/bottomactionlay"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/ic_twotone_circle_24">
+
+    </ImageView>
+
+
+
+
+    <LinearLayout
+        android:background="@drawable/botoom_bg"
+
+        android:id="@+id/bottomactionlay"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/cameraback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="20dp"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="#99000000"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <TextView
+                android:drawableLeft="@drawable/baseline_keyboard_arrow_left_24"
+                android:textColor="#99000000"
+
+                android:id="@+id/retakeIV"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="20dp"
+                android:text="@string/retake"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:visibility="gone">
+
+            </TextView>
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/outline_camera_24" />
+
+            <ImageView
+                android:id="@+id/saveIV"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:src="@drawable/save_white"
+                android:visibility="gone" />
+
+            <TextView
+
+
+                android:drawablePadding="10dp"
+                android:textColor="#99000000"
+                android:textSize="13.82sp"
+                android:fontFamily="sans-serif"
+
+                android:layout_gravity="center"
+                android:height="24dp"
+
+                android:lineSpacingMultiplier="1.74"
+                android:text="NEXT"
+                app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24"
+
+
+
+                android:id="@+id/usePhotoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="20dp"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:visibility="visible">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

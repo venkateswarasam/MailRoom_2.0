@@ -106,10 +106,25 @@
                     android:layout_height="40dp"
                     android:textColor="@color/black"
                     android:textSize="13.82sp"
-                    android:inputType="none"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -246,6 +261,14 @@
                     tools:ignore="TouchTargetSizeCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+
 
 
 
@@ -478,6 +501,9 @@
 
             </RelativeLayout>
 
+
+
+
             <RelativeLayout
                 android:visibility="gone"
 
@@ -503,6 +529,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:textSize="13.82sp"
                         android:padding="10dp"
+
                         android:fontFamily="@font/open_sans"
 
                         android:id="@+id/route_text"
@@ -623,6 +650,164 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
+
+            <LinearLayout
+                android:visibility="gone"
+
+                android:id="@+id/images_layout"
+                android:layout_marginTop="27dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <androidx.cardview.widget.CardView
+                    android:visibility="gone"
+
+                    android:id="@+id/cardimage1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="4dp">
+
+                    <ImageView
+                        android:rotation="90"
+
+                        android:id="@+id/image1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop"
+                        />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:visibility="gone"
+
+
+                    android:layout_marginStart="6dp"
+
+
+                    android:layout_width="100dp"
+                    android:id="@+id/cardimage2"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="4dp">
+
+                    <ImageView
+                        android:rotation="90"
+
+                        android:id="@+id/image2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop"
+                        />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+
+                    android:visibility="gone"
+
+                    android:layout_marginStart="6dp"
+
+
+                    android:layout_width="100dp"
+                    android:id="@+id/cardimage3"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="4dp">
+
+                    <ImageView
+                        android:rotation="90"
+
+                        android:id="@+id/image3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop"
+                        />
+                </androidx.cardview.widget.CardView>
+
+
+                <RelativeLayout
+                    android:visibility="gone"
+
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/img_bg_process"
+
+
+                    android:id="@+id/cardimage4"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:layout_centerInParent="true"
+
+
+                        android:layout_gravity="center"
+
+
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@drawable/baseline_add_circle_24"
+                        android:scaleType="fitXY"
+                        />
+                </RelativeLayout>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/captureImages"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical"
+                android:background="@drawable/photos_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:src="@drawable/baseline_add_circle_24"
+                    android:id="@+id/fab"
+
+
+                    android:layout_width="37dp"
+
+
+
+                    android:contentDescription="@string/fab_transformation_scrim_behavior"
+
+
+                    android:layout_height="37dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="18dp"
+                    />
+
+                <TextView
+                    android:layout_marginBottom="17dp"
+                    android:textColor="#99000000"
+                    android:textSize="13.82sp"
+                    android:fontFamily="@font/open_sans"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:height="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:letterSpacing="0.01"
+                    android:lineSpacingMultiplier="1.74"
+                    android:text="Upload Photo"
+                    android:width="252dp" />
+
+
+
+
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:visibility="gone"
 
@@ -706,32 +891,48 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <com.google.android.material.textfield.TextInputLayout
+            <RelativeLayout
                 android:visibility="gone"
+                android:background="@drawable/et_bg"
 
                 android:layout_marginTop="27dp"
                 android:id="@+id/signhere"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:hint="@string/signedhere">
+                >
 
                 <!--this is the actual edit text which takes the input-->
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
+                    android:id="@+id/signature"
+                    android:layout_alignParentTop="true"
+
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="16dp"
 
                     android:fontFamily="@font/open_sans"
 
                     android:padding="10dp"
 
-                    android:textColor="@color/black"
+                    android:text="@string/signedhere"
+                    android:textColor="#99000000"
                     android:textSize="13.82sp"
                     tools:ignore="TouchTargetSizeCheck" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:visibility="gone"
+
+                    android:layout_centerInParent="true"
+                    android:id="@+id/signImage"
+
+                    android:layout_width="150.67dp"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical" />
+            </RelativeLayout>
 
 
 
@@ -769,8 +970,9 @@
 
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:visibility="gone"
+
                 android:id="@+id/savechanges"
                 android:layout_marginTop="32dp"
 
@@ -786,6 +988,8 @@
 
 
                 <ImageView
+                    android:layout_marginStart="59dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_centerInParent="true"
 
                     android:layout_toStartOf="@+id/savebutton"
@@ -796,6 +1000,7 @@
                     android:layout_height="24dp"/>
 
                 <TextView
+
                     android:layout_marginStart="15dp"
                     android:gravity="center"
                     android:layout_centerInParent="true"
@@ -806,7 +1011,7 @@
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     android:fontFamily="@font/open_sans"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:height="16dp"
                     android:layout_height="wrap_content"
                     android:layout_width="120dp"
@@ -818,7 +1023,7 @@
 
 
 
-            </RelativeLayout>
+            </LinearLayout>
 
 
 

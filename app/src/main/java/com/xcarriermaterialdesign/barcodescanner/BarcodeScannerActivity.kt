@@ -5,14 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.ToneGenerator
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
@@ -322,6 +320,8 @@ open class BarcodeScannerActivity : AppCompatActivity() {
                             barcodeData = barcodes.valueAt(0).displayValue
 
                             if (arrayList.contains(barcodeData)){
+
+
 
                                 //  Toast.makeText(this@BarcodeScannerActivity,"you already captured data", Toas)
                             }

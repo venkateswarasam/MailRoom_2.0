@@ -9,11 +9,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -29,6 +27,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.XCarrierMaterialDesign"
         tools:targetApi="31">
+        <activity
+            android:name=".pendingnew.SearchPackagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".scanner.SimpleProcessActivty"
+            android:exported="false" />
+        <activity
+            android:name=".scanner.SimpleScannerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pending.PendingDeliveriesActvity"
+            android:exported="false" />
+        <activity
+            android:name=".CameraActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".trackreport.TrackReportActivty"
+            android:exported="false" />
+        <activity
+            android:name=".process.SigantureviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CameraActivity"
             android:exported="false" />
@@ -122,6 +142,29 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
+
+
+
+
+        <service
+            android:name=".utils.NetWorkService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!--         code change here -->
+        <receiver
+            android:name=".utils.NetworkChangeReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+
+
+
     </application>
 
 </manifest>

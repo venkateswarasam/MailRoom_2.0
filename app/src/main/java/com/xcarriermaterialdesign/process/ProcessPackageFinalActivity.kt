@@ -2,36 +2,116 @@ package com.xcarriermaterialdesign.process
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.room.Room
 import com.xcarriermaterialdesign.BottomNavigationActivity
+import com.xcarriermaterialdesign.CameraActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
-import com.xcarriermaterialdesign.barcodescanner.ProcessBarcodeScannerActivity
 import com.xcarriermaterialdesign.databinding.ActivityProcessPackageFinalBinding
+import com.xcarriermaterialdesign.roomdatabase.*
+import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.utils.*
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class ProcessPackageFinalActivity : AppCompatActivity() {
+class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
 
 
 
     private lateinit var binding: ActivityProcessPackageFinalBinding
 
+    var image1Bitmap : Bitmap? = null
 
     val model: ProcessPackageFinalViewModel by viewModels()
 
+
+    private lateinit var processDao: ProcessDao
+    private lateinit var bulkDao: BulkDao
+
+    private lateinit var processPackage: List<ProcessPackage>
+
+    var bitMap1: Bitmap? = null
+
+
+    var digitalSignBase64Str : String = ""
+
+    var trackingnumbers:String = ""
+    var packagestatus:String = ""
+    var scanType = 0
+    val storage = 1
+    val lock = 2
+    val bin = 3
+    val buil = 4
+    val route = 5
+    val track = 0
+
+
+    var digitalSignResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        { result ->
+            if (result.resultCode == RESULT_OK){
+                if (result.data?.hasExtra("RESULT_TEXT")!!){
+                    val text = result.data!!.extras?.getString("RESULT_TEXT")
+                        ?: "No Result Provided"
+
+                    val bitmapIm = AnalyticsApplication.instance?.getBitmapSign()
+
+                    if (bitmapIm!= null){
+
+                        binding.signature.visibility = View.GONE
+                        binding.signImage.visibility = View.VISIBLE
+
+                        binding.signImage.setImageBitmap(bitmapIm)
+
+                    }
+
+
+                    // println("==bitmap==${result.data!!.hasExtra("RESULT_TEXT")}")
+
+                   /*digitalSignBase64Str =
+                        AnalyticsApplication.instance?.getDigitalSignBase64().toString()
+
+                    println("==proceesdign==$digitalSignBase64Str")
+
+                    Log.i("msg==",digitalSignBase64Str)*/
+
+                }
+            }
+        }
+
+
+    override fun onBackPressed() {
+
+
+        processDao.deleteAllProcessPackages()
+
+        val intent = Intent(this, BottomNavigationActivity::class.java)
+
+        startActivity(intent)
+
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +121,27 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
         model.config(this)
         supportActionBar?.hide()
 
-     //   initactionbar()
-
+        //   initactionbar()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_process_package_final)
 
 
+
+        DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action2),"true")
+
+
+        startService(Intent(applicationContext, NetWorkService::class.java))
+
+        if (!NetworkConnection().isNetworkAvailable(this)) {
+
+            binding.profile!!.setImageResource(R.drawable.syncyellow)
+
+        }
+        else{
+
+            binding.profile!!.setImageResource(R.drawable.syncnew)
+
+        }
 
         //  val dropdown_item = findViewById<AutoCompleteTextView>(R.id.dropdown_item)
 
@@ -68,7 +163,28 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
         araylist.add("Dropped Off at Mailroom")
 
 
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            ProcessDatabase::class.java, "Process_database"
+        ).allowMainThreadQueries().build()
+
+        processDao = db.processDao()
+        bulkDao = db.bulkDao()
+
+        processPackage = processDao.getAllProcessPackages()
+
+
+
+
+
+       // binding.image1.setImageBitmap(AnalyticsApplication.instance().getPackageImage1())
+
+
         binding.toolbar.setNavigationOnClickListener {
+
+            processDao.deleteAllProcessPackages()
+
             val intent = Intent(this, BottomNavigationActivity::class.java)
 
             startActivity(intent)
@@ -95,6 +211,7 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
                     "Received"->{
 
+
                         binding.buildingLay.visibility = View.VISIBLE
                         binding.mailstopLay.visibility = View.VISIBLE
                         binding.storage.visibility = View.VISIBLE
@@ -103,13 +220,18 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
                         binding.signedby.visibility = View.VISIBLE
                         binding.signhere.visibility = View.VISIBLE
                         binding.noteshere.visibility = View.VISIBLE
+                        binding.captureImages.visibility = View.VISIBLE
 
                         binding.bottomactionlay.visibility = View.VISIBLE
                         binding.savechanges.visibility = View.VISIBLE
 
+                        binding.signature.text = getString(R.string.signedhere)
+
 
                         binding.locatondrop.visibility = View.GONE
                         binding.locatondrop1.visibility = View.GONE
+                        binding.imagesLayout.visibility = View.GONE
+
 
                         binding.drivername.visibility = View.GONE
                         binding.carriersignature.visibility = View.GONE
@@ -118,9 +240,12 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
                         binding.reasonLay.visibility = View.GONE
                         binding.required.visibility = View.GONE
 
+
                     }
 
                     "Delivered"->{
+
+
 
                         binding.buildingLay.visibility = View.VISIBLE
                         binding.locatondrop.visibility = View.VISIBLE
@@ -130,9 +255,12 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
                         binding.noteshere.visibility = View.VISIBLE
                         binding.savechanges.visibility = View.VISIBLE
                         binding.bottomactionlay.visibility = View.VISIBLE
+                        binding.captureImages.visibility = View.VISIBLE
+                        binding.signature.text = getString(R.string.signedhere)
 
 
                         binding.mailstopLay.visibility = View.GONE
+                        binding.imagesLayout.visibility = View.GONE
                         binding.storage.visibility = View.GONE
                         binding.binLay.visibility = View.GONE
                         binding.dock.visibility = View.GONE
@@ -143,24 +271,32 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
                         binding.reasonLay.visibility = View.GONE
                         binding.required.visibility = View.GONE
 
+
                     }
 
                     "Handover to Carrier"->{
+
 
                         binding.buildingLay.visibility = View.VISIBLE
                         binding.dock.visibility = View.VISIBLE
                         binding.locatondrop.visibility = View.VISIBLE
                         binding.drivername.visibility = View.VISIBLE
-                        binding.carriersignature.visibility = View.VISIBLE
+                        binding.signhere.visibility = View.VISIBLE
+
+                        binding.signature.text = getString(R.string.carrersign)
+
                         binding.savechanges.visibility = View.VISIBLE
                         binding.bottomactionlay.visibility = View.VISIBLE
+                        binding.captureImages.visibility = View.VISIBLE
+                        binding.imagesLayout.visibility = View.GONE
+
                         binding.locatondrop1.visibility = View.GONE
 
                         binding.mailstopLay.visibility = View.GONE
                         binding.storage.visibility = View.GONE
                         binding.binLay.visibility = View.GONE
                         binding.signedby.visibility = View.GONE
-                        binding.signhere.visibility = View.GONE
+                       // binding.signhere.visibility = View.GONE
                         binding.noteshere.visibility = View.GONE
                         binding.route.visibility = View.GONE
                         binding.locker.visibility = View.GONE
@@ -168,9 +304,13 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
                         binding.required.visibility = View.GONE
 
 
+
                     }
 
                     "Returned"->{
+
+
+
 
                         binding.reasonLay.visibility = View.VISIBLE
                         binding.required.visibility = View.VISIBLE
@@ -189,16 +329,19 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
 
                         binding.drivername.visibility = View.GONE
+                        binding.captureImages.visibility = View.GONE
+                        binding.imagesLayout.visibility = View.GONE
                         binding.carriersignature.visibility = View.GONE
                         binding.signedby.visibility = View.GONE
                         binding.signhere.visibility = View.GONE
+
 
 
                     }
                 }
 
 
-              //  Toast.makeText(this, item.toString(), Toast.LENGTH_SHORT).show()
+                packagestatus = item.toString()
 
             }
 
@@ -206,7 +349,27 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.savechanges.setOnClickListener {
 
+         //   processDao.deleteAllProcessPackages()
+
+            for (element in processPackage){
+
+              //  trackingnumbers = element.trackingNumber
+
+                val enDate = SimpleDateFormat("EEE MMM d yyyy • HH:mm aa", Locale("en"))
+
+                val date: String = enDate.format(Calendar.getInstance().time)
+
+
+                bulkDao.insertBulkPackage(BulkPackage(element.trackingNumber,packagestatus, date,binding.routeText.text.toString(),
+                    binding.bin.text.toString()))
+
+            }
+
+            processDao.deleteAllProcessPackages()
+
             Toast.makeText(this, "Data saved successfully", Toast.LENGTH_SHORT).show()
+
+
 
 
             val intent = Intent(this, BottomNavigationActivity::class.java)
@@ -218,17 +381,22 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.buildingScan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+
+            intent.putExtra("flag","process")
+
+           // startActivity(intent)
 
          //   intent.putExtra("scanning","Scanning")
 
-            startActivityForResult(intent,54321)
+           startActivityForResult(intent,54321)
         }
 
 
         binding.mailstopScan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+            intent.putExtra("flag","process")
 
             //   intent.putExtra("scanning","Scanning")
 
@@ -237,7 +405,9 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.binscan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+            intent.putExtra("flag","process")
+
 
             //   intent.putExtra("scanning","Scanning")
 
@@ -248,7 +418,10 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.storagescan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+
+            intent.putExtra("flag","process")
+
 
             //   intent.putExtra("scanning","Scanning")
 
@@ -258,7 +431,10 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.docscan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+
+            intent.putExtra("flag","process")
+
 
             //   intent.putExtra("scanning","Scanning")
 
@@ -267,7 +443,10 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.routescan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+
+            intent.putExtra("flag","process")
+
 
             //   intent.putExtra("scanning","Scanning")
 
@@ -277,13 +456,288 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
         binding.lockerscan.setOnClickListener {
 
-            val intent = Intent(this, ProcessBarcodeScannerActivity::class.java)
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+
+            intent.putExtra("flag","process")
+
 
             //   intent.putExtra("scanning","Scanning")
 
             startActivityForResult(intent,54327)
         }
+
+
+        var cameraActivityWithResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                if (result.resultCode == RESULT_OK){
+
+                 //   print(result.resultCode)
+
+                    val countcheck = AnalyticsApplication.instance!!.getEmpId()
+
+                    println("==count==$countcheck")
+
+
+
+
+
+
+                 //  Toast.makeText(this, countcheck, Toast.LENGTH_SHORT).show()
+
+                    when(countcheck){
+
+                        "1"->{
+
+
+                            binding.imagesLayout.visibility = View.VISIBLE
+
+                                binding.cardimage1.visibility = View.VISIBLE
+                                binding.cardimage4.visibility = View.VISIBLE
+
+
+                                binding.image1.setImageBitmap(AnalyticsApplication.instance?.getPackageImage1())
+
+                                binding.captureImages.visibility = View.GONE
+
+                                binding.cardimage2.visibility = View.GONE
+                                binding.cardimage3.visibility = View.GONE
+
+
+
+
+
+
+
+                        }
+
+
+                        "2"->{
+
+
+                            binding.imagesLayout.visibility = View.VISIBLE
+
+                            binding.captureImages.visibility = View.GONE
+
+                            binding.cardimage2.visibility = View.VISIBLE
+
+                            // edited
+                            binding.cardimage1.visibility = View.VISIBLE
+                            binding.image1.setImageBitmap(AnalyticsApplication.instance?.getPackageImage1())
+// edited
+                            binding.image2.setImageBitmap(AnalyticsApplication.instance?.getPackageImage2())
+
+                            binding.cardimage4.visibility = View.VISIBLE
+
+                            binding.cardimage3.visibility =  View.GONE
+
+
+
+
+                        }
+
+                        "3"->{
+
+
+                            binding.imagesLayout.visibility = View.VISIBLE
+
+                            binding.captureImages.visibility = View.GONE
+
+                            // edited
+
+                            binding.cardimage1.visibility = View.VISIBLE
+                            binding.cardimage2.visibility = View.VISIBLE
+
+                            binding.image1.setImageBitmap(AnalyticsApplication.instance?.getPackageImage1())
+
+
+                            binding.image2.setImageBitmap(AnalyticsApplication.instance?.getPackageImage2())
+
+// edited
+
+                            binding.cardimage3.visibility = View.VISIBLE
+
+                            binding.image3.setImageBitmap(AnalyticsApplication.instance?.getPackageImage3())
+
+                            binding.cardimage4.visibility = View.GONE
+
+
+
+                            }
+
+                        else->{
+
+                            binding.imagesLayout.visibility = View.GONE
+                          //  binding.captureImages.visibility = View.VISIBLE
+                        }
+
+
+
+                    }
+
+
+
+
+
+
+
+
+                }
+            }
+
+        binding.captureImages.setOnClickListener {
+
+
+
+        //    PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+
+
+
+            var intent: Intent = Intent(this, CameraActivity::class.java)
+            cameraActivityWithResult.launch(intent)
+
+
+        }
+
+
+
+        binding.cardimage4.setOnClickListener {
+
+           // PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+
+            var intent: Intent = Intent(this, CameraActivity::class.java)
+            cameraActivityWithResult.launch(intent)
+
+
+        }
+
+        binding.cardimage1.setOnClickListener {
+
+            var intent: Intent = Intent(this, CameraActivity::class.java)
+            cameraActivityWithResult.launch(intent)
+
+
+        }
+
+        binding.cardimage2.setOnClickListener {
+
+            var intent: Intent = Intent(this, CameraActivity::class.java)
+            cameraActivityWithResult.launch(intent)
+
+
+        }
+        binding.cardimage3.setOnClickListener {
+
+            var intent: Intent = Intent(this, CameraActivity::class.java)
+            cameraActivityWithResult.launch(intent)
+
+
+        }
+
+
+        binding.signhere.setOnClickListener {
+
+
+         digitalSignResult.launch(Intent(this,SigantureviewActivity::class.java))
+
+
+
+
+        }
+
+
+        binding.signature.setOnClickListener {
+
+
+            digitalSignResult.launch(Intent(this,SigantureviewActivity::class.java))
+
+
+
+
+        }
+
+
+        binding.bin.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                bin
+            }else{
+                track
+            }
+
+        }
+
+
+
     }
+
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        displayScanResult(intent)
+    }
+
+    private fun displayScanResult(scanIntent: Intent) {
+        val decodedSource =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_source))
+        val decodedData =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_data))
+        val decodedLabelType =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_label_type))
+        val scan = "$decodedData [$decodedLabelType]\n\n"
+        //  output.text = scan
+        // binding.tracking.setText(decodedData)
+
+
+        runOnUiThread(java.lang.Runnable {
+
+
+            when(scanType){
+
+                storage -> {
+                    binding.storagetext.setText(decodedData)
+                }
+                lock -> {
+                    binding.lockertext.setText(decodedData)
+
+                }
+                bin -> {
+                    binding.bin.setText(decodedData)
+
+                }
+                buil -> {
+                    binding.buildingname.setText(decodedData)
+
+                }
+                route -> {
+                    binding.routeText.setText(decodedData)
+                }
+                else -> {
+
+                }
+            }
+
+
+
+        })
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private fun initactionbar(){
@@ -398,10 +852,70 @@ class ProcessPackageFinalActivity : AppCompatActivity() {
 
 
 
+
+
             }
+
+
+
+
+
+
+            }
+        }
+
+    override fun onResume() {
+        super.onResume()
+
+        NetworkChangeReceiver.netConnectionCheckerReceiver = this
+    }
+
+    private fun showMessage(isConnected: Boolean) {
+
+        if (!isConnected) {
+
+            binding.profile!!.setImageResource(R.drawable.syncyellow)
+
+
+
+
+
+        } else {
+
+
+            binding.profile!!.setImageResource(R.drawable.syncnew)
+
+
+
+            //  save!!.setImageDrawable(resources.getDrawable(R.drawable.savegreen))
+
         }
 
 
     }
 
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+
+        showMessage(isConnected)
+
+        if (isConnected){
+
+
+
+            binding.profile!!.setImageResource(R.drawable.syncnew)
+
+
+        }
+        else{
+
+
+            binding.profile!!.setImageResource(R.drawable.syncyellow)
+
+
+
+        }
+    }
+
+
 }
+

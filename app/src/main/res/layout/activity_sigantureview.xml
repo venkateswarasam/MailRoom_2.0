@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".process.SigantureviewActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/ic_baseline_close_24"
+        android:background="@color/purple_700">
+
+
+
+
+        <TextView
+            android:fontFamily="@font/open_sans"
+
+            android:layout_gravity="center"
+
+            android:id="@+id/headertext"
+            android:textSize="19.74sp"
+            android:textColor="#FBFBFB"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.16"
+            android:text="@string/digital_sign" />
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:id="@+id/saveimage"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/save_white"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <com.kyanogen.signatureview.SignatureView
+            xmlns:sign="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/signature_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            sign:backgroundColor="#ffffff"
+            sign:enableSignature="true"
+            sign:penColor="#979797"
+            sign:penSize="10dp" />
+
+        <LinearLayout
+            android:id="@+id/clear_lv"
+            android:orientation="vertical"
+
+            android:background="@drawable/clear_bg"
+            android:layout_alignParentRight="true"
+            android:layout_margin="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
+            <ImageView
+                android:layout_marginTop="16dp"
+
+                android:layout_gravity="center"
+                android:id="@+id/clearIV"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_outline_delete_outline_24" />
+
+            <TextView
+
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:fontFamily="@font/open_sans"
+                android:gravity="center"
+                android:height="24dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:letterSpacing="0.09"
+                android:lineSpacingMultiplier="2"
+                android:text="Clear"
+                android:width="45dp" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

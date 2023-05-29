@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:elevation="5dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/alertbg"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:letterSpacing="0.025"
+        android:lineSpacingMultiplier="1.06"
+        android:textColor="#DE000000"
+        android:layout_marginStart="10dp"
+
+        android:layout_gravity="center"
+        android:textSize="19.74sp"
+        android:text="@string/areusure"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/open_sans"
+
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+
+
+    <TextView
+        android:fontFamily="@font/open_sans"
+        android:textColor="#99000000"
+        android:id="@+id/info_msg"
+        android:letterSpacing="0.015"
+        android:lineSpacingMultiplier="1.52"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+
+        android:layout_gravity="center"
+        android:textSize="15.8sp"
+        android:text="@string/trackinginfo"
+
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+    <LinearLayout
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+
+            android:textColor="#007CBB"
+            android:textSize="13.55sp"
+
+            android:textStyle="bold"
+            android:fontFamily="@font/open_sans"
+            android:letterSpacing="0.125"
+            android:lineSpacingMultiplier="1.18"
+
+
+
+            android:textAllCaps="true"
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:text="@string/no"
+
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            />
+
+
+        <TextView
+
+            android:textColor="#007CBB"
+            android:textSize="13.55sp"
+
+            android:textStyle="bold"
+            android:fontFamily="@font/open_sans"
+            android:letterSpacing="0.125"
+            android:lineSpacingMultiplier="1.18"
+
+
+            android:layout_alignParentEnd="true"
+
+
+            android:textAllCaps="true"
+            android:id="@+id/oktext"
+            android:layout_width="wrap_content"
+            android:text="@string/yes"
+
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

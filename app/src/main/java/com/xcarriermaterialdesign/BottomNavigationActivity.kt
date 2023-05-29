@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.xcarriermaterialdesign.databinding.ActivityBottomNavigationBinding
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.NetWorkService
+import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
+import com.xcarriermaterialdesign.utils.NetworkConnection
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,10 +31,20 @@ class BottomNavigationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AnalyticsApplication.instance!!.setLocaleFa(this)
 
+       // startService(Intent(applicationContext, NetWorkService::class.java))
+
+
         binding = ActivityBottomNavigationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //supportActionBar?.hide()
+
+        AnalyticsApplication.instance?.setPlantId("")
+
+
+
+
+
+
 
 
         val navView: BottomNavigationView = binding.navView
@@ -53,7 +67,21 @@ class BottomNavigationActivity : AppCompatActivity() {
 
 
 
-      //  initActionBar()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //  initActionBar()
     }
 
 
@@ -93,5 +121,7 @@ class BottomNavigationActivity : AppCompatActivity() {
 
 
     }
+
+
 
 }

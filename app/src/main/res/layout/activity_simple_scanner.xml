@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".scanner.SimpleScannerActivity">
+
+
+
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/baraction"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/barcodebg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/close_img"
+            android:layout_marginTop="21dp"
+            android:layout_marginStart="21dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+
+            android:layout_marginStart="52dp"
+            android:layout_marginEnd="35dp"
+            android:textColor="@color/white"
+            android:textSize="13.82sp"
+            android:layout_marginTop="21dp"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.74"
+            android:text="Scan one or more barcodes to capture the package tracking IDs."
+            android:width="273dp" />
+
+
+
+
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/tapbutton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@id/bottomactionlay"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/ic_twotone_circle_24"/>
+
+
+    <LinearLayout
+        android:id="@+id/bottomactionlay"
+        android:background="@drawable/botoom_bg"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginStart="16dp"
+            android:textStyle="bold"
+            android:id="@+id/barcode_text"
+
+            android:textSize="13.82sp"
+            android:textColor="#99000000"
+            android:layout_gravity="center"
+            android:height="24dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            />
+
+
+        <TextView
+
+            android:textStyle="bold"
+            android:drawablePadding="10dp"
+            android:textColor="#99000000"
+            android:textSize="13.82sp"
+            android:layout_marginEnd="21dp"
+            android:id="@+id/nextbutton"
+            android:gravity="end"
+            android:fontFamily="sans-serif"
+
+            android:layout_gravity="center"
+            android:height="24dp"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.74"
+            android:text="NEXT"
+            android:width="68dp"
+            app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+
+        android:id="@+id/info_layout"
+        android:elevation="5dp"
+
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@drawable/cons_bg2"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:letterSpacing="0.0015"
+            android:textColor="#99000000"
+
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:textSize="15.8sp"
+            android:fontFamily="@font/open_sans"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.52"
+            android:text="Please scan atleast one barcode to continue."
+            android:width="232dp" />
+
+
+        <TextView
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="end"
+            android:textColor="#007CBB"
+            android:textSize="13.55sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:textStyle="bold"
+            android:id="@+id/oktext"
+            android:gravity="center"
+            android:height="16dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:letterSpacing="0.125"
+            android:lineSpacingMultiplier="1.18"
+            android:text="OK"
+            android:width="81dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

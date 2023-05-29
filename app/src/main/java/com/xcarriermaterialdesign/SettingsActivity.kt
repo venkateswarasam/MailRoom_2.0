@@ -4,6 +4,7 @@ import android.R.attr.left
 import android.R.attr.right
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.media.Image
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -30,6 +31,13 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.hide()
         logout = findViewById(R.id.logout)
         logout_img = findViewById(R.id.logout_img)
+        val profileimage = findViewById<ImageView>(R.id.profileimage)
+
+        profileimage.setOnClickListener {
+
+            val intent = Intent(this, CameraActivity::class.java)
+            startActivity(intent)
+        }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 

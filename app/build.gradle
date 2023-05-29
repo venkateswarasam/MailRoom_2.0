@@ -58,6 +58,11 @@ dependencies {
     // scanner
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
 
+    // new scanner functionality
+
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+
+
 
 
     implementation 'com.google.android.gms:play-services-vision:11.0.2'
@@ -128,6 +133,11 @@ dependencies {
     androidTestImplementation("androidx.work:work-testing:$work_version")
 
 
+
+    // signature
+
+    implementation 'com.kyanogen.signatureview:signature-view:1.0'
+    implementation 'com.pixelcarrot.base64image:base64image:1.0.0'
 
 
 

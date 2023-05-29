@@ -2,10 +2,13 @@ package com.xcarriermaterialdesign.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,15 +17,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.integration.android.IntentIntegrator
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.SettingsActivity
-import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
 import com.xcarriermaterialdesign.databinding.FragmentHomeBinding
 import com.xcarriermaterialdesign.process.ManualProcessPackageActivity
-import com.xcarriermaterialdesign.process.ProcessPackageActivity
+import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.utils.NetWorkService
+import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
+import com.xcarriermaterialdesign.utils.NetworkConnection
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
-class HomeFragment : Fragment() {
+
+class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -30,6 +40,35 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private var qrScanIntegrator: IntentIntegrator? = null
+
+
+    internal var count = 10
+
+
+
+    private fun showMessage(isConnected: Boolean) {
+        if (!isConnected) {
+
+            binding.onlinepackages.visibility =  View.VISIBLE
+            binding.offlineconnection.visibility =  View.GONE
+            binding.offlinepackages.visibility =  View.GONE
+
+
+        } else {
+
+
+
+            binding.onlinepackages.visibility =  View.GONE
+            binding.offlineconnection.visibility =  View.VISIBLE
+            binding.offlinepackages.visibility =  View.VISIBLE
+
+            //  save!!.setImageDrawable(resources.getDrawable(R.drawable.savegreen))
+
+        }
+
+
+    }
+
 
 
     override fun onCreateView(
@@ -48,7 +87,68 @@ class HomeFragment : Fragment() {
         }
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        setupScanner()
+        //setupScanner()
+
+        val check = false
+
+        if (!check){
+
+
+            (activity as AppCompatActivity).startService(Intent( (activity as AppCompatActivity), NetWorkService::class.java))
+
+
+        }
+
+
+
+        if (!NetworkConnection().isNetworkAvailable((activity as AppCompatActivity))) {
+
+
+            binding.onlinepackages.visibility =  View.GONE
+          binding.offlineconnection.visibility =  View.VISIBLE
+            binding.offlinepackages.visibility =  View.VISIBLE
+
+           // showBottomSheetDialog()
+        }
+        else{
+
+
+
+
+          /*  val handler = Handler()
+            handler.postDelayed(
+                {
+
+                    binding.onlinepackages.visibility =  View.GONE
+
+                },
+                1000
+            )*/
+
+          /*  count = 10
+
+            val timer = Timer()
+            //Set the schedule function and rate
+            //Set the schedule function and rate
+            timer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+
+                    (activity as AppCompatActivity)?.runOnUiThread { timer_function() }
+                }
+            }, 0, 1000)*/
+
+
+
+            binding.onlinepackages.visibility =  View.VISIBLE
+            binding.offlineconnection.visibility =  View.GONE
+            binding.offlinepackages.visibility =  View.GONE
+        }
+
+
+
+
+
+
         _binding!!.profile.setOnClickListener {
 
             val intent = Intent(activity, SettingsActivity::class.java)
@@ -75,7 +175,7 @@ class HomeFragment : Fragment() {
 
 
 
-            val intent = Intent(activity, BarcodeScannerActivity::class.java)
+            val intent = Intent(activity, SimpleScannerActivity::class.java)
             activity?.startActivity(intent)
 
             // batchScanResultLauncher.launch(qrScanIntegrator?.createScanIntent())
@@ -103,13 +203,8 @@ class HomeFragment : Fragment() {
 
 
 
-        val check = false
 
-        if (!check){
 
-          //initActionBar()
-
-        }
 
 
 
@@ -156,6 +251,21 @@ class HomeFragment : Fragment() {
 
 
 
+    private fun timer_function() {
+
+
+        if (count > 0) {
+            count -= 1
+
+        }
+        if (count == 0) {
+
+            binding.onlinepackages!!.visibility = View.GONE
+
+
+        }
+    }
+
 
 
 
@@ -175,11 +285,88 @@ class HomeFragment : Fragment() {
 
 
 
+    override fun onResume() {
+        super.onResume()
+        NetworkChangeReceiver.netConnectionCheckerReceiver =  this
+    }
+
+
+
+
 
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+
+       // showMessage(isConnected)
+
+        if (isConnected){
+
+
+
+          /*  val handler = Handler()
+            handler.postDelayed(
+                {
+
+                    binding.onlinepackages.visibility =  View.GONE
+
+                },
+                1000
+            )*/
+
+
+           /* count = 10
+
+            val timer = Timer()
+            //Set the schedule function and rate
+            //Set the schedule function and rate
+            timer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+
+                    activity?.runOnUiThread { timer_function() }
+                }
+            }, 0, 1000)
+*/
+         //   binding.profile.setImageResource(R.drawable.syncnew)
+
+
+            binding.onlinepackages.visibility =  View.VISIBLE
+         binding.offlineconnection.visibility =  View.GONE
+            binding.offlinepackages.visibility =  View.GONE
+
+
+        }
+        else{
+
+            binding.onlinepackages.visibility =  View.GONE
+           binding.offlineconnection.visibility =  View.VISIBLE
+            binding.offlinepackages.visibility =  View.VISIBLE
+
+            //showBottomSheetDialog()
+          //  binding.profile.setImageResource(R.drawable.round_sync_24)
+
+
+
+        }
+    }
+
+    private fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(activity as AppCompatActivity)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
+        val copy = bottomSheetDialog.findViewById<RelativeLayout>(R.id.offline_layout)
+        val cloase_bottom = bottomSheetDialog.findViewById<ImageView>(R.id.cloase_bottom)
+
+        cloase_bottom?.setOnClickListener {
+
+            bottomSheetDialog.dismiss()
+        }
+
+
+        bottomSheetDialog.show()
     }
 }

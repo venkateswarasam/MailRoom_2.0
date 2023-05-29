@@ -17,9 +17,9 @@ class ForgotPassword : AppCompatActivity() {
 
         setContentView(R.layout.activity_forgot_password)
 
-       // supportActionBar!!.hide()
+        supportActionBar!!.hide()
 
-        initactionbar()
+        //initactionbar()
 
 
 
@@ -68,11 +68,18 @@ class ForgotPassword : AppCompatActivity() {
         val view1: View =  supportActionBar!!.customView
         val toolbar: Toolbar = view1.parent as Toolbar
         toolbar.setContentInsetsAbsolute(0, 0)
+        toolbar.setNavigationOnClickListener {
+
+            finish()
+        }
         //  toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
         val headertext:TextView = view1.findViewById(R.id.headertext)
         headertext.text = getString(R.string.backtosign)
         val profile: ImageView = view1.findViewById(R.id.profile)
         //val back: ImageView = view1.findViewById(R.id.back)
+
+
+
 
         // back.visibility = View.GONE
         //  profile.setImageResource(R.drawable.profilewhite)

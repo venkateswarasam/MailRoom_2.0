@@ -7,31 +7,32 @@ import android.os.Bundle
 object DWUtilities {
 
 
-    private const val PROFILE_NAME = "MailroomDev"
+    private const val PROFILE_NAME = "XcarrierMaterialDesign"
     private const val ACTION_DATAWEDGE = "com.symbol.datawedge.api.ACTION"
     private const val EXTRA_CREATE_PROFILE = "com.symbol.datawedge.api.CREATE_PROFILE"
     private const val EXTRA_SET_CONFIG = "com.symbol.datawedge.api.SET_CONFIG"
 
 
 
-    fun CreateDWProfile(context: Context, intentname:String, action:String, profilename:String) {
+    fun CreateDWProfile(context: Context, intentname:String, action:String) {
 
         sendDataWedgeIntentWithExtra(
             context,
             ACTION_DATAWEDGE,
             EXTRA_CREATE_PROFILE,
-            profilename
+            PROFILE_NAME
+
         )
 
         //  Requires DataWedge 6.4
 
-        sendDataWedgeIntentWithExtras(context, ACTION_DATAWEDGE, EXTRA_CREATE_PROFILE, profilename)
+        sendDataWedgeIntentWithExtras(context, ACTION_DATAWEDGE, EXTRA_CREATE_PROFILE, PROFILE_NAME)
 
 
 
         //  Now configure that created profile to apply to our application
         val profileConfig = Bundle()
-        profileConfig.putString("PROFILE_NAME", profilename)
+        profileConfig.putString("PROFILE_NAME", PROFILE_NAME)
         profileConfig.putString("PROFILE_ENABLED", "true") //  Seems these are all strings
         profileConfig.putString("CONFIG_MODE", "UPDATE")
         val barcodeConfig = Bundle()

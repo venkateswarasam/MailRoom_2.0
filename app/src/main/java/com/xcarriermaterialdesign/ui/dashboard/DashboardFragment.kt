@@ -1,23 +1,40 @@
 package com.xcarriermaterialdesign.ui.dashboard
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.SettingsActivity
+import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
 import com.xcarriermaterialdesign.databinding.FragmentDashboardBinding
+import com.xcarriermaterialdesign.pending.PendingDeliveriesActvity
+import com.xcarriermaterialdesign.process.ManualProcessPackageActivity
+import com.xcarriermaterialdesign.roomdatabase.*
+import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.trackreport.TrackReportActivty
+import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.NetWorkService
+import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
+import com.xcarriermaterialdesign.utils.NetworkConnection
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
     private var _binding: FragmentDashboardBinding? = null
 
@@ -26,6 +43,14 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
 
     var buttonClicked = 0
+
+    private lateinit var processDao: ProcessDao
+    private lateinit var bulkDao: BulkDao
+
+    private var adapter: ProcessAdapter_new? = null
+
+    lateinit var rowlist:List<BulkPackage>
+
 
 
     override fun onCreateView(
@@ -45,6 +70,106 @@ class DashboardFragment : Fragment() {
         dashboardViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }*/
+
+
+        (activity as AppCompatActivity).startService(Intent( (activity as AppCompatActivity), NetWorkService::class.java))
+
+
+
+        if (!NetworkConnection().isNetworkAvailable((activity as AppCompatActivity))) {
+
+            binding.profile!!.setImageResource(R.drawable.syncyellow)
+
+        }
+        else{
+
+            binding.profile!!.setImageResource(R.drawable.syncnew)
+
+        }
+
+
+        val db = Room.databaseBuilder(
+            (activity as AppCompatActivity),
+            ProcessDatabase::class.java, "Process_database"
+        ).allowMainThreadQueries().build()
+
+        processDao = db.processDao()
+        bulkDao = db.bulkDao()
+
+        if (bulkDao.getAllBulkPackages().isEmpty()){
+
+
+            binding.pendingimage.visibility = View.VISIBLE
+            binding.pendingtext.visibility = View.VISIBLE
+            binding.pendinglist.visibility = View.GONE
+        }
+
+
+        if (bulkDao.getAllBulkPackages().size > 50){
+
+            binding.loadmore.visibility = View.VISIBLE
+        }
+
+
+        binding.loadmore.setOnClickListener {
+
+
+            bulkDao.getAllBulkPackages()
+
+            adapter =
+                ProcessAdapter_new((activity as AppCompatActivity), bulkDao.getAllBulkPackages())
+
+            val manager = LinearLayoutManager((activity as AppCompatActivity))
+            binding.pendinglist!!.setHasFixedSize(true)
+
+            binding.pendinglist!!.layoutManager = manager
+            binding.pendinglist!!.adapter = adapter
+
+        }
+
+       // AnalyticsApplication.instance?.setPlantId("")
+
+        if (AnalyticsApplication.instance?.getPlantId()?.isNotEmpty()!!){
+
+
+
+
+            rowlist = bulkDao.isData(AnalyticsApplication.instance!!.getPlantId())
+
+            println("==rowlist==$rowlist")
+
+
+            adapter =
+                ProcessAdapter_new((activity as AppCompatActivity), rowlist)
+
+            val manager = LinearLayoutManager((activity as AppCompatActivity))
+            binding.pendinglist!!.setHasFixedSize(true)
+
+            binding.pendinglist!!.layoutManager = manager
+            binding.pendinglist!!.adapter = adapter
+
+
+
+
+        }
+
+        else{
+
+
+            adapter =
+                ProcessAdapter_new((activity as AppCompatActivity), bulkDao.getAllBulkPackages())
+
+            val manager = LinearLayoutManager((activity as AppCompatActivity))
+            binding.pendinglist!!.setHasFixedSize(true)
+
+            binding.pendinglist!!.layoutManager = manager
+            binding.pendinglist!!.adapter = adapter
+
+        }
+
+
+
+
 
 
 
@@ -68,7 +193,36 @@ class DashboardFragment : Fragment() {
                     binding.alertlayout.visibility = View.VISIBLE
                     binding.fab.setImageResource(R.drawable.ic_baseline_close_24)
                     binding.searchLayout!!.setBackgroundColor(Color.parseColor("#979797"));
+                    binding.horizontalscroll!!.setBackgroundColor(Color.parseColor("#979797"));
 
+                 /*   binding.last30.setBackgroundResource(R.drawable.text_bg1)
+                    binding.last60.setBackgroundResource(R.drawable.text_bg1)
+                    binding.last90.setBackgroundResource(R.drawable.text_bg1)
+*/
+
+                 //  binding.searchLayouts.setBackgroundColor(Color.parseColor("#979797"))
+                    binding.searchLayouts.setBackgroundResource(R.drawable.searchbg1)
+
+                   //
+
+                    binding.pendingimage.visibility = View.GONE
+                    binding.pendingtext.visibility =  View.GONE
+
+                    binding.pendingimage!!.setBackgroundColor(Color.parseColor("#979797"));
+
+
+
+                    binding.manualEntry.setOnClickListener {
+
+                        val intent = Intent((activity as AppCompatActivity), ManualProcessPackageActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    binding.scannerEntry!!.setOnClickListener {
+
+                        val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
+                        startActivity(intent)
+                    }
 
                     buttonClicked = 1
                 }
@@ -80,7 +234,29 @@ class DashboardFragment : Fragment() {
                     binding.alertlayout.visibility = View.GONE
                     binding.fab.setImageResource(R.drawable.addsymbol)
 
+                    if (bulkDao.getAllBulkPackages().isEmpty()){
+
+
+                        binding.pendingimage.visibility = View.VISIBLE
+                        binding.pendingtext.visibility =  View.VISIBLE
+                    }
+
+
+
                     binding.searchLayout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    binding.searchLayouts.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    binding.searchLayouts.setBackgroundResource(R.drawable.searchbg)
+
+
+                    /*binding.last30.setBackgroundResource(R.drawable.text_bg)
+                    binding.last60.setBackgroundResource(R.drawable.text_bg)
+                    binding.last90.setBackgroundResource(R.drawable.text_bg)
+*/
+
+                    //  binding.search_layouts!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    binding.horizontalscroll!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    binding.pendingimage!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
 
 
                 }
@@ -90,10 +266,39 @@ class DashboardFragment : Fragment() {
         }
 
 
+        binding.searchLayouts.setOnClickListener {
+
+
+            val intent = Intent(context, PendingDeliveriesActvity::class.java)
+            startActivity(intent)
+        }
 
 
 
+        binding.last60.setOnClickListener {
 
+            binding.last60.setBackgroundResource(R.drawable.text_bg_new)
+            binding.last90.setBackgroundResource(R.drawable.text_bg)
+            binding.last30.setBackgroundResource(R.drawable.text_bg)
+        }
+
+
+        binding.last30.setOnClickListener {
+
+
+            binding.last30.setBackgroundResource(R.drawable.text_bg_new)
+            binding.last90.setBackgroundResource(R.drawable.text_bg)
+            binding.last60.setBackgroundResource(R.drawable.text_bg)
+        }
+
+
+        binding.last90.setOnClickListener {
+
+
+            binding.last30.setBackgroundResource(R.drawable.text_bg)
+            binding.last90.setBackgroundResource(R.drawable.text_bg_new)
+            binding.last60.setBackgroundResource(R.drawable.text_bg)
+        }
 
 
        // initactionbar()
@@ -103,6 +308,126 @@ class DashboardFragment : Fragment() {
 
         return root
     }
+
+
+
+    inner class ProcessAdapter_new(val context : Context, private val mList: List<BulkPackage>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
+
+
+
+        // create new views
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProcessAdapter_new.ViewHolder {
+            // inflates the card_view_design view
+            // that is used to hold list item
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.pending_deliveries, parent, false)
+
+            return ViewHolder(view)
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+
+
+
+            val itemsViewModel = mList[position]
+
+
+            holder.trackingNo.text = itemsViewModel.trackingNumber ?: ""
+            holder.status.text = itemsViewModel.packagestatus ?: ""
+
+          //  val df: DateFormat = SimpleDateFormat("EEE MMM d yyyy • HH:mm aa")
+
+          /*  val enDate = SimpleDateFormat("EEE MMM d yyyy • HH:mm aa", Locale("en"))
+
+            val date: String = enDate.format(Calendar.getInstance().time)*/
+
+            holder.dateandtime.text = itemsViewModel.datetime
+
+
+
+
+            if (itemsViewModel.packagestatus == "Received"){
+
+                holder.pen_image.setImageResource(R.drawable.dhll)
+            }
+
+            else if (itemsViewModel.packagestatus == "Delivered"){
+
+                holder.status.setTextColor(Color.parseColor("#007CBB"))
+
+                holder.pen_image.setImageResource(R.drawable.usps)
+
+            }
+
+            else{
+
+            //    holder.status.setTextColor(Color.parseColor("#007CBB"))
+
+                holder.pen_image.setImageResource(R.drawable.fedex)
+
+            }
+
+
+
+
+
+            holder.trackinglayout.setOnClickListener {
+
+                val intent = Intent(context, TrackReportActivty::class.java)
+                intent.putExtra("trackingno", itemsViewModel.trackingNumber)
+
+                startActivity(intent)
+            }
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+        // binds the list items to a viewh
+
+
+        // return the number of the items in the list
+        override fun getItemCount(): Int {
+            return mList.size
+        }
+
+        // Holds the views for adding it to image and text
+        inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+
+            val trackingNo: TextView = itemView.findViewById(R.id.trackingTV)
+            val trackinglayout: LinearLayout = itemView.findViewById(R.id.trackinglayout)
+            val status: TextView = itemView.findViewById(R.id.status_tv)
+            val dateandtime: TextView = itemView.findViewById(R.id.dateandtime)
+            val pen_image: ImageView = itemView.findViewById(R.id.pen_image)
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+    override fun onResume() {
+        super.onResume()
+        NetworkChangeReceiver.netConnectionCheckerReceiver = this
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -137,6 +462,50 @@ class DashboardFragment : Fragment() {
         }
     }
 
+
+    private fun showMessage(isConnected: Boolean) {
+        if (!isConnected) {
+
+
+            binding.profile.setImageResource(R.drawable.syncnew)
+
+        } else {
+
+
+            binding.profile.setImageResource(R.drawable.syncyellow)
+
+
+
+
+
+        }
+
+
+    }
+
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+
+        showMessage(isConnected)
+
+        if (isConnected){
+
+            binding.profile.setImageResource(R.drawable.syncnew)
+
+
+
+
+
+        }
+        else{
+
+            binding.profile.setImageResource(R.drawable.syncyellow)
+
+
+
+
+        }
+    }
 
 
 }

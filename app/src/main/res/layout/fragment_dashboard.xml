@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:id="@+id/search_layout"
+
     tools:context=".ui.dashboard.DashboardFragment">
 
 
@@ -42,7 +43,6 @@
                 android:id="@+id/profile"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="end"
-                android:src="@drawable/syncnew"
                 android:layout_width="24dp"
                 android:layout_height="24dp"/>
 
@@ -54,12 +54,14 @@
 
 
         <LinearLayout
+            android:id="@+id/search_layouts"
+
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            android:elevation="10dp"
 
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:elevation="5dp"
 
 
             android:background="@drawable/searchbg"
@@ -76,13 +78,14 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:fontFamily="@font/open_sans"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:layout_gravity="center"
 
-                android:fontFamily="sans-serif"
+
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.52"
                 android:text="Search Route, Tracking, Bin …"
@@ -91,12 +94,14 @@
         </LinearLayout>
 
     <HorizontalScrollView
+        android:id="@+id/horizontalscroll"
         android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
         <LinearLayout
+
             android:layout_marginTop="24dp"
             android:orientation="horizontal"
             android:weightSum="3"
@@ -105,7 +110,9 @@
 
 
             <TextView
-                android:background="@drawable/text_bg"
+
+                android:id="@+id/last30"
+                android:background="@drawable/text_bg_new"
                 android:layout_marginStart="16dp"
 
                 android:layout_weight="1"
@@ -120,6 +127,7 @@
 
 
             <TextView
+                android:id="@+id/last60"
                 android:background="@drawable/text_bg"
                 android:layout_marginStart="16dp"
 
@@ -134,6 +142,7 @@
                 android:text="Last 60 Days" />
 
             <TextView
+                android:id="@+id/last90"
                 android:background="@drawable/text_bg"
                 android:layout_marginStart="16dp"
 
@@ -153,34 +162,73 @@
 
     </HorizontalScrollView>
 
+        <View
+
+            android:layout_marginTop="10dp"
+            android:background="#1F000000"
+            android:layout_width="match_parent"
+
+            android:layout_height="1dp"/>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pendinglist"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/loadmore"
+            android:layout_width="264dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/buttonshape"
+            android:fontFamily="@font/open_sans_semibold"
+            android:gravity="center"
+            android:text="@string/loadmore"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
 
 
         <ImageView
+            android:visibility="gone"
+            android:id="@+id/pendingimage"
             android:layout_gravity="center"
             android:layout_marginTop="48dp"
             android:layout_centerInParent="true"
 
             android:layout_marginStart="48dp"
             android:layout_marginEnd="48dp"
-            android:src="@drawable/groupcopy"
+            android:src="@drawable/code"
             android:layout_width="263dp"
             android:layout_height="263dp"/>
 
         <TextView
+            android:visibility="gone"
+            android:id="@+id/pendingtext"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
             android:layout_marginTop="23dp"
             android:textColor="#61000000"
             android:textSize="15.8sp"
             android:gravity="center"
-            android:height="48dp"
+            android:height="58dp"
+            android:fontFamily="@font/open_sans"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:lineSpacingMultiplier="1.52"
             android:text="@string/there_are_no_pending_deliveries_to_show"
             android:width="161dp" />
-
-
 
 
 
@@ -287,7 +335,7 @@
                 android:layout_height="wrap_content"
 
 
-                android:src="@drawable/ic_baseline_qr_code_2_24" />
+                android:src="@drawable/scanblue" />
 
 
 

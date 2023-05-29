@@ -28,14 +28,13 @@ import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
-import com.xcarriermaterialdesign.utils.CourseModal
-import com.xcarriermaterialdesign.utils.SwipeHelper
+import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.utils.*
 import com.xcarriermaterialdesign.utils.SwipeHelper.UnderlayButtonClickListener
-import com.xcarriermaterialdesign.utils.TypefaceUtil
 import java.lang.reflect.Type
 
 
-class ProcessPackageActivity : AppCompatActivity() {
+class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
 
     var arrayList = ArrayList<String>()
@@ -68,6 +67,7 @@ class ProcessPackageActivity : AppCompatActivity() {
     internal var nopendinglayout:LinearLayout?= null
     internal var keyupdown:ImageView?= null
     internal var keyupdown1:ImageView?= null
+    internal var nopending_image:ImageView?= null
 
     private var mDetector: GestureDetector? = null
 
@@ -81,6 +81,7 @@ class ProcessPackageActivity : AppCompatActivity() {
     private lateinit var processDao: ProcessDao
 
     private lateinit var processPackage: List<ProcessPackage>
+    internal var profile:ImageView?= null
 
 
 
@@ -102,11 +103,34 @@ class ProcessPackageActivity : AppCompatActivity() {
         }
     }
 
+    private fun showMessage(isConnected: Boolean) {
+
+        if (!isConnected) {
+
+            profile!!.setImageResource(R.drawable.syncyellow)
 
 
 
 
-    @SuppressLint("MissingInflatedId")
+
+        } else {
+
+
+            profile!!.setImageResource(R.drawable.syncnew)
+
+
+
+            //  save!!.setImageDrawable(resources.getDrawable(R.drawable.savegreen))
+
+        }
+
+
+    }
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_process_package)
@@ -115,11 +139,31 @@ class ProcessPackageActivity : AppCompatActivity() {
 
         //getdata()
 
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setNavigationOnClickListener {
 
             finish()
         }
+
+        profile = findViewById(R.id.profile_sync)
+
+       startService(Intent( applicationContext, NetWorkService::class.java))
+
+        if (!NetworkConnection().isNetworkAvailable(this)) {
+
+            profile!!.setImageResource(R.drawable.syncyellow)
+
+        }
+        else{
+
+            profile!!.setImageResource(R.drawable.syncnew)
+
+        }
+
+
+
+
 
         conslidate_lay = findViewById(R.id.conslidate_lay)
         sub_consolidate = findViewById(R.id.sub_consolidate)
@@ -141,6 +185,7 @@ class ProcessPackageActivity : AppCompatActivity() {
         bulkid_layout = findViewById(R.id.bulkid_layout)
         keyupdown = findViewById(R.id.keyupdown)
         keyupdown1 = findViewById(R.id.keyupdown1)
+        nopending_image = findViewById(R.id.nopending_image)
 
         mDetector = GestureDetector(this, Gesture())
 
@@ -266,6 +311,10 @@ class ProcessPackageActivity : AppCompatActivity() {
                  mainmenu_layout!!.setBackgroundColor(Color.parseColor("#979797"));
                  conslidate_lay!!.setBackgroundColor(Color.parseColor("#979797"));
                    sub_consolidate!!.setBackgroundColor(Color.parseColor("#979797"));
+
+                   nopendinglayout!!.visibility = View.GONE
+
+                   nopending_image!!.setBackgroundColor(Color.parseColor("#00000000"));
                 //   nopendinglayout!!.setBackgroundColor(Color.parseColor("#979797"));
 
 
@@ -291,7 +340,7 @@ class ProcessPackageActivity : AppCompatActivity() {
 
                    scanner_entry!!.setOnClickListener {
 
-                       val intent = Intent(this, BarcodeScannerActivity::class.java)
+                       val intent = Intent(this, SimpleScannerActivity::class.java)
                        startActivity(intent)
                    }
 
@@ -311,7 +360,14 @@ class ProcessPackageActivity : AppCompatActivity() {
                     alertlayout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     conslidate_lay!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     sub_consolidate!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    nopending_image!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
                   //  nopendinglayout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+                    if (processDao.getAllProcessPackages().isEmpty()){
+
+                        nopendinglayout!!.visibility = View.VISIBLE
+
+                    }
 
 
 
@@ -400,6 +456,8 @@ class ProcessPackageActivity : AppCompatActivity() {
 
 
 
+
+
         info_button!!.setOnClickListener {
 
 
@@ -465,10 +523,6 @@ class ProcessPackageActivity : AppCompatActivity() {
 
 
 
-    private fun alert(){
-
-
-    }
 
 
 
@@ -966,6 +1020,34 @@ class ProcessPackageActivity : AppCompatActivity() {
             val item_layout: RelativeLayout = itemView.findViewById(com.xcarriermaterialdesign.R.id.item_layout)
 
             val options_layout: LinearLayout = itemView.findViewById(com.xcarriermaterialdesign.R.id.options_layout)
+
+
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        NetworkChangeReceiver.netConnectionCheckerReceiver = this
+    }
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+
+        showMessage(isConnected)
+
+        if (isConnected){
+
+
+
+         profile!!.setImageResource(R.drawable.syncnew)
+
+
+        }
+        else{
+
+
+            profile!!.setImageResource(R.drawable.syncyellow)
+
 
 
         }

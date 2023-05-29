@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="8dp"
+    android:height="47.5317373dp"
+    android:viewportWidth="8"
+    android:viewportHeight="47.5317373">
+
+    <path
+        android:name="Oval-Copy-7"
+        android:fillColor="#41B4E4"
+        android:fillType="evenOdd"
+        android:strokeWidth="1"
+        android:pathData="M4,38.5056 C6.20914,38.5056,8,40.2964,8,42.5056
+C8,44.7147,6.20914,46.5056,4,46.5056 C1.79086,46.5056,0,44.7147,0,42.5056
+C0,40.2964,1.79086,38.5056,4,38.5056 Z" />
+    <path
+        android:name="Line-3-Copy-5"
+        android:fillAlpha="0.498386"
+        android:fillType="evenOdd"
+        android:strokeColor="#BEE3F2"
+        android:strokeAlpha="0.498386"
+        android:strokeWidth="2"
+        android:strokeLineCap="square"
+        android:pathData="M3.7463,0.00556887 L4.2537,34.0018" />
+</vector>

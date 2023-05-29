@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_marginStart="20dp"
+        android:src="@drawable/progressdotbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:id="@+id/line_lay"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#BEE3F2"/>
+
+            <TextView
+                android:textSize="25sp"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text=""
+                android:textColor="@color/purple_200"/>
+
+
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_marginStart="16dp"
+        android:layout_below="@+id/line_lay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:visibility="gone"
+            android:layout_marginTop="6dp"
+
+
+            android:textSize="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\u2022"
+            android:textColor="@color/purple_200"/>
+
+        <LinearLayout
+
+            android:layout_marginTop="20dp"
+
+            android:layout_marginStart="32dp"
+
+
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/statusTv"
+                android:textColor="#DE000000"
+                android:fontFamily="@font/open_sans"
+                android:textSize="15.8sp"
+
+                android:height="24dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:letterSpacing="0.015"
+                android:lineSpacingMultiplier="1.52"
+                android:text="On Rack"
+                android:width="195dp" />
+
+            <TextView
+                android:visibility="gone"
+                android:layout_marginTop="14dp"
+                android:id="@+id/seemore"
+                android:textColor="@color/purple_700"
+                android:textSize="11.85sp"
+                android:fontFamily="@font/open_sans"
+                android:height="16dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:letterSpacing="0.04"
+                android:lineSpacingMultiplier="1.35"
+                android:text="See 3 more updates"
+                android:width="180dp" />
+
+
+            <TextView
+                android:id="@+id/date_tv"
+                android:textColor="#99000000"
+                android:textSize="11.85sp"
+                android:fontFamily="@font/open_sans"
+                android:height="16dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:letterSpacing="0.04"
+                android:lineSpacingMultiplier="1.35"
+                android:text="Mon Apr 18 2022 • 06:08 PM"
+                android:width="177dp" />
+
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+
+
+
+</RelativeLayout>

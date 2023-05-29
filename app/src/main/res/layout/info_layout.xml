@@ -28,6 +28,7 @@
 
 
     <TextView
+        android:id="@+id/info_msg"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
 
@@ -50,12 +51,13 @@
 
 
         <TextView
+
             android:fontFamily="@font/open_sans_bold"
 
             android:textStyle="bold"
             android:textSize="14sp"
 
-            android:textAllCaps="false"
+            android:textAllCaps="true"
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:text="@string/cancel"
@@ -76,7 +78,7 @@
             android:textStyle="bold"
             android:textSize="14sp"
 
-            android:textAllCaps="false"
+            android:textAllCaps="true"
             android:id="@+id/oktext"
             android:layout_width="wrap_content"
             android:text="@string/delete"

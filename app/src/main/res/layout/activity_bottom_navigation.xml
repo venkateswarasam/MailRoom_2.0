@@ -38,4 +38,81 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
+
+
+
+
+    <RelativeLayout
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+
+        android:id="@+id/offlineconnection"
+        android:background="@drawable/botoom_bg1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/outline_cloud_off_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_marginTop="11dp"
+                android:id="@+id/offlinetext"
+                android:fontFamily="@font/open_sans_semibold"
+                android:gravity="start"
+                android:layout_centerHorizontal="true"
+                android:textColor="#99000000"
+                android:textSize="12sp"
+                android:layout_centerInParent="true"
+                android:height="17dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:lineSpacingMultiplier="1.42"
+                android:text="YOU’RE OFFLINE NOW"
+                android:width="234dp" />
+
+            <TextView
+                android:height="28dp"
+                android:gravity="start"
+                android:layout_below="@+id/offlinetext"
+                android:textColor="#99000000"
+                android:textSize="9sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:lineSpacingMultiplier="1.33"
+                android:text="You can still add packages, but the changes will be applied once an internet connection is restored."
+                android:width="237dp" />
+        </LinearLayout>
+
+
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/close_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
