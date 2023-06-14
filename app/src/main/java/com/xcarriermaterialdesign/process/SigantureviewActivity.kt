@@ -3,24 +3,27 @@ package com.xcarriermaterialdesign.process
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.github.gcacace.signaturepad.views.SignaturePad
 import com.kyanogen.signatureview.SignatureView
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
 import java.io.ByteArrayOutputStream
 
+
 class SigantureviewActivity : AppCompatActivity() {
 
     private lateinit var signatureView: SignatureView
-    private lateinit var bitmap: Bitmap
+    private lateinit var signatureBitmap: Bitmap
     internal lateinit var path: String
 
     var isdrawn = false
@@ -29,6 +32,65 @@ class SigantureviewActivity : AppCompatActivity() {
     var saveimage: ImageView?= null
 
     internal var toolbar:Toolbar?= null
+
+    internal var signaturelayout:LinearLayout?= null
+
+
+    private var mSignaturePad: SignaturePad? = null
+
+
+
+
+
+
+/*
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        val orientation = newConfig.orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            isdrawn = false
+
+            signatureView.clearCanvas()
+
+           // signatureBitmap == null
+
+
+
+
+
+
+
+        }
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            isdrawn = false
+
+            signatureView.clearCanvas()
+
+
+
+
+        }
+
+
+
+
+        }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +98,52 @@ class SigantureviewActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
+      /*  val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+
+        (this).windowManager
+            .defaultDisplay
+            .getMetrics(displayMetrics)*/
+
         toolbar = findViewById(R.id.toolbar)
 
 
         saveimage = findViewById<ImageView>(R.id.saveimage)
+     //   signaturelayout = findViewById<LinearLayout>(R.id.signaturelayout)
+
+        mSignaturePad = findViewById(R.id.signature_pad)
 
 
-        signatureView = findViewById(R.id.signature_view) as SignatureView
+
+        mSignaturePad?.setOnSignedListener(object : SignaturePad.OnSignedListener {
+            override fun onStartSigning() {
+
+                isdrawn = true
+              //  Toast.makeText(this@SigantureviewActivity, "OnStartSigning", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onSigned() {
+
+                isdrawn = true
+             //   mSaveButton.setEnabled(true)
+               // mClearButton.setEnabled(true)
+            }
+
+            override fun onClear() {
+
+                isdrawn = false
+              //  mSaveButton.setEnabled(false)
+                //mClearButton.setEnabled(false)
+            }
+        })
+
+
+
+
+
+        signatureView = findViewById<SignatureView>(R.id.signature_view)
 
 
 
@@ -51,9 +152,14 @@ class SigantureviewActivity : AppCompatActivity() {
         val clear_lv = findViewById<LinearLayout>(R.id.clear_lv)
 
 
+
+
         clear_lv.setOnClickListener()
         {
-            signatureView.clearCanvas()
+
+            mSignaturePad?.clear()
+
+           signatureView.clearCanvas()
             isdrawn = false
 
 
@@ -61,7 +167,9 @@ class SigantureviewActivity : AppCompatActivity() {
 
 
         signatureView.setOnTouchListener(View.OnTouchListener { v, event ->
+
             if (MotionEvent.ACTION_UP == event.action) {
+
 
                 isdrawn = true
 
@@ -76,26 +184,32 @@ class SigantureviewActivity : AppCompatActivity() {
 
             if (isdrawn) {
 
-                bitmap = signatureView.signatureBitmap
+                signatureBitmap = mSignaturePad?.signatureBitmap!!
 
-                println("==bitmapsign==$bitmap")
 
-                AnalyticsApplication.instance?.setBitmapSign(bitmap)
-                signatureView.clearCanvas()
-                path = saveImage(bitmap)
+                  // signatureBitmap = signatureView.signatureBitmap
+
+              //  bitmap = signatureBitmap!!
+
+                println("==bitmapsign==$signatureBitmap")
+
+                AnalyticsApplication.instance?.setBitmapSign(signatureBitmap)
+
+                println("==bitmapsign==${AnalyticsApplication.instance?.getBitmapSign()}")
+
+              mSignaturePad?.clear()
+              //  signatureView.clearCanvas()
+                path = saveImage(signatureBitmap)
 
                 val intent = Intent()
                 intent.putExtra("RESULT_TEXT", path)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
-            } else {
+            }
 
-                AnalyticsApplication.instance?.setBitmapSign(null)
-                // MyApplication.applicationContext().setBitmapSign(null)
-                finish()
+            else{
 
-                /*SweetAlertDialog(this@SigantureviewActivity, SweetAlertDialog.ERROR_TYPE).setTitleText("Error")
-                            .setContentText("Please do signature").show()*/
+                Toast.makeText(this,"Please draw Signature", Toast.LENGTH_SHORT).show()
             }
         }
 

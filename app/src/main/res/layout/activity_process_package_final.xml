@@ -893,12 +893,13 @@
 
             <RelativeLayout
                 android:visibility="gone"
+
                 android:background="@drawable/et_bg"
 
                 android:layout_marginTop="27dp"
                 android:id="@+id/signhere"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 >
@@ -928,10 +929,11 @@
 
                     android:layout_centerInParent="true"
                     android:id="@+id/signImage"
+                    android:scaleType="fitXY"
 
                     android:layout_width="150.67dp"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical" />
+                    android:layout_height="80dp"
+                    android:gravity="center" />
             </RelativeLayout>
 
 

@@ -49,14 +49,26 @@
         android:layout_height="match_parent">
 
 
+        <com.github.gcacace.signaturepad.views.SignaturePad
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            app:penColor="#979797"
 
-        <com.kyanogen.signatureview.SignatureView
-            xmlns:sign="http://schemas.android.com/apk/res-auto"
+            app:penMaxWidth="10dp"
+            app:penMinWidth="10dp"
+
+
+            android:id="@+id/signature_pad" />
+
+
+
+        <com.kyanogen.signatureview.SignatureView xmlns:sign="http://schemas.android.com/apk/res-auto"
             android:id="@+id/signature_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             sign:backgroundColor="#ffffff"
             sign:enableSignature="true"
+            android:visibility="gone"
             sign:penColor="#979797"
             sign:penSize="10dp" />
 
@@ -65,7 +77,7 @@
             android:orientation="vertical"
 
             android:background="@drawable/clear_bg"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="40dp"
             android:layout_alignParentBottom="true"
             android:layout_width="60dp"
@@ -90,7 +102,7 @@
                 android:layout_width="fill_parent"
                 android:letterSpacing="0.09"
                 android:lineSpacingMultiplier="2"
-                android:text="Clear"
+                android:text="@string/clear"
                 android:width="45dp" />
         </LinearLayout>
 

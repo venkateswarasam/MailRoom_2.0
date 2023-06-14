@@ -177,7 +177,7 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/et_bg"
             android:textColor="#DE000000"
-            android:textSize="15.8sp"
+            android:textSize="12sp"
             android:fontFamily="@font/open_sans"
             android:height="40dp"
             android:layout_height="wrap_content"

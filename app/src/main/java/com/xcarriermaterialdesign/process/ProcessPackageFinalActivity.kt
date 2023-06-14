@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -78,10 +79,23 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
                     val bitmapIm = AnalyticsApplication.instance?.getBitmapSign()
 
+
+//                    val scaledBitmap: Bitmap = Bitmap.createScaledBitmap(bitmapIm!!, 100, 100, true)
+//                    val mCanvas = Canvas(scaledBitmap)
+
+
+
+
+
+
                     if (bitmapIm!= null){
 
                         binding.signature.visibility = View.GONE
                         binding.signImage.visibility = View.VISIBLE
+
+
+                       // binding.signImage.setImageBitmap(Bitmap.createScaledBitmap(bitmapIm, 1000, 1000, false));
+
 
                         binding.signImage.setImageBitmap(bitmapIm)
 

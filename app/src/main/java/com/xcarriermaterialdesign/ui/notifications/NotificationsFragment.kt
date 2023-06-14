@@ -40,6 +40,10 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
     var checkintime:String=""
 
+    var hour:String = ""
+    var minutes:String = ""
+    var seconds:String = ""
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -221,12 +225,58 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
                 val date2: Date = simpleDateFormat.parse(SimpleDateFormat("HH:mm:ss").format(Date()))
 
                 val differenceInMilliSeconds = Math.abs(date2.time - date1.time)
-                val differenceInHours = "0"+(differenceInMilliSeconds / (60 * 60 * 1000)
+                var differenceInHours = (differenceInMilliSeconds / (60 * 60 * 1000)
                         % 24)
 
-                val differenceInMinutes = "0"+differenceInMilliSeconds / (60 * 1000) % 60
+
+
+                val differenceInMinutes = differenceInMilliSeconds / (60 * 1000) % 60
 
                 val differenceInSeconds = differenceInMilliSeconds / 1000 % 60
+
+                //Toast.makeText(activity as AppCompatActivity, this, differenceInSeconds.toString(), Toast.LENGTH_SHORT)
+
+
+
+                if (differenceInHours< 10){
+
+                    hour = "0$differenceInHours"
+
+                }
+                else{
+
+                    hour = differenceInHours.toString()
+                }
+
+                if (differenceInMinutes< 10){
+
+                    minutes = "0$differenceInMinutes"
+
+                }
+                else{
+
+                    minutes = differenceInMinutes.toString()
+                }
+
+                if (differenceInSeconds< 10){
+
+                    seconds = "0$differenceInSeconds"
+
+                }
+                else{
+
+                    seconds = differenceInSeconds.toString()
+                }
+
+
+
+
+
+
+
+
+
+
 
                 println(
                     "Difference is " + differenceInHours + " hours "
@@ -237,7 +287,7 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
 
 
-                binding.checkoutMsg.text = "Successfully Checked-Out at "+SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())+" and the time difference is "+differenceInMinutes+":"+differenceInSeconds
+                binding.checkoutMsg.text = "Successfully Checked-Out at "+SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())+" and the time difference is "+hour+":"+minutes+":"+seconds
 
 
                 updateCheckinDetailsToPref(write = false)
