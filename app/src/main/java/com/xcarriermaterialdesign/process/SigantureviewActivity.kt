@@ -39,11 +39,6 @@ class SigantureviewActivity : AppCompatActivity() {
     private var mSignaturePad: SignaturePad? = null
 
 
-
-
-
-
-/*
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
@@ -52,42 +47,18 @@ class SigantureviewActivity : AppCompatActivity() {
 
             isdrawn = false
 
-            signatureView.clearCanvas()
-
-           // signatureBitmap == null
-
-
-
-
-
-
+            mSignaturePad?.clear()
 
         }
         else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             isdrawn = false
 
-            signatureView.clearCanvas()
-
-
-
+            mSignaturePad?.clear()
 
         }
 
-
-
-
-        }
-*/
-
-
-
-
-
-
-
-
-
+    }
 
 
 

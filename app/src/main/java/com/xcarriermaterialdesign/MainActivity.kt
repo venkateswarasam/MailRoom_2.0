@@ -61,10 +61,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide();
 
         checkPermission()
-       // val current = resources.configuration.locale
-
-       // println("==language==$current")
-
 
 
      /*   val permission = Manifest.permission.ACCESS_FINE_LOCATION
