@@ -47,14 +47,15 @@ class SigantureviewActivity : AppCompatActivity() {
 
             isdrawn = false
 
-            mSignaturePad?.clear()
+
+         //   mSignaturePad?.clear()
 
         }
         else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             isdrawn = false
 
-            mSignaturePad?.clear()
+         //   mSignaturePad?.clear()
 
         }
 

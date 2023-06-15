@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         supportActionBar?.hide();
 
-        checkPermission()
+      //  checkPermission()
 
 
      /*   val permission = Manifest.permission.ACCESS_FINE_LOCATION

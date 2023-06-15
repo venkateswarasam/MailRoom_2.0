@@ -7,6 +7,7 @@ import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -49,6 +50,11 @@ class BottomNavigationActivity : AppCompatActivity() {
 
 
 
+    var status:Status?= null
+    private val neededPermissions = arrayOf(
+        Manifest.permission.CAMERA
+    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +93,7 @@ class BottomNavigationActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-        //enable()
+        enable()
 
 
 
@@ -132,10 +138,52 @@ class BottomNavigationActivity : AppCompatActivity() {
 
 
 
+
+
+    private fun checkPermission(): Boolean {
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= Build.VERSION_CODES.M) {
+            val permissionsNotGranted = ArrayList<String>()
+            for (permission in neededPermissions) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        permission
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    permissionsNotGranted.add(permission)
+                }
+            }
+            if (permissionsNotGranted.size > 0) {
+                var shouldShowAlert = false
+                for (permission in permissionsNotGranted) {
+                    shouldShowAlert =
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+                }
+
+                val arr = arrayOfNulls<String>(permissionsNotGranted.size)
+                val permissions = permissionsNotGranted.toArray(arr)
+                if (shouldShowAlert) {
+                    // showPermissionAlert(permissions)
+                } else {
+                    requestPermissions(permissions)
+                }
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun requestPermissions(permissions: Array<String?>) {
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE
+        )
+    }
+
+
+
     override fun onResume() {
         super.onResume()
 
-        enable()
+     //   enable()
 
 
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -521,8 +569,12 @@ class BottomNavigationActivity : AppCompatActivity() {
         val result: PendingResult<LocationSettingsResult> =
             LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
         result.setResultCallback { result ->
-            val status: Status = result.status
-            when (status.statusCode) {
+
+
+             status = result.status
+
+
+            when (status!!.statusCode) {
 
                 LocationSettingsStatusCodes.SUCCESS ->{
 
@@ -571,36 +623,128 @@ class BottomNavigationActivity : AppCompatActivity() {
                         TAG,
                         "Location settings are not satisfied. Show the user a dialog to upgrade location settings "
                     )
-                    try {
+                   try {
                         // Show the dialog by calling startResolutionForResult(), and check the result
                         // in onActivityResult().
-                        status.startResolutionForResult(
-                            this@BottomNavigationActivity,
-                            REQUEST_CHECK_SETTINGS1
-                        )
+
+
+
+                       status?.startResolutionForResult(
+                           this@BottomNavigationActivity,
+                           REQUEST_CHECK_SETTINGS1
+                       )
+
+
+
+/*
+
+                       val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                       builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                           .setCancelable(false)
+                           .setPositiveButton("Yes",
+                               DialogInterface.OnClickListener { dialog, id ->
+
+
+
+
+
+
+                               })
+                           .setNegativeButton("No",
+                               DialogInterface.OnClickListener { dialog, id -> dialog.cancel() })
+                       val alert: AlertDialog = builder.create()
+                       alert.show()
+
+*/
+
+
+
+
+
+
+
+
+
+                     //  buildAlertMessageNoGps()
+
                     } catch (e: SendIntentException) {
                         Log.i(TAG, "PendingIntent unable to execute request.")
                     }
                 }
-                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> Log.i(
-                    TAG,
-                    "Location settings are inadequate, and cannot be fixed here. Dialog not created."
-                )
+                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE ->{
+
+                  //  builder.setAlwaysShow(false)
+
+                    Log.i(
+                        TAG,
+                        "Location settings are inadequate, and cannot be fixed here. Dialog not created."
+
+
+                    )
+
+                }
+
             }
         }
 
     }
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        when(requestCode){
+
+            REQUEST_CHECK_SETTINGS1->{
+                if (resultCode == RESULT_CANCELED){
+
+
+                  //  Toast.makeText(this, "cancelled dialog", Toast.LENGTH_SHORT).show()
+                    //  status?.isCanceled
+                }
+
+                else if (resultCode == RESULT_OK){
 
 
 
+                    val permission = Manifest.permission.ACCESS_FINE_LOCATION
+                    val res: Int = applicationContext.checkCallingOrSelfPermission(permission)
+
+                    if (res == PackageManager.PERMISSION_GRANTED){
+
+
+                        init1()
+                        startLocationUpdates()
+
+
+                        // startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                    else{
+
+
+                        checkLocationPermission()
+
+
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+
+    }
 
 
 
 
     companion object {
-        const val REQUEST_CODE = 100
+        const val REQUEST_CODE = 1000
 
         private val TAG = "LocationProvider"
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 101
