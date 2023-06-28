@@ -20,7 +20,6 @@
     <application
         android:name=".utils.AnalyticsApplication"
         android:allowBackup="true"
-
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/xcarriermail"
@@ -29,66 +28,56 @@
         android:theme="@style/Theme.XCarrierMaterialDesign"
         tools:targetApi="31">
         <activity
-            android:screenOrientation="portrait"
+            android:name=".process.EditPackageActivity"
+            android:exported="false" />
+        <activity
             android:name=".pendingnew.SearchPackagesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".scanner.SimpleProcessActivty"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".scanner.SimpleScannerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".pending.PendingDeliveriesActvity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".CameraActivity2"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".trackreport.TrackReportActivty"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".process.SigantureviewActivity"
-            android:exported="false"
-
-
-
-            />
+            android:exported="false" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".CameraActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".barcodescanner.ProcessBarcodeScannerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".process.ProcessPackageFinalActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".process.ManualProcessPackageActivity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -99,16 +88,14 @@
             android:value="barcode" />
 
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".process.ProcessPackageActivity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-
             android:name=".BottomNavigationActivity"
             android:exported="false"
             android:label="@string/title_activity_bottom_navigation"
@@ -119,46 +106,40 @@
         </activity>
         <activity
             android:name=".HomeActvity"
-            android:screenOrientation="portrait"
-
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:screenOrientation="portrait"
-
             android:name=".WebActvity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:screenOrientation="portrait"
-
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-
             android:name=".ForgotPassword"
-            android:screenOrientation="portrait"
-
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -180,15 +161,11 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
 
-
-
-
         <service
             android:name=".utils.NetWorkService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <!--         code change here -->
+            android:permission="android.permission.BIND_JOB_SERVICE" /> <!-- code change here -->
         <receiver
             android:name=".utils.NetworkChangeReceiver"
             android:enabled="true"
@@ -197,11 +174,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-
-
-
-
     </application>
 
 </manifest>

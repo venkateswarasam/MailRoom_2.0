@@ -90,9 +90,6 @@
     <string name="no">No</string>
 
 
-
-
-
     <string name="activity_intent_filter_action">com.elemica.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action2">com.elemicaprocess.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action3">com.elemicabulk.datawedge.kotlin.ACTION</string>
@@ -100,12 +97,13 @@
     <string name="activity_intent_filter_action5">com.elemicacheckIn.datawedge.kotlin.ACTION</string>
 
 
-
     <string name="datawedge_intent_key_source">com.symbol.datawedge.source</string>
     <string name="datawedge_intent_key_label_type">com.symbol.datawedge.label_type</string>
     <string name="datawedge_intent_key_data">com.symbol.datawedge.data_string</string>
     <string name="msgstatus">Application Needs Your Permission. Please Grant Permission</string>
     <string name="clear">Clear</string>
+    <string name="edit">Edit Package</string>
+    <string name="carrier_select">Select Carrier</string>
 
 
 </resources>

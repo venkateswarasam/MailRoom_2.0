@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<com.zerobranch.layout.SwipeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@drawable/list_bg"
-    android:id="@+id/item_layout"
+
+
+    android:layout_width="match_parent"
+    app:draggedItem="@id/drag_item"
+    app:leftItem="@id/options_layout"
+    app:swipeDirection="left"
+    app:isContinuousSwipe="true"
+    android:id="@+id/swipelayout"
     android:layout_height="wrap_content">
 
+
+
+
     <LinearLayout
-        android:id="@+id/text_layout"
+
+        android:id="@+id/drag_item"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -42,7 +51,8 @@
 
 
     <LinearLayout
-        android:visibility="invisible"
+        android:visibility="gone"
+        android:layout_gravity="end"
         android:id="@+id/options_layout"
         android:layout_alignParentEnd="true"
 
@@ -72,15 +82,5 @@
 
 
 
-    <View
-        android:layout_below="@+id/text_layout"
-        android:layout_marginStart="16dp"
 
-        android:layout_marginTop="5dp"
-        android:background="#1F000000"
-        android:layout_width="match_parent"
-
-        android:layout_height="1dp"/>
-
-
-</RelativeLayout>
+</com.zerobranch.layout.SwipeLayout>

@@ -275,6 +275,7 @@
                 app:backgroundTint="#E6E6E6"
                 android:layout_marginStart="16dp"
                 app:tint="#8A000000"
+                android:id="@+id/manualfab"
 
                 android:layout_marginBottom="10dp"
 
@@ -323,6 +324,7 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 app:backgroundTint="#E6E6E6"
                 app:tint="#8A000000"
+                android:id="@+id/scannerfab"
                 android:layout_marginBottom="10dp"
 
 

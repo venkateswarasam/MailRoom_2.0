@@ -14,8 +14,11 @@ data class ProcessPackage(
 
 
     @ColumnInfo(name = "trackingNumber")
-    var trackingNumber: String
+    var trackingNumber: String,
 
+
+    @ColumnInfo(name = "carriername")
+    var carriername: String,
 
 
 

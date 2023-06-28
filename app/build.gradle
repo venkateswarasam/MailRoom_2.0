@@ -146,6 +146,12 @@ dependencies {
 
 
 
+    // swipe
+
+    implementation 'com.github.zerobranch:SwipeLayout:1.3.1'
+
+
+
 
 
 }

@@ -212,17 +212,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
 
-                    binding.manualEntry.setOnClickListener {
 
-                        val intent = Intent((activity as AppCompatActivity), ManualProcessPackageActivity::class.java)
-                        startActivity(intent)
-                    }
-
-                    binding.scannerEntry!!.setOnClickListener {
-
-                        val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
-                        startActivity(intent)
-                    }
 
                     buttonClicked = 1
                 }
@@ -270,6 +260,31 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
             val intent = Intent(context, PendingDeliveriesActvity::class.java)
+            startActivity(intent)
+        }
+
+        binding.manualEntry.setOnClickListener {
+
+            val intent = Intent((activity as AppCompatActivity), ManualProcessPackageActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.scannerEntry.setOnClickListener {
+
+            val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        binding.manualfab.setOnClickListener {
+
+            val intent = Intent((activity as AppCompatActivity), ManualProcessPackageActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.scannerfab.setOnClickListener {
+
+            val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
             startActivity(intent)
         }
 
@@ -348,18 +363,28 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
 
-            if (itemsViewModel.packagestatus == "Received"){
+            if (itemsViewModel.carriername == "DHL"){
 
                 holder.pen_image.setImageResource(R.drawable.dhll)
             }
 
-            else if (itemsViewModel.packagestatus == "Delivered"){
+            else if (itemsViewModel.carriername == "USPS"){
 
-                holder.status.setTextColor(Color.parseColor("#007CBB"))
+            //    holder.status.setTextColor(Color.parseColor("#007CBB"))
 
                 holder.pen_image.setImageResource(R.drawable.usps)
 
             }
+
+
+            else if (itemsViewModel.carriername == "FedEx"){
+
+             //   holder.status.setTextColor(Color.parseColor("#007CBB"))
+
+                holder.pen_image.setImageResource(R.drawable.fedex)
+
+            }
+
 
             else{
 

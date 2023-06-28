@@ -312,7 +312,7 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
                 ok.setOnClickListener {
 
-                    processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!))
+                    processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,""))
                     arrayList.add(rawResult?.text!!)
                     dialog.dismiss()
                     displaycount()
@@ -334,7 +334,7 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                 } catch (e: Exception) {
                 }
 
-                processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!))
+                processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,""))
                 arrayList.add(rawResult?.text!!)
 
                 displaycount()

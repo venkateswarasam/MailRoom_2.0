@@ -18,19 +18,19 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.google.android.gms.vision.text.Line
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.adapter.CourseAdapter
-import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
 import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.utils.*
 import com.xcarriermaterialdesign.utils.SwipeHelper.UnderlayButtonClickListener
+import com.zerobranch.layout.SwipeLayout
+import com.zerobranch.layout.SwipeLayout.SwipeActionsListener
 import java.lang.reflect.Type
 
 
@@ -83,6 +83,9 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     private lateinit var processPackage: List<ProcessPackage>
     internal var profile:ImageView?= null
 
+    internal var scannerfab:FloatingActionButton?= null
+    internal var manualfab:FloatingActionButton?= null
+
 
 
     private fun getdata(){
@@ -131,6 +134,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_process_package)
@@ -171,6 +175,9 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         mainmenu_layout = findViewById(R.id.mainmenu_layout)
         alertlayout = findViewById(R.id.alertlayout)
         nopendinglayout = findViewById(R.id.nopendinglayout)
+
+        manualfab = findViewById<FloatingActionButton>(R.id.manualfab)
+        scannerfab = findViewById(R.id.scannerfab)
 
         trackinglist = findViewById(R.id.trackinglist)
         info_button = findViewById(R.id.info_button)
@@ -218,6 +225,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         trackinglist!!.layoutManager = manager
         trackinglist!!.adapter = adapter
+
+
 
 
 
@@ -329,20 +338,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-                   manual_entry!!.setOnClickListener {
 
-                      // onBackPressed()
-
-                       val intent = Intent(this, ManualProcessPackageActivity::class.java)
-                       startActivity(intent)
-                   }
-
-
-                   scanner_entry!!.setOnClickListener {
-
-                       val intent = Intent(this, SimpleScannerActivity::class.java)
-                       startActivity(intent)
-                   }
 
                }
 
@@ -445,6 +441,37 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         }
 
 
+        manual_entry!!.setOnClickListener {
+
+            // onBackPressed()
+
+            val intent = Intent(this, ManualProcessPackageActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        scanner_entry!!.setOnClickListener {
+
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        manualfab?.setOnClickListener {
+
+            val intent = Intent(this, ManualProcessPackageActivity::class.java)
+            startActivity(intent)
+        }
+
+        scannerfab?.setOnClickListener {
+
+
+            val intent = Intent(this, SimpleScannerActivity::class.java)
+            startActivity(intent)
+
+        }
+
+
 
         nextbutton!!.setOnClickListener {
 
@@ -515,7 +542,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             info_layout!!.visibility = View.GONE
         }
 
-        //swipe()
+
+     //   swipe(processPackage)
 
 
 
@@ -530,7 +558,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-    private fun swipe(){
+    private fun swipe(mList: List<ProcessPackage>){
 
 
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(this, trackinglist, false) {
@@ -546,8 +574,25 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                         this@ProcessPackageActivity,
                         R.drawable.ic_baseline_create_24
                     ),
-                    Color.parseColor("#B00020"),
+                    Color.parseColor("#BABABA"),
                     UnderlayButtonClickListener { pos: Int ->
+
+                        for (i in 0 until mList.size){
+
+                            //processDao.deleteProcessPackages(mList.get(i).trackingNumber)
+
+
+
+                            val intent = Intent(this@ProcessPackageActivity, EditPackageActivity::class.java)
+
+                            intent.putExtra("trackingId", mList.get(i).trackingNumber)
+                            intent.putExtra("id", mList.get(i).id)
+                            intent.putExtra("carriername", mList.get(i).carriername)
+
+                            startActivity(intent)
+
+                        }
+
 
 
                         // adapter.modelList.removeAt(pos);
@@ -566,7 +611,73 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
                         // adapter.modelList.removeAt(pos);
-                        adapter!!.notifyItemRemoved(pos)
+                      //  adapter!!.notifyItemRemoved(pos)
+
+
+
+                        val dialog = Dialog(this@ProcessPackageActivity)
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                        dialog.setCancelable(false)
+                        dialog.setContentView(R.layout.info_layout)
+
+                        val ok = dialog.findViewById<TextView>(R.id.oktext)
+                        val cancel = dialog.findViewById<TextView>(R.id.cancel)
+
+
+
+                        //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
+
+                        val lp = WindowManager.LayoutParams()
+                        val window = dialog.window
+                        lp.copyFrom(window!!.attributes)
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+                        val isFinishing = false
+                        window.attributes = lp
+                        dialog.show()
+
+                        cancel.setOnClickListener {
+
+                            dialog.dismiss()
+                        }
+
+
+                        ok.setOnClickListener {
+
+                            for (i in 0 until mList.size){
+
+                                processDao.deleteProcessPackages(mList.get(i).trackingNumber)
+
+                            }
+
+
+                            //arrayList.remove(itemsViewModel)
+
+
+                            dialog.dismiss()
+
+
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
+
+                            /*finish();
+                            startActivity(intent);*/
+                        }
+
+
+
+
+
+
+
+
+
+
+
                     }
                 ))
 
@@ -833,7 +944,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     inner class ProcessAdapter_new(val context : Context, private val mList: List<ProcessPackage>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
 
 
-
+        private val SHOW_MENU = 1
+        private val HIDE_MENU = 2
         // create new views
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProcessAdapter_new.ViewHolder {
             // inflates the card_view_design view
@@ -844,7 +956,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             return ViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
 
 
@@ -853,6 +966,25 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
             holder.trackingNo.text = itemsViewModel.trackingNumber ?: ""
+            holder.carruername.text = itemsViewModel.carriername ?: ""
+
+            if (itemsViewModel.carriername == ""){
+
+                holder.carruername.text = "Carrier Name"
+            }
+            else{
+
+                holder.carruername.text = itemsViewModel.carriername ?: ""
+
+            }
+
+
+
+
+
+
+
+
 
 
 
@@ -879,6 +1011,9 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                     }
                 }
             }
+
+
+
 
 
 
@@ -939,10 +1074,47 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
             holder.create_img.setOnClickListener {
 
-                val intent = Intent(this@ProcessPackageActivity, ManualProcessPackageActivity::class.java)
+                val intent = Intent(this@ProcessPackageActivity, EditPackageActivity::class.java)
+
+                intent.putExtra("trackingId", itemsViewModel.trackingNumber)
+                intent.putExtra("id", itemsViewModel.id.toString())
+                intent.putExtra("carriername", itemsViewModel.carriername)
 
                 startActivity(intent)
             }
+
+
+
+/*
+
+            if (holder.options_layout != null) {
+                holder.options_layout.setOnClickListener(View.OnClickListener {
+                    if (position != RecyclerView.NO_POSITION) {
+                       // remove(itemView.getContext(), getAdapterPosition())
+                    }
+                })
+            }
+
+
+
+
+            holder.swipelayout.setOnActionsListener(object : SwipeActionsListener {
+                override fun onOpen(direction: Int, isContinuous: Boolean) {
+                    if (direction == SwipeLayout.LEFT && isContinuous) {
+
+                        holder.options_layout.visibility = View.VISIBLE
+
+                    }
+
+                }
+
+                override fun onClose() {
+
+                    holder.options_layout.visibility = View.INVISIBLE
+
+                }
+            })
+*/
 
 
         }
@@ -962,11 +1134,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
 
             val trackingNo: TextView = itemView.findViewById(R.id.trackingTV)
+            val carruername: TextView = itemView.findViewById(R.id.carruername)
             val delete_img: ImageView = itemView.findViewById(R.id.delete_img)
             val create_img: ImageView = itemView.findViewById(R.id.create_img)
-            val item_layout: RelativeLayout = itemView.findViewById(R.id.item_layout)
+           val item_layout: RelativeLayout = itemView.findViewById(R.id.item_layout)
 
             val options_layout:LinearLayout = itemView.findViewById(R.id.options_layout)
+          //  val swipelayout:SwipeLayout = itemView.findViewById(R.id.swipelayout)
+
+
 
         }
 

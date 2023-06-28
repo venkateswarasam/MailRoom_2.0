@@ -24,6 +24,16 @@ interface ProcessDao{
     fun deleteProcessPackages(trackingNumber: String?)
 
 
+    @Query("UPDATE ProcessPackage_table SET trackingNumber = :trackingNumber WHERE id = :id")
+    fun updateProcessPackages(id: String?,trackingNumber: String?)
+
+    @Query("UPDATE ProcessPackage_table SET carriername = :carriername WHERE id = :id")
+    fun updateProcessPackageCarrier(id: String?,carriername: String?)
+
+
+
+
+
     @Query("DELETE FROM ProcessPackage_table")
     fun deleteAllProcessPackages()
 

@@ -23,7 +23,11 @@ data class BulkPackage(
     var routeid: String,
 
     @ColumnInfo(name = "binnumber")
-    var binnumber: String
+    var binnumber: String,
+
+    @ColumnInfo(name = "carriername")
+    var carriername: String
+
 )
 
 

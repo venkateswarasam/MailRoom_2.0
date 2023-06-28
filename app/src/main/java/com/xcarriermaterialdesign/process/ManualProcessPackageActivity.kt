@@ -143,7 +143,7 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
                             if (processPackage.isEmpty()){
 
 
-                                processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString()))
+                                processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString(),""))
 
                                  savedata()
                             }
@@ -183,7 +183,7 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
                                         ok.setOnClickListener {
 
-                                            processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString()))
+                                            processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString(),""))
 
 
                                             dialog.dismiss()

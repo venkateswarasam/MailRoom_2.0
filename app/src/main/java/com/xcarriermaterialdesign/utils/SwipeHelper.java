@@ -236,7 +236,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
             if (!animate) {
                 // Draw Text
 //                p.setColor(Color.BLACK);
-                p.setColor(textColor);
+               /* p.setColor(textColor);
                 p.setTextSize(16);
                 Rect r = new Rect();
                 float cHeight = rect.height();
@@ -244,11 +244,11 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
                 p.setTextAlign(Paint.Align.LEFT);
                // p.getTextBounds(text, 0, text.length(), r);
                 float x = cWidth / 2f - r.width() / 2f - r.left;
-                float y = cHeight / 2f + r.height() / 2f - r.bottom - 40;
+                float y = cHeight / 2f + r.height() / 2f - r.bottom - 40;*/
 //                canvas.drawText(text, rect.left + x, rect.top + y, p);
 
                 if (imageResId != null) {
-                    imageResId.setBounds((int) (rect.left + 50), (int) (rect.top + (cHeight / 2f)), (int) (rect.right - 50), (int) (rect.bottom - ((cHeight / 10f))));
+                    imageResId.setBounds((int) (rect.left + 50), (int) (rect.top + (rect.height() / 2f)), (int) (rect.right - 50), (int) (rect.bottom - ((rect.height() / 10f))));
                     imageResId.draw(canvas);
                 }
 

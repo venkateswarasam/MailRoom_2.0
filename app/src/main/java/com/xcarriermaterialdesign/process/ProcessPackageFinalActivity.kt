@@ -377,7 +377,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
                 bulkDao.insertBulkPackage(BulkPackage(element.trackingNumber,packagestatus, date,binding.routeText.text.toString(),
-                    binding.bin.text.toString()))
+                    binding.bin.text.toString(),element.carriername))
 
             }
 
