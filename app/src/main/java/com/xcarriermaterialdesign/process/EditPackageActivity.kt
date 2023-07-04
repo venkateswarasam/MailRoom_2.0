@@ -139,16 +139,36 @@ class EditPackageActivity : AppCompatActivity() {
         profile?.setOnClickListener {
 
 
+            if (edit_text.text.toString() == ""){
 
-            processDao.updateProcessPackages(id,edit_text.text.toString())
-            processDao.updateProcessPackageCarrier(id, dropdownItem.text.toString())
+                Toast.makeText(this, "Please enter tracking number", Toast.LENGTH_SHORT).show()
+            }
 
-           // processDao.insertProcessPackage(ProcessPackage(edi))
+            else if (dropdownItem.text.toString() == ""){
 
 
-            val intent = Intent(this, ProcessPackageActivity::class.java)
+                Toast.makeText(this, "Please select Carrier", Toast.LENGTH_SHORT).show()
 
-            startActivity(intent)
+
+            }
+
+            else{
+
+
+
+                processDao.updateProcessPackages(id,edit_text.text.toString())
+                processDao.updateProcessPackageCarrier(id, dropdownItem.text.toString())
+
+
+
+                val intent = Intent(this, ProcessPackageActivity::class.java)
+
+                startActivity(intent)
+            }
+
+
+
+
 
 
         }
