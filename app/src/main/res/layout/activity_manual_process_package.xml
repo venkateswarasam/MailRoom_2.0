@@ -79,8 +79,12 @@
             android:id="@+id/edit_text"
             android:textSize="13.82sp"
             android:padding="3dp"
-            android:inputType="textEmailAddress"
+            android:singleLine="true"
 
+
+            android:imeOptions="actionDone"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+            android:inputType="textFilter"
 
             android:textColor="@color/black"
 

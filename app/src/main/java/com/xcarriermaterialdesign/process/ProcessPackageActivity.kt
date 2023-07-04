@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
@@ -22,15 +22,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcarriermaterialdesign.R
-import com.xcarriermaterialdesign.adapter.CourseAdapter
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
 import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.utils.*
 import com.xcarriermaterialdesign.utils.SwipeHelper.UnderlayButtonClickListener
-import com.zerobranch.layout.SwipeLayout
-import com.zerobranch.layout.SwipeLayout.SwipeActionsListener
 import java.lang.reflect.Type
 
 
@@ -86,6 +83,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     internal var scannerfab:FloatingActionButton?= null
     internal var manualfab:FloatingActionButton?= null
 
+    private val p = Paint()
 
 
     private fun getdata(){
@@ -226,6 +224,12 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         trackinglist!!.layoutManager = manager
         trackinglist!!.adapter = adapter
 
+        //item touch helper
+
+       /* val callback: ItemTouchHelper.Callback = ItemMoveCallback(mAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(trackinglist)
+*/
 
 
 
@@ -546,6 +550,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
      //   swipe(processPackage)
 
 
+       // enableSwipe()
+
 
     }
 
@@ -555,6 +561,90 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
     // swipe helper
+
+
+/*
+    private fun enableSwipe() {
+        val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                if (direction == ItemTouchHelper.LEFT) {
+
+                } else {
+
+                }
+            }
+
+            fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView?,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val icon: Bitmap
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val height = itemView.bottom.toFloat() - itemView.top.toFloat()
+                    val width = height / 3
+                    if (dX > 0) {
+                        p.setColor(Color.parseColor("#388E3C"))
+                        val background = RectF(
+                            itemView.left.toFloat(),
+                            itemView.top.toFloat(), dX, itemView.bottom.toFloat()
+                        )
+                        c.drawRect(background, p)
+                        icon = BitmapFactory.decodeResource(resources, R.drawable.ic_outline_delete_outline_24)
+                        val icon_dest = RectF(
+                            itemView.left.toFloat() + width,
+                            itemView.top
+                                .toFloat() + width,
+                            itemView.left.toFloat() + 2 * width,
+                            itemView.bottom
+                                .toFloat() - width
+                        )
+                        c.drawBitmap(icon, null, icon_dest, p)
+                    } else {
+                        p.setColor(Color.parseColor("#D32F2F"))
+                        val background = RectF(
+                            itemView.right.toFloat() + dX,
+                            itemView.top.toFloat(), itemView.right.toFloat(),
+                            itemView.bottom.toFloat()
+                        )
+                        c.drawRect(background, p)
+                        icon = BitmapFactory.decodeResource(resources, R.drawable.ic_baseline_create_24)
+                        val icon_dest = RectF(
+                            itemView.right.toFloat() - 2 * width,
+                            itemView.top
+                                .toFloat() + width,
+                            itemView.right.toFloat() - width,
+                            itemView.bottom
+                                .toFloat() - width
+                        )
+                        c.drawBitmap(icon, null, icon_dest, p)
+                    }
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView!!, viewHolder, dX, dY, actionState, isCurrentlyActive
+                )
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(trackinglist)
+    }
+*/
 
 
 
@@ -689,6 +779,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         itemTouchHelper.attachToRecyclerView(trackinglist)
 
     }
+
+
 
 
 
@@ -988,6 +1080,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
+
             holder.item_layout.setOnClickListener {
 
                 when(adaptercount){
@@ -1011,6 +1104,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                     }
                 }
             }
+
 
 
 

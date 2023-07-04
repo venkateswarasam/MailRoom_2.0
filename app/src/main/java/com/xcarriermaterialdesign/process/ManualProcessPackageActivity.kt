@@ -12,26 +12,26 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
 import com.xcarriermaterialdesign.utils.*
 import java.lang.reflect.Type
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
@@ -56,7 +56,12 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
     private val EXTRA_SCANNERINPUTPLUGIN = "com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN"
     private val ACTION_DATAWEDGE = "com.symbol.datawedge.api.ACTION"
 
-    override fun onBackPressed() {
+   override fun onBackPressed() {
+
+
+        val intent = Intent(this, BottomNavigationActivity::class.java)
+
+        startActivity(intent)
 
         finish()
     }
@@ -92,7 +97,12 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setNavigationOnClickListener {
 
+            val intent = Intent(this, BottomNavigationActivity::class.java)
+
+            startActivity(intent)
+
             finish()
+
         }
 
         val db = Room.databaseBuilder(
@@ -111,15 +121,131 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
          filledtextfiled = findViewById<EditText>(R.id.edit_text)
 
+
+        filledtextfiled?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Some logic here.
+
+
+                val input_text = filledtextfiled?.text.toString()
+
+                when(input_text){
+
+                    ""->{
+
+                        playNotificationSound()
+
+                        info_layout?.visibility = View.VISIBLE
+
+                    }
+
+
+
+                    else->{
+
+
+
+
+                        processPackage = processDao.isData(filledtextfiled?.text.toString())
+
+                        if (processPackage.isEmpty()){
+
+
+                            processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString(),""))
+
+                            savedata()
+                        }
+
+                        else{
+
+
+                            for (i in processPackage.indices){
+
+                                if (processPackage[i].trackingNumber == filledtextfiled?.text.toString()){
+
+                                    playNotificationSound()
+
+                                    val dialog = Dialog(this@ManualProcessPackageActivity)
+                                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                                    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                                    dialog.setCancelable(false)
+                                    dialog.setContentView(R.layout.info_layout_new)
+
+                                    val ok = dialog.findViewById<TextView>(R.id.oktext)
+                                    val cancel = dialog.findViewById<TextView>(R.id.cancel)
+
+                                    val info_msg = dialog.findViewById<TextView>(R.id.info_msg)
+
+                                    info_msg.text = "This barcode already scanned.Do you want to continue?"
+
+
+                                    val lp = WindowManager.LayoutParams()
+                                    val window = dialog.window
+                                    lp.copyFrom(window!!.attributes)
+                                    lp.width = WindowManager.LayoutParams.MATCH_PARENT
+                                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+                                    val isFinishing = false
+                                    window.attributes = lp
+                                    dialog.show()
+
+                                    ok.setOnClickListener {
+
+                                        processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString(),""))
+
+
+                                        dialog.dismiss()
+
+                                        savedata()
+
+                                    }
+
+                                    cancel.setOnClickListener {
+
+                                        dialog.dismiss()
+                                    }
+
+
+
+                                }
+
+                            }
+
+
+
+                        }
+
+                    }
+                }
+
+
+
+                true // Focus will do whatever you put in the logic.
+            } else false
+            // Focus will change according to the actionId
+        })
+
+
+
+
+
+
+
+
+
+
+
+/*
         filledtextfiled!!.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
 
 
+            when(event.action){
+
+                KeyEvent.KEYCODE_NAVIGATE_NEXT->{
 
 
-                if (event.action == KeyEvent.ACTION_UP) {
 
 
-                    //Perform Code
 
                     val input_text = filledtextfiled?.text.toString()
 
@@ -145,7 +271,7 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
                                 processDao.insertProcessPackage(ProcessPackage(filledtextfiled?.text.toString(),""))
 
-                                 savedata()
+                                savedata()
                             }
 
                             else{
@@ -210,55 +336,48 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
                         }
                     }
 
+                }
 
+                KeyEvent.KEYCODE_BACKSLASH->{
 
+                    val intent = Intent(this, BottomNavigationActivity::class.java)
 
+                    startActivity(intent)
 
+                    finish()
 
+                }
 
+                KeyEvent.KEYCODE_BACK->{
 
+                    val intent = Intent(this, BottomNavigationActivity::class.java)
 
+                    startActivity(intent)
 
+                    finish()
 
+                }
 
+*/
+/*
+                KeyEvent.FLAG_FALLBACK->{
 
+                    val intent = Intent(this, BottomNavigationActivity::class.java)
 
+                    startActivity(intent)
 
+                    finish()
 
-
-
-
-
-
-
-
-
-
-
-
-                /*    courseModalArrayList!!.add(
-                        CourseModal(
-                            filledtextfiled!!.text.toString(),
-                        )
-                    )*/
-
-
-
-
-
-                  /*  val intent = Intent(this, ProcessPackageActivity::class.java)
-                 //  intent.putExtra("list", courseModalArrayList)
-                    startActivity(intent)*/
-
-                    return@OnKeyListener true
-
-
-
-
+                }
+*//*
 
             }
+
+
+
             false
         })
+*/
 
         ok_text?.setOnClickListener {
 

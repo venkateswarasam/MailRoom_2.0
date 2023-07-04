@@ -58,7 +58,8 @@
             android:id="@+id/edit_text"
             android:textSize="13.82sp"
             android:padding="3dp"
-            android:inputType="textEmailAddress"
+            android:inputType="textFilter"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
 
             android:textColor="@color/black"
