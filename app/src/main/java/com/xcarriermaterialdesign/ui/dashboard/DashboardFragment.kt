@@ -385,6 +385,16 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
             }
 
+            else if (itemsViewModel.carriername == "UPS"){
+
+                //   holder.status.setTextColor(Color.parseColor("#007CBB"))
+
+                holder.pen_image.setImageResource(R.drawable.ups)
+
+            }
+
+
+
 
             else{
 
