@@ -48,13 +48,10 @@ class ForgotPassword : AppCompatActivity() {
 
             val intent = Intent(this, WebActvity::class.java)
 
+            //startActivity(intent)
+
             startActivity(intent)
         }
-
-
-
-
-
 
 
     }
