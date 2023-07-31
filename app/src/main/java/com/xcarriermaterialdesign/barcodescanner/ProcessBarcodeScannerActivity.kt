@@ -21,8 +21,6 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.xcarriermaterialdesign.R
-import com.xcarriermaterialdesign.process.ProcessPackageActivity
-import com.xcarriermaterialdesign.process.ProcessPackageFinalActivity
 import java.io.IOException
 
 class ProcessBarcodeScannerActivity : AppCompatActivity() {

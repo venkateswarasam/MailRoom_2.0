@@ -92,7 +92,7 @@ class AnalyticsApplication : Application() {
 
 
         current = Locale("en_IN")
-       TypefaceUtil.overrideFont(applicationContext, "SERIF", "fonts/opensans.ttf")
+        TypefaceUtil.overrideFont(applicationContext, "SERIF", "fonts/opensans.ttf")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             configuration.setLocale(current)
             val localeList = LocaleList(current)

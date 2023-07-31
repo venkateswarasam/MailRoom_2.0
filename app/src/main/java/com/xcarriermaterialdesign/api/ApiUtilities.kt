@@ -8,8 +8,11 @@ object ApiUtilities {
 
     fun getInstance(): Retrofit
     {
-        return Retrofit.Builder().baseUrl("").addConverterFactory(
-            MoshiConverterFactory.create()).build()
+        return Retrofit.Builder().baseUrl("https://mailroom-dev.myxcarrier.com/MobileAppService/api/")
+           // .addConverterFactory(ScalarsConverterFactory.create())
+          //  .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+
+            .addConverterFactory(MoshiConverterFactory.create()).build()
     }
 
 }

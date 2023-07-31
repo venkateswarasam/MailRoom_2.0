@@ -1,5 +1,6 @@
 package com.xcarriermaterialdesign.pending
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -570,6 +571,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
             return ViewHolder(v)
         }
 
+        @SuppressLint("SuspiciousIndentation")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
           holder.textViewName.text = names[position].trackingNumber
 

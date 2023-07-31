@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -28,9 +29,35 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.common.api.*
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.xcarriermaterialdesign.activities.dashboard.DashboardViewModel
 import com.xcarriermaterialdesign.databinding.ActivityBottomNavigationBinding
+import com.xcarriermaterialdesign.model.ConfigRequest
+import com.xcarriermaterialdesign.model.ConfigResponse
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.ApplicationSharedPref
+import com.xcarriermaterialdesign.utils.LoadingView
+import com.xcarriermaterialdesign.utils.ServiceDialog
 import java.util.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.xcarriermaterialdesign.activities.settings.SettingsActivity
+import com.xcarriermaterialdesign.dbmodel.CarrierDao
+import com.xcarriermaterialdesign.dbmodel.CarrierPackage
+import com.xcarriermaterialdesign.dbmodel.LocationDao
+import com.xcarriermaterialdesign.dbmodel.LocationPackage
+import com.xcarriermaterialdesign.dbmodel.ReasonDao
+import com.xcarriermaterialdesign.dbmodel.ReasonPackage
+import com.xcarriermaterialdesign.dbmodel.StatusDao
+import com.xcarriermaterialdesign.dbmodel.StatusPackage
+import com.xcarriermaterialdesign.dbmodel.StorageLocationDao
+import com.xcarriermaterialdesign.dbmodel.StorageLocationPackage
+import com.xcarriermaterialdesign.model.Reason
+import com.xcarriermaterialdesign.model.Statuse
+import com.xcarriermaterialdesign.model.StorageLocation
+import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class BottomNavigationActivity : AppCompatActivity() {
@@ -49,6 +76,19 @@ class BottomNavigationActivity : AppCompatActivity() {
     private var mRequestingLocationUpdates: Boolean? = null
 
 
+    val model: DashboardViewModel by viewModels()
+
+    private lateinit var StatusDao: StatusDao
+
+
+    private lateinit var carrierDao: CarrierDao
+    private lateinit var reasonDao: ReasonDao
+    private lateinit var storageLocationDao: StorageLocationDao
+    private lateinit var locationDao: LocationDao
+
+
+
+
 
     var status:Status?= null
     private val neededPermissions = arrayOf(
@@ -62,9 +102,12 @@ class BottomNavigationActivity : AppCompatActivity() {
 
        // startService(Intent(applicationContext, NetWorkService::class.java))
 
+        ApplicationSharedPref.init(this)
 
         binding = ActivityBottomNavigationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        model.config(this)
 
 
         AnalyticsApplication.instance?.setPlantId("")
@@ -96,7 +139,21 @@ class BottomNavigationActivity : AppCompatActivity() {
         enable()
 
 
+        val db = Room.databaseBuilder(
+            applicationContext,
+            ProcessDatabase::class.java, "Process_database"
+        ).allowMainThreadQueries().build()
 
+
+        StatusDao = db.statusDao()
+
+        reasonDao = db.reasonDao()
+
+        locationDao = db.locationDao()
+
+        storageLocationDao = db.storageLocationDao()
+
+        carrierDao = db.carrierDao()
 
 
 
@@ -129,12 +186,246 @@ class BottomNavigationActivity : AppCompatActivity() {
 
 
 
+        model.configResponse.observe(this, Observer<ConfigResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            if (item.StatusCode == 200) {
+
+
+                //Toast.makeText(this,"Forgot Successful", Toast.LENGTH_SHORT).show()
+
+
+
+                lifecycleScope.launch(Dispatchers.IO) {
+
+                    //  val test = item.Result.Success.StatusData.Statuses
+
+                    val statusPList: List<StatusPackage> =
+                        convertJsonToStatusEntity(item.Result.Statuses)
+
+                    if (statusPList.isNotEmpty()) {
+                        StatusDao.deleteStatusPackage()
+                    }
+                    StatusDao.insertStatusPackage(statusPList)
+
+
+
+                    // carrier list
+
+
+                    val carrierPList: List<CarrierPackage> =
+                        convertJsonToCarrierEntity(item.Result.Carriers)
+
+                    if (carrierPList.isNotEmpty()) {
+                        carrierDao.deleteCarrierPackage()
+                    }
+                    carrierDao.insertCarrierPackage(carrierPList)
+
+
+                    // reasons list
+
+                    val reasonPList: List<ReasonPackage> =
+                        convertJsonToReasonsEntity(item.Result.Reasons)
+
+                    if (reasonPList.isNotEmpty()) {
+                        reasonDao.deleteReasonPackage()
+                    }
+                    reasonDao.insertReasonPackage(reasonPList)
+
+
+
+                    //storage locations
+
+                    val storagelocationPList: List<StorageLocationPackage> =
+                        convertJsonToStoragelocationEntity(item.Result.StorageLocations)
+
+                    if (storagelocationPList.isNotEmpty()) {
+                        storageLocationDao.deleteStorageLocationPackage()
+                    }
+                    storageLocationDao.insertStorageLocationPackage(storagelocationPList)
+
+                    //locations
+
+                    val locationsPList: List<LocationPackage> =
+                        convertJsonToLocationEntity(item.Result.Locations)
+
+                    if (locationsPList.isNotEmpty()) {
+                        locationDao.deleteLocationPackage()
+                    }
+                    locationDao.insertLocationPackage(locationsPList)
+
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                return@Observer
+
+            }
+
+            else{
+
+                ServiceDialog.ShowDialog(this, getString(R.string.servererror))
+
+
+                /*SweetAlertDialog(
+                    this,
+                    SweetAlertDialog.ERROR_TYPE
+                ).setTitleText("Error").setContentText(item.Message)
+                    .show()*/
+
+                return@Observer
+            }
+
+
+
+
+
+
+        })
+
+
+
+
+        val configRequest = ConfigRequest(ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+            ApplicationSharedPref.read(ApplicationSharedPref.MS_EMAIL,"")!!,
+            ApplicationSharedPref.read(ApplicationSharedPref.MS_PASSWORD,"")!!,
+            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!
+        )
+
+        model.configinformation(configRequest)
+
+
+        /*val refreshRequest = RefreshRequest(ApplicationSharedPref.read(ApplicationSharedPref.REFRESH_TOKEN,"")!!)
+
+        model.refresh(refreshRequest)*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
         //  initActionBar()
     }
+
+
+    private fun convertJsonToStatusEntity(josnReceiver: List<Statuse>): List<StatusPackage> {
+        var statusPackageList: MutableList<StatusPackage> = ArrayList()
+        for (statuseX in josnReceiver) {
+
+            var statusP = StatusPackage(
+                StatusDescription = statuseX.StatusDescription ?: "",
+                StatusCode = statuseX.StatusCode ?: ""
+            )
+            statusPackageList.add(statusP)
+        }
+        return statusPackageList
+    }
+
+
+    private fun convertJsonToCarrierEntity(josnReceiver: List<com.xcarriermaterialdesign.model.Carrier>): List<CarrierPackage> {
+        var statusPackageList: MutableList<CarrierPackage> = ArrayList()
+        for (statuseX in josnReceiver) {
+
+            var statusP = CarrierPackage(
+                CarrierDescription = statuseX.CarrierDescription ?: "",
+                CarrierId = statuseX.CarrierId ?: ""
+            )
+            statusPackageList.add(statusP)
+        }
+        return statusPackageList
+    }
+
+
+
+
+
+    private fun convertJsonToReasonsEntity(josnReceiver: List<Reason>): List<ReasonPackage> {
+        var statusPackageList: MutableList<ReasonPackage> = ArrayList()
+        for (statuseX in josnReceiver) {
+
+            var statusP = ReasonPackage(
+                ReasonId = statuseX.ReasonId ?: "",
+                ReasonDescription = statuseX.ReasonDescription ?: ""
+            )
+            statusPackageList.add(statusP)
+        }
+        return statusPackageList
+    }
+
+
+
+    private fun convertJsonToStoragelocationEntity(josnReceiver: List<StorageLocation>): List<StorageLocationPackage> {
+        var statusPackageList: MutableList<StorageLocationPackage> = ArrayList()
+        for (statuseX in josnReceiver) {
+
+            var statusP = StorageLocationPackage(
+                StorageLocationDescription = statuseX.StorageLocationDescription ?: "",
+                StorageLocationId = statuseX.StorageLocationId ?: ""
+            )
+            statusPackageList.add(statusP)
+        }
+        return statusPackageList
+    }
+
+
+    private fun convertJsonToLocationEntity(josnReceiver: List<com.xcarriermaterialdesign.model.Location>): List<LocationPackage> {
+        var statusPackageList: MutableList<LocationPackage> = ArrayList()
+        for (statuseX in josnReceiver) {
+
+            var statusP = LocationPackage(
+                LocationId = statuseX.LocationId ?: "",
+                LocationName = (statuseX.LocationName ?: "")
+            )
+            statusPackageList.add(statusP)
+        }
+        return statusPackageList
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

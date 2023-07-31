@@ -13,24 +13,29 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.xcarriermaterialdesign.R
-import com.xcarriermaterialdesign.SettingsActivity
-import com.xcarriermaterialdesign.barcodescanner.BarcodeScannerActivity
+import com.xcarriermaterialdesign.activities.settings.SettingsActivity
 import com.xcarriermaterialdesign.databinding.FragmentDashboardBinding
+import com.xcarriermaterialdesign.model.LstResponse
+import com.xcarriermaterialdesign.model.PendingRequest
+import com.xcarriermaterialdesign.model.PendingResponse
 import com.xcarriermaterialdesign.pending.PendingDeliveriesActvity
-import com.xcarriermaterialdesign.process.ManualProcessPackageActivity
+import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.*
-import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.trackreport.TrackReportActivty
-import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.ApplicationSharedPref
+import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
-import java.text.DateFormat
+import com.xcarriermaterialdesign.utils.ServiceDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,6 +56,12 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
     lateinit var rowlist:List<BulkPackage>
 
+    var lastDays = ""
+
+    val model: DashboardViewModel by viewModels()
+
+
+    private val ctegroieslist: MutableList<LstResponse> = mutableListOf()
 
 
     override fun onCreateView(
@@ -63,6 +74,8 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        model.config(activity as AppCompatActivity)
 
         (activity as AppCompatActivity).supportActionBar?.hide()
 
@@ -96,7 +109,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         processDao = db.processDao()
         bulkDao = db.bulkDao()
 
-        if (bulkDao.getAllBulkPackages().isEmpty()){
+     /*   if (bulkDao.getAllBulkPackages().isEmpty()){
 
 
             binding.pendingimage.visibility = View.VISIBLE
@@ -108,13 +121,13 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         if (bulkDao.getAllBulkPackages().size > 50){
 
             binding.loadmore.visibility = View.VISIBLE
-        }
+        }*/
 
 
         binding.loadmore.setOnClickListener {
 
 
-            bulkDao.getAllBulkPackages()
+           /* bulkDao.getAllBulkPackages()
 
             adapter =
                 ProcessAdapter_new((activity as AppCompatActivity), bulkDao.getAllBulkPackages())
@@ -123,13 +136,13 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
             binding.pendinglist!!.setHasFixedSize(true)
 
             binding.pendinglist!!.layoutManager = manager
-            binding.pendinglist!!.adapter = adapter
+            binding.pendinglist!!.adapter = adapter*/
 
         }
 
        // AnalyticsApplication.instance?.setPlantId("")
 
-        if (AnalyticsApplication.instance?.getPlantId()?.isNotEmpty()!!){
+    /*    if (AnalyticsApplication.instance?.getPlantId()?.isNotEmpty()!!){
 
 
 
@@ -166,6 +179,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
             binding.pendinglist!!.adapter = adapter
 
         }
+*/
 
 
 
@@ -174,13 +188,6 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
 
-        val check = false
-
-        if (!check){
-
-            //initactionbar()
-
-        }
 
         binding.fab.setOnClickListener {
 
@@ -316,17 +323,110 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         }
 
 
-       // initactionbar()
+        lastDays = model.getBeforeDate(true,true,true,6)
 
 
-      //  (activity as AppCompatActivity).supportActionBar?.title = "Example 1"
+        val pendingRequest = PendingRequest("",
+            ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+            lastDays,"",
+            ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!.toInt(),
+            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,"","","", SimpleDateFormat("yyyy-MM-dd").format(Date()),1)
+
+        model.loadingpendingdeliveries(pendingRequest)
+
+        // response
+
+        model.pendingResponse.observe(this, Observer<PendingResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            println("==list==${item}")
+
+
+
+
+
+            if (item.StatusCode == 200){
+
+                println("==list==${item.Result.lstResponse}")
+
+//                Toast.makeText(activity as AppCompatActivity, item.Result.TotalCount, Toast.LENGTH_SHORT).show()
+
+
+                if (item.Result.lstResponse.isNotEmpty()){
+
+
+                    adapter = ProcessAdapter_new(activity as AppCompatActivity, item.Result.lstResponse)
+
+
+
+                    val manager = LinearLayoutManager((activity as AppCompatActivity))
+                    binding.pendinglist!!.setHasFixedSize(true)
+
+                    binding.pendinglist!!.layoutManager = manager
+                    binding.pendinglist!!.adapter = adapter
+
+
+                }
+
+
+                else{
+
+                    binding.pendingimage.visibility = View.VISIBLE
+                    binding.pendingtext.visibility = View.VISIBLE
+                    binding.pendinglist.visibility = View.GONE
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+            else{
+
+                ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
+            }
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return root
     }
 
 
 
-    inner class ProcessAdapter_new(val context : Context, private val mList: List<BulkPackage>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
+    inner class ProcessAdapter_new(val context : Context, private val mList: List<LstResponse>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
 
 
 
@@ -349,8 +449,8 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
             val itemsViewModel = mList[position]
 
 
-            holder.trackingNo.text = itemsViewModel.trackingNumber ?: ""
-            holder.status.text = itemsViewModel.packagestatus ?: ""
+            holder.trackingNo.text = itemsViewModel.InternalTrackNo ?: ""
+            holder.status.text = itemsViewModel.CurrentStatus ?: ""
 
           //  val df: DateFormat = SimpleDateFormat("EEE MMM d yyyy • HH:mm aa")
 
@@ -358,17 +458,17 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
             val date: String = enDate.format(Calendar.getInstance().time)*/
 
-            holder.dateandtime.text = itemsViewModel.datetime
+            holder.dateandtime.text = itemsViewModel.UpdatedOn
 
 
 
 
-            if (itemsViewModel.carriername == "DHL"){
+            if (itemsViewModel.CarrierDescription == "DHL"){
 
                 holder.pen_image.setImageResource(R.drawable.dhll)
             }
 
-            else if (itemsViewModel.carriername == "USPS"){
+            else if (itemsViewModel.CarrierDescription == "USPS"){
 
             //    holder.status.setTextColor(Color.parseColor("#007CBB"))
 
@@ -377,7 +477,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
             }
 
 
-            else if (itemsViewModel.carriername == "FedEx"){
+            else if (itemsViewModel.CarrierDescription == "FedEx"){
 
              //   holder.status.setTextColor(Color.parseColor("#007CBB"))
 
@@ -385,7 +485,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
             }
 
-            else if (itemsViewModel.carriername == "UPS"){
+            else if (itemsViewModel.CarrierDescription == "UPS"){
 
                 //   holder.status.setTextColor(Color.parseColor("#007CBB"))
 
@@ -411,7 +511,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
             holder.trackinglayout.setOnClickListener {
 
                 val intent = Intent(context, TrackReportActivty::class.java)
-                intent.putExtra("trackingno", itemsViewModel.trackingNumber)
+                intent.putExtra("trackingno", itemsViewModel.InternalTrackNo)
 
                 startActivity(intent)
             }

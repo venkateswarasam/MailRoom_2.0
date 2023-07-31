@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <item
+        android:id="@+id/header2"
+        android:title="@string/take_photo" />
+
+    <item
+        android:id="@+id/header3"
+        android:title="@string/choose_from_gallery" />
+
+    <item
+        android:id="@+id/header4"
+        android:title="@string/cancel" />
+
+</menu>

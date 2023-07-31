@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+   >
+
+
+
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 
     <LinearLayout
         android:layout_centerInParent="true"
@@ -90,7 +100,7 @@
 
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_text"
+                android:id="@+id/emailtext"
                 android:textSize="13.82sp"
                 android:padding="3dp"
                 android:inputType="textEmailAddress"
@@ -183,6 +193,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="3dp"
+                android:id="@+id/password"
                 android:inputType="textPassword"
 
 
@@ -268,7 +279,6 @@
             android:textColor="#DE000000"
             android:textStyle="normal"
             android:textSize="11.8sp"
-            android:layout_marginBottom="40dp"
             android:gravity="center"
             android:height="16dp"
             android:layout_height="wrap_content"
@@ -277,7 +287,27 @@
             android:text="@string/elemica_com"
             android:width="74dp" />
 
+        <TextView
+
+            android:fontFamily="@font/open_sans"
+
+            android:id="@+id/version"
+            android:textColor="#99000000"
+            android:textStyle="normal"
+            android:textSize="10.8sp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.35"
+            android:text="v1.0.1"
+            android:width="74dp" />
+
     </LinearLayout>
 
 
+    </androidx.core.widget.NestedScrollView>
+
+
 </RelativeLayout>
+
+</layout>

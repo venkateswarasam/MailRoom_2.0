@@ -5,8 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".HomeActvity">
+    android:orientation="vertical">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -175,6 +178,7 @@
 
 
     <TextView
+        android:layout_marginBottom="60dp"
         android:id="@+id/manual_package"
         android:layout_width="fill_parent"
 
@@ -195,6 +199,9 @@
         android:textStyle="bold" />
 
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
 
     <RelativeLayout

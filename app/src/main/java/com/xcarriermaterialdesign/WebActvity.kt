@@ -1,5 +1,6 @@
 package com.xcarriermaterialdesign
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebView
@@ -9,6 +10,7 @@ class WebActvity : AppCompatActivity() {
 
     internal var webview: WebView?= null
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web_actvity)
@@ -19,7 +21,7 @@ class WebActvity : AppCompatActivity() {
         webview = findViewById(R.id.webview)
 
 
-        webview!!.settings.setJavaScriptEnabled(true)
+        webview!!.settings.javaScriptEnabled = true
 
         webview!!.webViewClient = object : WebViewClient() {
             @Deprecated("Deprecated in Java")

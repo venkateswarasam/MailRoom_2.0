@@ -1,0 +1,32 @@
+package com.xcarriermaterialdesign.model
+
+data class MobileUserInfoXX(
+    val AddressLine1: String,
+    val AddressLine2: String,
+    val AddressLine3: String,
+    val BuildingNo: String,
+    val City: String,
+    val CompanyId: String,
+    val Country: String,
+    val CustomerName: String,
+    val Department: String,
+    val Designation: String,
+    val Email: String,
+    val EmployeeId: String,
+    val Fax: String,
+    val FirstName: String,
+    val LastName: String,
+    val LoginId: Int,
+    val MailStop: String,
+    val Password: String,
+    val Phone: String,
+    val PlantId: String,
+    val PlantName: String,
+    val ProfileImage: String,
+    val RoleId: Int,
+    val State: String,
+    val UserAlias: String,
+    val UserName: String,
+    val UserRole: String,
+    val ZipCode: String
+)

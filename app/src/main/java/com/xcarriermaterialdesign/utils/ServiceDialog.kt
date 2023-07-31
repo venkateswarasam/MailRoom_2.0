@@ -30,6 +30,13 @@ object ServiceDialog{
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.servicedialog)
 
+        val header_title = dialog.findViewById<TextView>(R.id.header_title)
+        val oktext = dialog.findViewById<TextView>(R.id.oktext)
+
+
+
+        header_title.text = message
+
 
 
         //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
@@ -42,6 +49,11 @@ object ServiceDialog{
         val isFinishing = false
         window.attributes = lp
         dialog.show()
+
+        oktext.setOnClickListener {
+
+            dialog.dismiss()
+        }
 
     }
 

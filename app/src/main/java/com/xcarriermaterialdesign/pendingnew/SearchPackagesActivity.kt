@@ -20,13 +20,12 @@ import androidx.room.Room
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.ActivitySearchPackagesBinding
 import com.xcarriermaterialdesign.pending.PendingDeliveriesActvity
-import com.xcarriermaterialdesign.process.ManualProcessPackageActivity
+import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.BulkDao
 import com.xcarriermaterialdesign.roomdatabase.BulkPackage
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
-import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
-import com.xcarriermaterialdesign.ui.dashboard.DashboardFragment
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
 
 class SearchPackagesActivity : AppCompatActivity() {
