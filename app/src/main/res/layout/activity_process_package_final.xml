@@ -11,7 +11,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".process.ProcessPackageFinalActivity">
+    tools:context=".activities.processfinal.ProcessPackageFinalActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -127,6 +127,8 @@
 
 
 
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_marginTop="20dp"
                 android:id="@+id/reason_lay"
@@ -143,6 +145,7 @@
 
                 <!--this is the actual edit text which takes the input-->
                 <AutoCompleteTextView
+
                     android:fontFamily="@font/open_sans"
 
                     android:padding="10dp"
@@ -173,6 +176,36 @@
                 android:lineSpacingMultiplier="1.35"
                 android:text="*Required"
                 android:width="296dp" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="20dp"
+                android:id="@+id/stoargelay"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
+
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:hint="@string/storage_loc">
+
+                <!--this is the actual edit text which takes the input-->
+                <AutoCompleteTextView
+                    android:fontFamily="@font/open_sans"
+                    android:padding="10dp"
+                    android:background="@null"
+                    android:id="@+id/storage_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/black"
+                    android:textSize="13.82sp"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <RelativeLayout
                 android:visibility="gone"
@@ -387,9 +420,13 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:visibility="gone"
 
+
+
+
+            <RelativeLayout
+
+                android:visibility="gone"
 
                 android:id="@+id/storage"
 
@@ -405,17 +442,20 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
                     android:layout_height="wrap_content"
                     android:hint="@string/storage_loc">
 
                     <!--this is the actual edit text which takes the input-->
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
                         android:textSize="13.82sp"
                         android:padding="10dp"
                         android:id="@+id/storagetext"
                         android:fontFamily="@font/open_sans"
+                        android:inputType="none"
+
 
 
                         android:textColor="@color/black"

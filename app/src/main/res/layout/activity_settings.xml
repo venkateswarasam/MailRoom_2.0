@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -60,8 +66,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileimage"
+                app:civ_border_color="@color/purple_200"
                 android:src="@drawable/account_circle_blue"
                 android:layout_width="33.33dp"
                 android:layout_height="33.33dp"/>
@@ -1480,7 +1487,6 @@
             android:id="@+id/savechanges"
             android:layout_marginTop="32dp"
 
-            android:layout_marginBottom="72dp"
 
             android:layout_marginStart="49dp"
             android:layout_marginEnd="48dp"
@@ -1530,6 +1536,26 @@
         </LinearLayout>
 
 
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="72dp"
+
+            android:layout_marginEnd="10dp"
+
+            android:fontFamily="@font/open_sans"
+
+            android:id="@+id/version"
+            android:textColor="#99000000"
+            android:textStyle="normal"
+            android:textSize="10.8sp"
+            android:gravity="end"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:lineSpacingMultiplier="1.35"
+            android:text="v1.0.1"
+            android:width="74dp" />
+
+
 
         <RelativeLayout
 
@@ -1555,7 +1581,8 @@
 
                 android:src="@drawable/ic_baseline_save_24"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                tools:ignore="NotSibling" />
 
             <TextView
                 android:layout_marginStart="15dp"
@@ -1579,6 +1606,10 @@
 
 
 
+
+
+
+
         </RelativeLayout>
 
 
@@ -1586,5 +1617,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    </RelativeLayout>
 
-</RelativeLayout>
+</layout>

@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -19,46 +20,45 @@
 
     <application
         android:name=".utils.AnalyticsApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/xcarriermail"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        tools:replace="android:allowBackup"
         android:theme="@style/Theme.XCarrierMaterialDesign"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        >
         <activity
-            android:name=".process.EditPackageActivity"
+            android:name=".activities.editpackage.EditPackageActivity"
             android:exported="false" />
         <activity
             android:name=".pendingnew.SearchPackagesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".scanner.SimpleProcessActivty"
+            android:name=".activities.scannerprocess.SimpleProcessActivty"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".scanner.SimpleScannerActivity"
+            android:name=".activities.scanner.SimpleScannerActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".pending.PendingDeliveriesActvity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".CameraActivity2"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".trackreport.TrackReportActivty"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".process.SigantureviewActivity"
+            android:name=".activities.signature.SigantureviewActivity"
             android:exported="false" />
         <activity
-            android:name=".CameraActivity"
+            android:name=".activities.camera.CameraActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -66,7 +66,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".process.ProcessPackageFinalActivity"
+            android:name=".activities.processfinal.ProcessPackageFinalActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -75,9 +75,25 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".process.ManualProcessPackageActivity"
-            android:exported="false"
+            android:name=".activities.manual.ManualProcessPackageActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
+
+
+            <intent-filter>
+                <action android:name="com.elemicamanualpackage.datawedge.kotlin.ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+
+
+
+
+
+
+
+
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -121,7 +137,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.settings.SettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -129,7 +145,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ForgotPassword"
+            android:name=".activities.forgot.ForgotPassword"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -137,7 +153,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.login.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -174,6 +190,18 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

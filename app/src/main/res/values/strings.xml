@@ -90,7 +90,7 @@
     <string name="no">No</string>
 
 
-    <string name="activity_intent_filter_action">com.elemica.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action">com.elemicamanualpackage.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action2">com.elemicaprocess.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action3">com.elemicabulk.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action4">com.elemicabatch.datawedge.kotlin.ACTION</string>
@@ -104,6 +104,14 @@
     <string name="clear">Clear</string>
     <string name="edit">Edit Package</string>
     <string name="carrier_select">Select Carrier</string>
+    <string name="networkmsg">You are offline.Internet Connection is not available</string>
+    <string name="servererror">The server encountered an internal error or misconfiguration and was unable to complete your request.</string>
+    <string name="enteremail">Please enter Email and Password</string>
+    <string name="validemail">Please enter valid Email Address</string>
+    <string name="passempty">Please enter Password</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choosing_to_consolidate_these_packages_will_create_a_bulk_id_a_single_status_must_be_applied_to_consolidated_packages">Choosing to consolidate these packages will create a bulk ID. A single status must be applied to consolidated packages.</string>
 
 
 </resources>

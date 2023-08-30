@@ -20,7 +20,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.zxing.integration.android.IntentIntegrator
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.FragmentNotificationsBinding
-import com.xcarriermaterialdesign.scanner.SimpleProcessActivty
+import com.xcarriermaterialdesign.activities.scannerprocess.SimpleProcessActivty
+import com.xcarriermaterialdesign.utils.NetWorkService
+import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
+import com.xcarriermaterialdesign.utils.NetworkConnection
 import com.xcarriermaterialdesign.utils.*
 import java.text.SimpleDateFormat
 import java.util.*

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/mainmenu_layout"
-    tools:context=".process.ProcessPackageActivity">
+    >
+
+
+    <RelativeLayout
+        android:id="@+id/mainmenu_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
 
 
@@ -361,15 +365,13 @@
             android:layout_height="263dp"/>
 
         <TextView
-            android:layout_below="@+id/nopending_image"
-            android:layout_centerInParent="true"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
             android:layout_marginTop="23dp"
             android:textColor="#61000000"
             android:textSize="15.8sp"
             android:gravity="center"
-            android:height="48dp"
+            android:height="50dp"
             android:layout_marginBottom="30dp"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
@@ -429,59 +431,6 @@
 
 
 
-<!--
-    <RelativeLayout
-        android:id="@+id/bottomactionlay"
-
-        android:background="@drawable/botoom_bg"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-
-       <TextView
-           android:layout_alignParentEnd="true"
-
-           android:id="@+id/nextbutton"
-           android:layout_marginEnd="50dp"
-
-
-
-            android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:height="24dp"
-            android:fontFamily="sans-serif"
-            android:text="@string/next"
-            android:textColor="#99000000"
-            android:textSize="13.82sp" />
-
-
-        <ImageView
-            android:layout_marginEnd="21dp"
-            android:layout_alignParentEnd="true"
-
-
-
-
-            android:id="@+id/rigtimg"
-            android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-
-            android:layout_width="24dp"
-
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
-            android:height="24dp"
-            />
-
-
-
-
-
-    </RelativeLayout>
--->
 
 
     <LinearLayout
@@ -552,7 +501,7 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:lineSpacingMultiplier="1.52"
-            android:text="Choosing to consolidate these packages will create a bulk ID. A single status must be applied to consolidated packages."
+            android:text="@string/choosing_to_consolidate_these_packages_will_create_a_bulk_id_a_single_status_must_be_applied_to_consolidated_packages"
             android:width="232dp" />
 
 
@@ -572,7 +521,7 @@
             android:layout_width="wrap_content"
             android:letterSpacing="0.125"
             android:lineSpacingMultiplier="1.18"
-            android:text="OK"
+            android:text="@string/ok"
             android:width="81dp" />
 
     </LinearLayout>
@@ -586,6 +535,7 @@
 
 
 
+    </RelativeLayout>
 
 
-</RelativeLayout>
+</layout>

@@ -8,7 +8,7 @@ class HomeActvity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_actvity)
 
-        getSupportActionBar()!!.hide();
+        supportActionBar!!.hide();
 
     }
 }

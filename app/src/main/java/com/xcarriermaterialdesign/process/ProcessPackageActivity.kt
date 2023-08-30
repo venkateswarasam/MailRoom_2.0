@@ -10,22 +10,30 @@ import android.os.Bundle
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.*
-import androidx.appcompat.app.ActionBar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcarriermaterialdesign.R
+import com.xcarriermaterialdesign.activities.editpackage.EditPackageActivity
+import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
+import com.xcarriermaterialdesign.activities.processfinal.ProcessPackageFinalActivity
+import com.xcarriermaterialdesign.databinding.ActivityProcessPackageBinding
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
-import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.utils.CourseModal
+import com.xcarriermaterialdesign.utils.NetWorkService
+import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
+import com.xcarriermaterialdesign.utils.NetworkConnection
+import com.xcarriermaterialdesign.utils.SwipeHelper
 import com.xcarriermaterialdesign.utils.*
 import com.xcarriermaterialdesign.utils.SwipeHelper.UnderlayButtonClickListener
 import java.lang.reflect.Type
@@ -34,25 +42,10 @@ import java.lang.reflect.Type
 class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
 
-    var arrayList = ArrayList<String>()
 
-    var trackinglist:RecyclerView?= null
-    var conslidate_lay:LinearLayout?= null
-    var sub_consolidate:LinearLayout?= null
-    var fab:FloatingActionButton?= null
-    var close_fab:FloatingActionButton?= null
-    var check_consle:CheckBox?= null
 
-    var mainmenu_layout:RelativeLayout?= null
-    var alertlayout:LinearLayout?= null
-    var manual_entry:LinearLayout?= null
-    var scanner_entry:LinearLayout?= null
-    var info_layout:LinearLayout?= null
-    var options_layout:LinearLayout?= null
-    internal var step1:TextView?= null
-    internal var oktext:TextView?= null
-    internal var nextbutton:TextView?= null
-    internal var info_button:ImageView?= null
+
+
 
     var check = false
 
@@ -60,15 +53,10 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
     var adaptercount = 0
 
-    internal var bulkid_layout:RelativeLayout?= null
-    internal var nopendinglayout:LinearLayout?= null
-    internal var keyupdown:ImageView?= null
-    internal var keyupdown1:ImageView?= null
-    internal var nopending_image:ImageView?= null
+
 
     private var mDetector: GestureDetector? = null
 
-    //var adapter:ProcessAdapter?= null
 
     private var courseModalArrayList: ArrayList<CourseModal>? = null
 
@@ -78,12 +66,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     private lateinit var processDao: ProcessDao
 
     private lateinit var processPackage: List<ProcessPackage>
-    internal var profile:ImageView?= null
 
-    internal var scannerfab:FloatingActionButton?= null
-    internal var manualfab:FloatingActionButton?= null
 
-    private val p = Paint()
+
+
+    // viewmodel
+
+    private lateinit var binding: ActivityProcessPackageBinding
+
+    val model: ProcessViewModel by viewModels()
 
 
     private fun getdata(){
@@ -95,7 +86,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         val type: Type = object : TypeToken<ArrayList<CourseModal?>?>() {}.type
 
-        courseModalArrayList = gson.fromJson(json, type);
+        courseModalArrayList = gson.fromJson(json, type)
 
         if (courseModalArrayList == null) {
             // if the array list is empty
@@ -108,7 +99,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         if (!isConnected) {
 
-            profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profileSync.setImageResource(R.drawable.syncyellow)
 
 
 
@@ -117,7 +108,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         } else {
 
 
-            profile!!.setImageResource(R.drawable.syncnew)
+            binding.profileSync.setImageResource(R.drawable.syncnew)
 
 
 
@@ -132,69 +123,45 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_process_package)
+       // setContentView(R.layout.activity_process_package)
+
+
+        model.config(this)
 
         supportActionBar?.hide()
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_process_package)
+
 
         //getdata()
 
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
 
             finish()
         }
 
-        profile = findViewById(R.id.profile_sync)
 
        startService(Intent( applicationContext, NetWorkService::class.java))
 
         if (!NetworkConnection().isNetworkAvailable(this)) {
 
-            profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profileSync.setImageResource(R.drawable.syncyellow)
 
         }
         else{
 
-            profile!!.setImageResource(R.drawable.syncnew)
+            binding.profileSync.setImageResource(R.drawable.syncnew)
 
         }
 
 
 
 
-
-        conslidate_lay = findViewById(R.id.conslidate_lay)
-        sub_consolidate = findViewById(R.id.sub_consolidate)
-        check_consle = findViewById(R.id.check_consle)
-        mainmenu_layout = findViewById(R.id.mainmenu_layout)
-        alertlayout = findViewById(R.id.alertlayout)
-        nopendinglayout = findViewById(R.id.nopendinglayout)
-
-        manualfab = findViewById<FloatingActionButton>(R.id.manualfab)
-        scannerfab = findViewById(R.id.scannerfab)
-
-        trackinglist = findViewById(R.id.trackinglist)
-        info_button = findViewById(R.id.info_button)
-        fab = findViewById(R.id.fab)
-        close_fab = findViewById(R.id.close_fab)
-        step1 = findViewById(R.id.step1)
-        oktext = findViewById(R.id.oktext)
-        nextbutton = findViewById(R.id.nextbutton)
-        scanner_entry = findViewById(R.id.scanner_entry)
-        info_layout = findViewById(R.id.info_layout)
-        manual_entry = findViewById(R.id.manual_entry)
-        bulkid_layout = findViewById(R.id.bulkid_layout)
-        keyupdown = findViewById(R.id.keyupdown)
-        keyupdown1 = findViewById(R.id.keyupdown1)
-        nopending_image = findViewById(R.id.nopending_image)
-
         mDetector = GestureDetector(this, Gesture())
 
-        TypefaceUtil.overrideFont(applicationContext, "SERIF", "fonts/hel.otf")
 
 
 
@@ -211,7 +178,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         if (processDao.getAllProcessPackages().isEmpty()){
 
 
-            nopendinglayout!!.visibility = View.VISIBLE
+            binding.nopendinglayout.visibility = View.VISIBLE
         }
 
 
@@ -219,67 +186,38 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             ProcessAdapter_new(this, processDao.getAllProcessPackages())
 
         val manager = LinearLayoutManager(this)
-        trackinglist!!.setHasFixedSize(true)
+        binding.trackinglist.setHasFixedSize(true)
 
-        trackinglist!!.layoutManager = manager
-        trackinglist!!.adapter = adapter
+        binding.trackinglist.layoutManager = manager
+        binding.trackinglist.adapter = adapter
 
-        //item touch helper
-
-       /* val callback: ItemTouchHelper.Callback = ItemMoveCallback(mAdapter)
-        val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(trackinglist)
-*/
-
-
-
-
-
-
-
-
-        //  arrayList = intent.getSerializableExtra("list") as ArrayList<String>
 
 
         if (processDao.getAllProcessPackages().size>1){
 
-            conslidate_lay!!.visibility = View.VISIBLE
+            binding.conslidateLay.visibility = View.VISIBLE
         }
 
-       // println("==arraylist$courseModalArrayList")
+
+        binding.closeFab.setOnClickListener {
 
 
-     //   trackinglist!!.layoutManager = LinearLayoutManager(this)
-
-
-        //adapter = CourseAdapter(courseModalArrayList!!, this)
-
-
-        /* adapter =
-            ProcessAdapter(this, arrayList)
-
-        trackinglist!!.adapter = adapter*/
-
-
-        close_fab!!.setOnClickListener {
-
-
-            alertlayout!!.visibility =  View.GONE
-            fab!!.visibility =  View.VISIBLE
-            close_fab!!.visibility =  View.GONE
+            binding.alertlayout.visibility =  View.GONE
+            binding.fab.visibility =  View.VISIBLE
+            binding.closeFab.visibility =  View.GONE
 
         }
 
 
-        check_consle!!.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
-            if (check_consle!!.isChecked) {
-                check_consle!!.isChecked = true
+        binding.checkConsle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
+            if ( binding.checkConsle.isChecked) {
+                binding.checkConsle.isChecked = true
 
-                bulkid_layout!!.visibility = View.VISIBLE
+                binding.bulkidLayout.visibility = View.VISIBLE
 
             } else {
-                check_consle!!.isChecked = false
-                bulkid_layout!!.visibility = View.GONE
+                binding.checkConsle.isChecked = false
+                binding.bulkidLayout.visibility = View.GONE
 
             }
         })
@@ -288,23 +226,23 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-        keyupdown!!.setOnClickListener {
+        binding.keyupdown.setOnClickListener {
 
-            trackinglist!!.visibility = View.GONE
-            keyupdown!!.visibility = View.GONE
-            keyupdown1!!.visibility = View.VISIBLE
+            binding.trackinglist.visibility = View.GONE
+            binding.keyupdown.visibility = View.GONE
+            binding.keyupdown1.visibility = View.VISIBLE
         }
 
-        keyupdown1!!.setOnClickListener {
+        binding.keyupdown1.setOnClickListener {
 
-            trackinglist!!.visibility = View.VISIBLE
-            keyupdown!!.visibility = View.VISIBLE
-            keyupdown1!!.visibility = View.GONE
+            binding.trackinglist.visibility = View.VISIBLE
+            binding.keyupdown.visibility = View.VISIBLE
+            binding.keyupdown1.visibility = View.GONE
         }
 
 
 
-        fab!!.setOnClickListener {
+        binding.fab.setOnClickListener {
 
 
 
@@ -317,25 +255,22 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-                  // trackinglist!!.setBackgroundColor(resources.getColor(android.R.color.transparent));
-                 //  alertlayout!!.setBackgroundColor(resources.getColor(android.R.color.transparent));
-                   trackinglist!!.setBackgroundColor(Color.parseColor("#979797"));
-                 alertlayout!!.setBackgroundColor(Color.parseColor("#979797"));
-                 mainmenu_layout!!.setBackgroundColor(Color.parseColor("#979797"));
-                 conslidate_lay!!.setBackgroundColor(Color.parseColor("#979797"));
-                   sub_consolidate!!.setBackgroundColor(Color.parseColor("#979797"));
 
-                   nopendinglayout!!.visibility = View.GONE
+                   binding.trackinglist.setBackgroundColor(Color.parseColor("#979797"))
+                 binding.alertlayout.setBackgroundColor(Color.parseColor("#979797"))
+                 binding.mainmenuLayout.setBackgroundColor(Color.parseColor("#979797"))
+                 binding.conslidateLay.setBackgroundColor(Color.parseColor("#979797"))
+                   binding.subConsolidate.setBackgroundColor(Color.parseColor("#979797"))
 
-                   nopending_image!!.setBackgroundColor(Color.parseColor("#00000000"));
-                //   nopendinglayout!!.setBackgroundColor(Color.parseColor("#979797"));
+                   binding.nopendinglayout.visibility = View.GONE
+
+                   binding.nopendingImage.setBackgroundColor(Color.parseColor("#00000000"))
 
 
 
-                   fab!!.setImageResource(R.drawable.ic_baseline_close_24)
-                   alertlayout!!.visibility =  View.VISIBLE
-                   // close_fab!!.visibility =  View.VISIBLE
-                   //  fab!!.visibility =  View.GONE
+                   binding.fab.setImageResource(R.drawable.ic_baseline_close_24)
+                   binding.alertlayout.visibility =  View.VISIBLE
+
 
                    buttonClicked = 1
 
@@ -350,36 +285,32 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
                     buttonClicked = 0
 
-                   mainmenu_layout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                   binding.mainmenuLayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
 
-                  /*  trackinglist!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    alertlayout!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    mainmenu_layout!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))*/
 
-                    trackinglist!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    alertlayout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    conslidate_lay!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    sub_consolidate!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    nopending_image!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                  //  nopendinglayout!!.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    binding.trackinglist.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    binding.alertlayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    binding.conslidateLay.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    binding.subConsolidate.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    binding.nopendingImage.setBackgroundColor(Color.parseColor("#FFFFFF"))
 
                     if (processDao.getAllProcessPackages().isEmpty()){
 
-                        nopendinglayout!!.visibility = View.VISIBLE
+                        binding.nopendinglayout.visibility = View.VISIBLE
 
                     }
 
 
 
-                    fab!!.setImageResource(R.drawable.addsymbol)
+                    binding.fab.setImageResource(R.drawable.addsymbol)
 
-                    alertlayout!!.visibility =  View.GONE
+                    binding.alertlayout.visibility =  View.GONE
                 }
                else -> {
 
-                   fab!!.setImageResource(R.drawable.addsymbol)
+                   binding.fab.setImageResource(R.drawable.addsymbol)
 
-                   alertlayout!!.visibility =  View.GONE
+                   binding.alertlayout.visibility =  View.GONE
 
                }
            }
@@ -391,61 +322,14 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-             //   fab!!.setImageResource(R.drawable.ic_baseline_close_24)
 
 
 
 
-
-
-
-
-             //   fab!!.setImageResource(R.drawable.addsymbol)
-
-
-
-
-
-
-
-
-         //   trackinglist!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-           /* val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-
-
-            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.servicedialog)*/
-
-           /* val manual_entry = dialog.findViewById<LinearLayout>(R.id.manual_entry)
-            val scanner_entry = dialog.findViewById<LinearLayout>(R.id.scanner_entry)
-            val close_fab = dialog.findViewById<FloatingActionButton>(R.id.close_fab)
-*/
-
-          /*  close_fab.setOnClickListener {
-
-               dialog.dismiss()
-            }
-
-            //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
-
-            val lp = WindowManager.LayoutParams()
-            val window = dialog.window
-            lp.copyFrom(window!!.attributes)
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            val isFinishing = false
-            window.attributes = lp
-            dialog.show()
-*/
         }
 
 
-        manual_entry!!.setOnClickListener {
+        binding.manualEntry.setOnClickListener {
 
             // onBackPressed()
 
@@ -454,20 +338,20 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         }
 
 
-        scanner_entry!!.setOnClickListener {
+        binding.scannerEntry.setOnClickListener {
 
             val intent = Intent(this, SimpleScannerActivity::class.java)
             startActivity(intent)
         }
 
 
-        manualfab?.setOnClickListener {
+        binding.manualfab.setOnClickListener {
 
             val intent = Intent(this, ManualProcessPackageActivity::class.java)
             startActivity(intent)
         }
 
-        scannerfab?.setOnClickListener {
+        binding.scannerfab.setOnClickListener {
 
 
             val intent = Intent(this, SimpleScannerActivity::class.java)
@@ -477,7 +361,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-        nextbutton!!.setOnClickListener {
+        binding.nextbutton.setOnClickListener {
 
             val intent = Intent(this, ProcessPackageFinalActivity::class.java)
 
@@ -489,68 +373,24 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-        info_button!!.setOnClickListener {
+        binding.infoButton.setOnClickListener {
 
 
 
-            info_layout!!.visibility = View.VISIBLE
-
-
-
-
-
-
-
-
-
-
-
-
-           /* val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-           dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            dialog.setCancelable(false)
-            dialog.setContentView(R.layout.info_layout)
-
-            val ok = dialog.findViewById<TextView>(R.id.oktext)
-
-
-
-            //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
-
-            val lp = WindowManager.LayoutParams()
-            val window = dialog.window
-            lp.copyFrom(window!!.attributes)
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            val isFinishing = false
-            window.attributes = lp
-            dialog.show()
-
-            ok.setOnClickListener {
-
-                dialog.dismiss()
-            }
-            */
-
-
-
-
-
+            binding.infoLayout.visibility = View.VISIBLE
 
         }
 
-        oktext!!.setOnClickListener {
+        binding.oktext.setOnClickListener {
 
-            info_layout!!.visibility = View.GONE
+            binding.infoLayout.visibility = View.GONE
         }
 
 
      //   swipe(processPackage)
 
 
-       // enableSwipe()
+
 
 
     }
@@ -563,102 +403,21 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     // swipe helper
 
 
-/*
-    private fun enableSwipe() {
-        val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                if (direction == ItemTouchHelper.LEFT) {
-
-                } else {
-
-                }
-            }
-
-            fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView?,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                val icon: Bitmap
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                    val itemView = viewHolder.itemView
-                    val height = itemView.bottom.toFloat() - itemView.top.toFloat()
-                    val width = height / 3
-                    if (dX > 0) {
-                        p.setColor(Color.parseColor("#388E3C"))
-                        val background = RectF(
-                            itemView.left.toFloat(),
-                            itemView.top.toFloat(), dX, itemView.bottom.toFloat()
-                        )
-                        c.drawRect(background, p)
-                        icon = BitmapFactory.decodeResource(resources, R.drawable.ic_outline_delete_outline_24)
-                        val icon_dest = RectF(
-                            itemView.left.toFloat() + width,
-                            itemView.top
-                                .toFloat() + width,
-                            itemView.left.toFloat() + 2 * width,
-                            itemView.bottom
-                                .toFloat() - width
-                        )
-                        c.drawBitmap(icon, null, icon_dest, p)
-                    } else {
-                        p.setColor(Color.parseColor("#D32F2F"))
-                        val background = RectF(
-                            itemView.right.toFloat() + dX,
-                            itemView.top.toFloat(), itemView.right.toFloat(),
-                            itemView.bottom.toFloat()
-                        )
-                        c.drawRect(background, p)
-                        icon = BitmapFactory.decodeResource(resources, R.drawable.ic_baseline_create_24)
-                        val icon_dest = RectF(
-                            itemView.right.toFloat() - 2 * width,
-                            itemView.top
-                                .toFloat() + width,
-                            itemView.right.toFloat() - width,
-                            itemView.bottom
-                                .toFloat() - width
-                        )
-                        c.drawBitmap(icon, null, icon_dest, p)
-                    }
-                }
-                super.onChildDraw(
-                    c,
-                    recyclerView!!, viewHolder, dX, dY, actionState, isCurrentlyActive
-                )
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(trackinglist)
-    }
-*/
 
 
 
     private fun swipe(mList: List<ProcessPackage>){
 
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(this, trackinglist, false) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(this, binding.trackinglist, false) {
 
 
             override fun instantiateUnderlayButton(
                 viewHolder: RecyclerView.ViewHolder?,
                 underlayButtons: MutableList<UnderlayButton>?
             ) {
-                underlayButtons?.add(SwipeHelper.UnderlayButton(
+                underlayButtons?.add(
+                    SwipeHelper.UnderlayButton(
 
                     AppCompatResources.getDrawable(
                         this@ProcessPackageActivity,
@@ -691,7 +450,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 ))
 
 
-                underlayButtons?.add(SwipeHelper.UnderlayButton(
+                underlayButtons?.add(
+                    SwipeHelper.UnderlayButton(
                     AppCompatResources.getDrawable(
                         this@ProcessPackageActivity,
                         R.drawable.ic_outline_delete_outline_24
@@ -724,7 +484,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                         lp.copyFrom(window!!.attributes)
                         lp.width = WindowManager.LayoutParams.MATCH_PARENT
                         lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-                        val isFinishing = false
                         window.attributes = lp
                         dialog.show()
 
@@ -749,13 +508,12 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                             dialog.dismiss()
 
 
-                            finish();
-                            overridePendingTransition(0, 0);
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
+                            finish()
+                            overridePendingTransition(0, 0)
+                            startActivity(intent)
+                            overridePendingTransition(0, 0)
 
-                            /*finish();
-                            startActivity(intent);*/
+
                         }
 
 
@@ -776,7 +534,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             }
         })
 
-        itemTouchHelper.attachToRecyclerView(trackinglist)
+        itemTouchHelper.attachToRecyclerView(binding.trackinglist)
 
     }
 
@@ -787,28 +545,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-    private fun initactionbar(){
-
-       supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setCustomView(R.layout.actionbarnew)
-        val view1: View =  supportActionBar!!.customView
-        val toolbar: Toolbar = view1.parent as Toolbar
-        toolbar.setContentInsetsAbsolute(0, 0)
-        //  toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-        val headertext: TextView = view1.findViewById(R.id.headertext)
-        headertext.text = getString(R.string.process)
-        val profile: ImageView = view1.findViewById(R.id.profile)
-      //  val back: ImageView = view1.findViewById(R.id.back)
-
-
-
-        profile.setOnClickListener {
-
-
-
-        }
-    }
 
 
     internal class Gesture : SimpleOnGestureListener() {
@@ -877,7 +613,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
             // sets the image to the imageview from our itemHolder class
 
-            var check = false
 
             holder.trackingNo.text = itemsViewModel ?: ""
 
@@ -997,7 +732,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 lp.copyFrom(window!!.attributes)
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-                val isFinishing = false
                 window.attributes = lp
                 dialog.show()
 
@@ -1036,8 +770,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     inner class ProcessAdapter_new(val context : Context, private val mList: List<ProcessPackage>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
 
 
-        private val SHOW_MENU = 1
-        private val HIDE_MENU = 2
+
         // create new views
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProcessAdapter_new.ViewHolder {
             // inflates the card_view_design view
@@ -1135,7 +868,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 lp.copyFrom(window!!.attributes)
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-                val isFinishing = false
                 window.attributes = lp
                 dialog.show()
 
@@ -1155,15 +887,13 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                     dialog.dismiss()
 
 
-                    finish();
-                    overridePendingTransition(0, 0);
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
+                    finish()
+                    overridePendingTransition(0, 0)
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
 
-                    /*finish();
-                    startActivity(intent);*/
+
                 }
-                // alert()
             }
 
             holder.create_img.setOnClickListener {
@@ -1249,7 +979,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-    inner class CourseAdapter(// creating a variable for array list and context.
+    inner class CourseAdapter(
+        // creating a variable for array list and context.
         private val courseModalArrayList: ArrayList<CourseModal>, context: Context
     ) :
         RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
@@ -1309,14 +1040,14 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-         profile!!.setImageResource(R.drawable.syncnew)
+            binding.profileSync.setImageResource(R.drawable.syncnew)
 
 
         }
         else{
 
 
-            profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profileSync.setImageResource(R.drawable.syncyellow)
 
 
 

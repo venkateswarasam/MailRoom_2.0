@@ -2,8 +2,6 @@ package com.xcarriermaterialdesign.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,16 +18,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.integration.android.IntentIntegrator
 import com.xcarriermaterialdesign.R
-import com.xcarriermaterialdesign.SettingsActivity
+import com.xcarriermaterialdesign.activities.settings.SettingsActivity
 import com.xcarriermaterialdesign.databinding.FragmentHomeBinding
-import com.xcarriermaterialdesign.process.ManualProcessPackageActivity
-import com.xcarriermaterialdesign.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
 
 
 class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListener {
