@@ -307,7 +307,7 @@ open class BarcodeScannerActivity : AppCompatActivity() {
                             }
                             else{
 
-                                processDao.insertProcessPackage(ProcessPackage(barcodeData!!,""))
+                                processDao.insertProcessPackage(ProcessPackage(barcodeData!!,"",1))
                                 arrayList.add(barcodeData!!)
                             }
 
@@ -327,7 +327,7 @@ open class BarcodeScannerActivity : AppCompatActivity() {
                             }
                             else{
 
-                                processDao.insertProcessPackage(ProcessPackage(barcodeData!!, ""))
+                                processDao.insertProcessPackage(ProcessPackage(barcodeData!!, "", 1))
 
                                arrayList.add(barcodeData!!)
                             }

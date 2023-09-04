@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:elevation="20dp"
+    android:layout_gravity="center"
+
+
+
+    android:background="@drawable/cons_bg3"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:visibility="gone"
+        android:textColor="#000000"
+        android:layout_marginStart="10dp"
+
+        android:layout_gravity="center"
+        android:textSize="15.8sp"
+        android:text="@string/logout"
+        android:layout_marginTop="16dp"
+
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/info_msg"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+
+        android:layout_gravity="center"
+        android:textSize="13.82sp"
+        android:text="@string/douwantexit"
+
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="@string/douwantexit"
+        android:id="@+id/header_title"
+        android:letterSpacing="0.0015"
+        android:textColor="#99000000"
+
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="15.8sp"
+        android:fontFamily="@font/open_sans"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:lineSpacingMultiplier="1.52"
+        android:width="232dp" />
+
+
+
+    <LinearLayout
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+
+            android:fontFamily="@font/open_sans_bold"
+
+            android:textStyle="bold"
+            android:textSize="14sp"
+
+            android:textAllCaps="true"
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:text="@string/no"
+            android:textColor="@color/purple_200"
+
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            />
+
+
+        <TextView
+
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_alignParentEnd="true"
+            android:textStyle="bold"
+            android:textSize="14sp"
+
+            android:textAllCaps="true"
+            android:id="@+id/oktext"
+            android:layout_width="wrap_content"
+            android:text="@string/yes"
+            android:textColor="@color/purple_200"
+
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -15,6 +15,8 @@ import com.xcarriermaterialdesign.api.ApiUtilities
 import com.xcarriermaterialdesign.model.ConfigRequest
 import com.xcarriermaterialdesign.model.ConfigResponse
 import com.xcarriermaterialdesign.model.ForgotResponse
+import com.xcarriermaterialdesign.model.GetProfileRequest
+import com.xcarriermaterialdesign.model.GetProfileResponse
 import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetworkConnection
@@ -32,6 +34,7 @@ class DashboardViewModel : ViewModel() {
 
     var authenticateResponse =  MutableLiveData<Authenticate_Response>()
 
+    var getprofileResponse =  MutableLiveData<GetProfileResponse>()
 
 
     fun config(activity: Activity) {
@@ -53,7 +56,7 @@ class DashboardViewModel : ViewModel() {
 
 
 
-        LoadingView.displayLoadingWithText(activity,"Please wait...",false)
+      //  LoadingView.displayLoadingWithText(activity,"Please wait...",false)
 
         var repsonse = ApiUtilities.getInstance()?.create(ApiInterface::class.java)
 
@@ -195,6 +198,10 @@ class DashboardViewModel : ViewModel() {
         }
 
     }
+
+
+
+
 
 
 

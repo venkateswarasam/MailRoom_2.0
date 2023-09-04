@@ -8,6 +8,9 @@
 
         android:title="@string/title_home" />
 
+
+
+
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/searchinactive"

@@ -2,10 +2,13 @@ package com.xcarriermaterialdesign.process
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.activities.editpackage.EditPackageActivity
 import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
@@ -68,32 +72,14 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     private lateinit var processPackage: List<ProcessPackage>
 
 
-
-
-    // viewmodel
-
     private lateinit var binding: ActivityProcessPackageBinding
 
     val model: ProcessViewModel by viewModels()
 
 
-    private fun getdata(){
+    val arrayList = ArrayList<String>()
 
-        val sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE)
 
-        val gson = Gson()
-        val json = sharedPreferences.getString("trackingnumbers", null)
-
-        val type: Type = object : TypeToken<ArrayList<CourseModal?>?>() {}.type
-
-        courseModalArrayList = gson.fromJson(json, type)
-
-        if (courseModalArrayList == null) {
-            // if the array list is empty
-            // creating a new array list.
-            courseModalArrayList = ArrayList()
-        }
-    }
 
     private fun showMessage(isConnected: Boolean) {
 
@@ -120,6 +106,11 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     }
 
 
+    override fun onBackPressed() {
+        val intent = Intent(this,  BottomNavigationActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
 
 
@@ -135,11 +126,14 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         binding = DataBindingUtil.setContentView(this, R.layout.activity_process_package)
 
 
-        //getdata()
+        DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action3),"true")
+
 
 
         binding.toolbar.setNavigationOnClickListener {
 
+            val intent = Intent(this,  BottomNavigationActivity::class.java)
+            startActivity(intent)
             finish()
         }
 
@@ -156,13 +150,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             binding.profileSync.setImageResource(R.drawable.syncnew)
 
         }
-
-
-
-
-        mDetector = GestureDetector(this, Gesture())
-
-
 
 
         val db = Room.databaseBuilder(
@@ -369,10 +356,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         }
 
 
-
-
-
-
         binding.infoButton.setOnClickListener {
 
 
@@ -387,330 +370,93 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         }
 
 
-     //   swipe(processPackage)
-
-
-
-
-
     }
 
 
+    // data wedge  implementation
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        displayScanResult(intent)
+    }
 
+    private fun displayScanResult(scanIntent: Intent) {
+        val decodedSource =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_source))
+        val decodedData =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_data))
+        val decodedLabelType =
+            scanIntent.getStringExtra(resources.getString(R.string.datawedge_intent_key_label_type))
+        val scan = "$decodedData [$decodedLabelType]\n\n"
+        //  output.text = scan
+        // filledtextfiled?.setText(decodedData)
 
 
-    // swipe helper
+     //   Toast.makeText(this, decodedData, Toast.LENGTH_SHORT).show()
 
 
+        runOnUiThread(java.lang.Runnable {
 
 
 
-    private fun swipe(mList: List<ProcessPackage>){
+            if (!checkDuplicateTrackNo(decodedData!!)) {
 
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(this, binding.trackinglist, false) {
+                try {
+                    val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    val r = RingtoneManager.getRingtone(applicationContext, notification)
+                    r.play()
+                } catch (e: Exception) {
+                }
 
+                processDao.insertProcessPackage(ProcessPackage(decodedData,"",1))
 
-            override fun instantiateUnderlayButton(
-                viewHolder: RecyclerView.ViewHolder?,
-                underlayButtons: MutableList<UnderlayButton>?
-            ) {
-                underlayButtons?.add(
-                    SwipeHelper.UnderlayButton(
 
-                    AppCompatResources.getDrawable(
-                        this@ProcessPackageActivity,
-                        R.drawable.ic_baseline_create_24
-                    ),
-                    Color.parseColor("#BABABA"),
-                    UnderlayButtonClickListener { pos: Int ->
+               adapter =
+                    ProcessAdapter_new(this, processDao.getAllProcessPackages())
 
-                        for (i in 0 until mList.size){
+                val manager = LinearLayoutManager(this)
+                binding.trackinglist.setHasFixedSize(true)
 
-                            //processDao.deleteProcessPackages(mList.get(i).trackingNumber)
+                binding.trackinglist.layoutManager = manager
+                binding.trackinglist.adapter = adapter
 
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
 
 
-                            val intent = Intent(this@ProcessPackageActivity, EditPackageActivity::class.java)
-
-                            intent.putExtra("trackingId", mList.get(i).trackingNumber)
-                            intent.putExtra("id", mList.get(i).id)
-                            intent.putExtra("carriername", mList.get(i).carriername)
-
-                            startActivity(intent)
-
-                        }
-
-
-
-                        // adapter.modelList.removeAt(pos);
-                      //  adapter!!.notifyItemRemoved(pos)
-                    }
-                ))
-
-
-                underlayButtons?.add(
-                    SwipeHelper.UnderlayButton(
-                    AppCompatResources.getDrawable(
-                        this@ProcessPackageActivity,
-                        R.drawable.ic_outline_delete_outline_24
-                    ),
-                    Color.parseColor("#B00020"),
-                    UnderlayButtonClickListener { pos: Int ->
-
-
-                        // adapter.modelList.removeAt(pos);
-                      //  adapter!!.notifyItemRemoved(pos)
-
-
-
-                        val dialog = Dialog(this@ProcessPackageActivity)
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                        dialog.setCancelable(false)
-                        dialog.setContentView(R.layout.info_layout)
-
-                        val ok = dialog.findViewById<TextView>(R.id.oktext)
-                        val cancel = dialog.findViewById<TextView>(R.id.cancel)
-
-
-
-                        //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
-
-                        val lp = WindowManager.LayoutParams()
-                        val window = dialog.window
-                        lp.copyFrom(window!!.attributes)
-                        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-                        window.attributes = lp
-                        dialog.show()
-
-                        cancel.setOnClickListener {
-
-                            dialog.dismiss()
-                        }
-
-
-                        ok.setOnClickListener {
-
-                            for (i in 0 until mList.size){
-
-                                processDao.deleteProcessPackages(mList.get(i).trackingNumber)
-
-                            }
-
-
-                            //arrayList.remove(itemsViewModel)
-
-
-                            dialog.dismiss()
-
-
-                            finish()
-                            overridePendingTransition(0, 0)
-                            startActivity(intent)
-                            overridePendingTransition(0, 0)
-
-
-                        }
-
-
-
-
-
-
-
-
-
-
-
-                    }
-                ))
-
-
-
+                //  barcodeList.add(BarcodesList(barcode1,1))
             }
+
+
+
+
+
         })
 
-        itemTouchHelper.attachToRecyclerView(binding.trackinglist)
+
 
     }
 
 
+    // check duplicate number
 
+    private fun checkDuplicateTrackNo(barcode : String) : Boolean
+    {
 
+        processPackage = processDao.getAllProcessPackages()
 
+        for (item in processPackage.indices)
+        {
+            var bar = processPackage[item]
 
+            if (bar.trackingNumber == barcode)
+            {
 
 
-
-
-    internal class Gesture : SimpleOnGestureListener() {
-        override fun onSingleTapUp(ev: MotionEvent): Boolean {
-            return true
-        }
-        override fun onLongPress(ev: MotionEvent) {}
-        override fun onScroll(
-            e1: MotionEvent, e2: MotionEvent, distanceX: Float,
-            distanceY: Float
-        ): Boolean {
-
-            return true
-        }
-
-        override fun onFling(
-            e1: MotionEvent, e2: MotionEvent, velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-
-            return true
-        }
-    }
-
-    inner class ProcessAdapter(val context : Context, private val mList: ArrayList<String>) : RecyclerView.Adapter<ProcessAdapter.ViewHolder>() {
-
-
-
-        // create new views
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            // inflates the card_view_design view
-            // that is used to hold list item
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.process_item_list, parent, false)
-
-            return ViewHolder(view)
-        }
-
-        // binds the list items to a viewh
-
-
-        // return the number of the items in the list
-        override fun getItemCount(): Int {
-            return mList.size
-        }
-
-        // Holds the views for adding it to image and text
-        inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-
-            val trackingNo: TextView = itemView.findViewById(R.id.trackingTV)
-            val delete_img: ImageView = itemView.findViewById(R.id.delete_img)
-            val create_img: ImageView = itemView.findViewById(R.id.create_img)
-            val item_layout: RelativeLayout = itemView.findViewById(R.id.item_layout)
-
-            val options_layout:LinearLayout = itemView.findViewById(R.id.options_layout)
-
-
-
-        }
-
-
-
-        @SuppressLint("ClickableViewAccessibility")
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val itemsViewModel = mList[position]
-
-            // sets the image to the imageview from our itemHolder class
-
-
-            holder.trackingNo.text = itemsViewModel ?: ""
-
-
-
-            holder.item_layout.setOnClickListener {
-
-                when(adaptercount){
-
-                    0->{
-
-                        holder.options_layout.visibility = View.VISIBLE
-
-                        adaptercount = 1
-                    }
-
-                    1->{
-
-                        adaptercount = 0
-
-
-                        holder.options_layout.visibility = View.GONE
-
-
-
-                    }
-                }
-            }
-
-
-
-/*
-            holder.item_layout.setOnTouchListener { view, motionEvent ->
-
-
-
-                when(adaptercount){
-
-                    0->{
-
-                        holder.options_layout.visibility = View.VISIBLE
-
-                        adaptercount = 1
-                    }
-
-                    1->{
-
-                        adaptercount = 0
-
-
-                        holder.options_layout.visibility = View.GONE
-
-
-
-                    }
-                }
-
-
-
-
-
-
-
-                true
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            }
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-            holder.delete_img.setOnClickListener {
-
-
+                playNotificationSound()
 
 
                 val dialog = Dialog(this@ProcessPackageActivity)
@@ -718,14 +464,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
                 dialog.setCancelable(false)
-                dialog.setContentView(R.layout.info_layout)
+                dialog.setContentView(R.layout.info_layout_new)
 
                 val ok = dialog.findViewById<TextView>(R.id.oktext)
                 val cancel = dialog.findViewById<TextView>(R.id.cancel)
 
+                val info_msg = dialog.findViewById<TextView>(R.id.info_msg)
 
+                info_msg.text = "This barcode already scanned.Do you want to continue?"
 
-                //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
 
                 val lp = WindowManager.LayoutParams()
                 val window = dialog.window
@@ -735,35 +482,88 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 window.attributes = lp
                 dialog.show()
 
+                ok.setOnClickListener {
+
+                 //
+
+
+                    bar.count = bar.count+1
+
+                  //  processPackage.removeAt(item)
+
+                    processDao.updateProcessPackageCount(bar.id.toString(), bar.count)
+
+
+                   // processDao.insertProcessPackage(ProcessPackage(barcode,"", 1))
+                   // processPackage.add(item,bar)
+
+                  //  binding.count.text = getCount()
+
+
+                    adapter =
+                        ProcessAdapter_new(this, processDao.getAllProcessPackages())
+
+                    val manager = LinearLayoutManager(this)
+                    binding.trackinglist.setHasFixedSize(true)
+
+                    binding.trackinglist.layoutManager = manager
+                    binding.trackinglist.adapter = adapter
+
+                    dialog.dismiss()
+
+
+                }
+
                 cancel.setOnClickListener {
 
                     dialog.dismiss()
                 }
 
 
-                ok.setOnClickListener {
-
-                    processDao.deleteProcessPackages(itemsViewModel)
-
-                    //arrayList.remove(itemsViewModel)
 
 
-                    dialog.dismiss()
-                }
-               // alert()
+                // DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action), "false")
+
+              //  DWUtilities.sendDataWedgeIntentWithExtras(this, ACTION_DATAWEDGE,EXTRA_SCANNERINPUTPLUGIN,"SUSPEND_PLUGIN")
+
+
+
+
+
+
+
+
+
+
+
+                return true
+
+
             }
 
-            holder.create_img.setOnClickListener {
-
-                val intent = Intent(this@ProcessPackageActivity, ManualProcessPackageActivity::class.java)
-
-                startActivity(intent)
-            }
 
         }
 
+        return false
+    }
+
+
+
+    fun playNotificationSound() {
+        try {
+            val alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.scanrepeated) //Here is FILE_NAME is the name of file that you want to play
+
+            val r = RingtoneManager.getRingtone(applicationContext, alarmSound)
+            r.play()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+
+
 
     }
+
+
 
 
 
@@ -790,8 +590,9 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             val itemsViewModel = mList[position]
 
 
-            holder.trackingNo.text = itemsViewModel.trackingNumber ?: ""
+            holder.trackingNo.text = itemsViewModel.trackingNumber ?:""
             holder.carruername.text = itemsViewModel.carriername ?: ""
+            holder.trackingcount.text = itemsViewModel.count.toString()?:""
 
             if (itemsViewModel.carriername == ""){
 
@@ -959,6 +760,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
             val trackingNo: TextView = itemView.findViewById(R.id.trackingTV)
             val carruername: TextView = itemView.findViewById(R.id.carruername)
+            val trackingcount: TextView = itemView.findViewById(R.id.trackingcount)
             val delete_img: ImageView = itemView.findViewById(R.id.delete_img)
             val create_img: ImageView = itemView.findViewById(R.id.create_img)
            val item_layout: RelativeLayout = itemView.findViewById(R.id.item_layout)
@@ -979,52 +781,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-    inner class CourseAdapter(
-        // creating a variable for array list and context.
-        private val courseModalArrayList: ArrayList<CourseModal>, context: Context
-    ) :
-        RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
-        private val context: Context
 
-        // creating a constructor for our variables.
-        init {
-            this.context = context
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            // below line is to inflate our layout.
-
-            val view = LayoutInflater.from(parent.context)
-                .inflate(com.xcarriermaterialdesign.R.layout.process_item_list, parent, false)
-
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            // setting data to our views of recycler view.
-            val modal = courseModalArrayList[position]
-            holder.trackingNo.text = modal.trackingNo
-
-            // holder.courseDescTV.setText(modal.getCourseDescription())
-        }
-
-        override fun getItemCount(): Int {
-            // returning the size of array list.
-            return courseModalArrayList.size
-        }
-
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            // creating variables for our views.
-            val trackingNo: TextView = itemView.findViewById(com.xcarriermaterialdesign.R.id.trackingTV)
-            val delete_img: ImageView = itemView.findViewById(com.xcarriermaterialdesign.R.id.delete_img)
-            val create_img: ImageView = itemView.findViewById(com.xcarriermaterialdesign.R.id.create_img)
-            val item_layout: RelativeLayout = itemView.findViewById(com.xcarriermaterialdesign.R.id.item_layout)
-
-            val options_layout: LinearLayout = itemView.findViewById(com.xcarriermaterialdesign.R.id.options_layout)
-
-
-        }
-    }
 
 
     override fun onResume() {

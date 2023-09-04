@@ -90,11 +90,11 @@
     <string name="no">No</string>
 
 
-    <string name="activity_intent_filter_action">com.elemicamanualpackage.datawedge.kotlin.ACTION</string>
-    <string name="activity_intent_filter_action2">com.elemicaprocess.datawedge.kotlin.ACTION</string>
-    <string name="activity_intent_filter_action3">com.elemicabulk.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action">com.elemicabatch.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action2">com.elemicamain.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action3">com.elemicaprocess.datawedge.kotlin.ACTION</string>
     <string name="activity_intent_filter_action4">com.elemicabatch.datawedge.kotlin.ACTION</string>
-    <string name="activity_intent_filter_action5">com.elemicacheckIn.datawedge.kotlin.ACTION</string>
+    <string name="activity_intent_filter_action5">com.elemicaprocessfinal.datawedge.kotlin.ACTION</string>
 
 
     <string name="datawedge_intent_key_source">com.symbol.datawedge.source</string>
@@ -112,6 +112,29 @@
     <string name="choose_from_gallery">Choose from Gallery</string>
     <string name="take_photo">Take Photo</string>
     <string name="choosing_to_consolidate_these_packages_will_create_a_bulk_id_a_single_status_must_be_applied_to_consolidated_packages">Choosing to consolidate these packages will create a bulk ID. A single status must be applied to consolidated packages.</string>
+    <string name="enterfirstname">Please enter First Name</string>
+    <string name="enterlastname">Please enter Last Name</string>
+    <string name="enteraddress1">Please enter Address1</string>
+    <string name="enteraddress2">Please enter Address2</string>
+    <string name="entercity">Please enter city</string>
+    <string name="stateemp">Please enter State</string>
+    <string name="countryemp">Please enter country</string>
+    <string name="postalemp">Please enter postal code</string>
+    <string name="mobilemp">Please enter Mobile Number</string>
+    <string name="oldpasswordemp">Please enter old password</string>
+    <string name="newpassemp">Please enter new password</string>
+    <string name="confirmpassemp">Please enter confirm password</string>
+    <string name="newconfirmdiff">New Password and Confirm Passwod are not same</string>
+    <string name="changepassword">CHANGE PASSWORD</string>
+    <string name="savechanges">SAVE CHANGES</string>
+    <string name="douwantexit">Are you sure You want to Sign Out?</string>
+    <string name="passwordlength">Password should be 8 to 16 characters only</string>
+    <string name="passwordcontains">Password Length should be between 8-16, with 1 Capital Letter, 1 Number and 1 Special Character</string>
+    <string name="check_in">CHECK IN</string>
+    <string name="check_out">CHECK OUT</string>
+    <string name="title_activity_tab_navigations">TabNavigations</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 
 </resources>

@@ -179,13 +179,29 @@ class MainActivity : AppCompatActivity() {
             if (item.StatusCode == 200) {
 
                 ApplicationSharedPref.write(ApplicationSharedPref.MS_EMAIL,binding.emailtext.text.toString())
-                ApplicationSharedPref.write(ApplicationSharedPref.MS_PASSWORD,binding.password.text.toString())
+               // ApplicationSharedPref.write(ApplicationSharedPref.MS_PASSWORD,binding.password.text.toString())
+
+                ApplicationSharedPref.write(ApplicationSharedPref.ROLEID,item.Result.MobileUserInfo.RoleId.toString())
 
 
                 ApplicationSharedPref.write(ApplicationSharedPref.COMPANY_ID,item.Result.MobileUserInfo.CompanyId)
                 ApplicationSharedPref.write(ApplicationSharedPref.PLANT_ID,item.Result.MobileUserInfo.PlantId)
-                ApplicationSharedPref.write(ApplicationSharedPref.LOGINID, item.Result.MobileUserInfo.LoginId.toString()
-                )
+                ApplicationSharedPref.write(ApplicationSharedPref.EMP_ID,item.Result.MobileUserInfo.EmployeeId)
+                ApplicationSharedPref.write(ApplicationSharedPref.USERNAME,item.Result.MobileUserInfo.UserName)
+                ApplicationSharedPref.write(ApplicationSharedPref.USERALIAS,item.Result.MobileUserInfo.UserAlias)
+                ApplicationSharedPref.write(ApplicationSharedPref.USERROLE,item.Result.MobileUserInfo.UserRole)
+
+                ApplicationSharedPref.write(ApplicationSharedPref.DEPARTMENT,item.Result.MobileUserInfo.Department)
+                ApplicationSharedPref.write(ApplicationSharedPref.DESIGNATION,item.Result.MobileUserInfo.Designation)
+                ApplicationSharedPref.write(ApplicationSharedPref.CUSTOMERNAME,item.Result.MobileUserInfo.CustomerName)
+                ApplicationSharedPref.write(ApplicationSharedPref.PLANTNAME,item.Result.MobileUserInfo.PlantName)
+
+
+
+
+                ApplicationSharedPref.write(ApplicationSharedPref.LOGINID, item.Result.MobileUserInfo.LoginId.toString())
+
+
 
 
 
@@ -214,11 +230,7 @@ class MainActivity : AppCompatActivity() {
                 ServiceDialog.ShowDialog(this, item.Message)
 
 
-                /* SweetAlertDialog(
-                     this,
-                     SweetAlertDialog.ERROR_TYPE
-                 ).setTitleText("Error").setContentText(item.Message)
-                     .show()*/
+
 
                 return@Observer
             }

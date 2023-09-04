@@ -21,6 +21,8 @@ data class ProcessPackage(
     var carriername: String,
 
 
+    @ColumnInfo(name = "count")
+    var count: Int
 
 
     )

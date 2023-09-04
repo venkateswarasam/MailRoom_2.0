@@ -10,21 +10,34 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.integration.android.IntentIntegrator
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import com.xcarriermaterialdesign.R
+import com.xcarriermaterialdesign.TabNavigations
+import com.xcarriermaterialdesign.activities.dashboard.DashboardViewModel
 import com.xcarriermaterialdesign.activities.settings.SettingsActivity
 import com.xcarriermaterialdesign.databinding.FragmentHomeBinding
 import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
 import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.model.GetProfileRequest
+import com.xcarriermaterialdesign.model.GetProfileResponse
+import com.xcarriermaterialdesign.utils.ApplicationSharedPref
+import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
+import com.xcarriermaterialdesign.utils.ServiceDialog
 
 
 class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListener {
@@ -38,6 +51,8 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
 
 
     internal var count = 10
+
+    val model: HomeViewModel by viewModels()
 
 
 
@@ -74,12 +89,14 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
+        model.config(activity as AppCompatActivity)
+
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        homeViewModel.text.observe(viewLifecycleOwner) {
+      /*  homeViewModel.text.observe(viewLifecycleOwner) {
            // textView.text = it
-        }
+        }*/
         (activity as AppCompatActivity).supportActionBar?.hide()
 
         //setupScanner()
@@ -144,6 +161,14 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
 
 
 
+
+
+
+
+
+
+
+
         _binding!!.profile.setOnClickListener {
 
             val intent = Intent(activity, SettingsActivity::class.java)
@@ -192,7 +217,71 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
 
 
 
+        // getprofile
 
+
+        model.getprofileResponse.observe(activity as AppCompatActivity, Observer<GetProfileResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            if (item.StatusCode == 200){
+
+
+              //  binding.headertext.text = "Hello"+" "+item.Result.MobileUserInfo.FirstName
+
+
+
+                ApplicationSharedPref.write(ApplicationSharedPref.PROFILEIMAGE,item.Result.MobileUserInfo.ProfileImage)
+
+
+
+              /*  Picasso.get().load(ApplicationSharedPref.read(ApplicationSharedPref.PROFILEIMAGE,"")).placeholder(R.drawable.ic_outline_account_circle_24).memoryPolicy(
+                    MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into((binding.profile))*/
+
+
+            }
+
+
+            else{
+
+
+                ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
+            }
+
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        val getProfileRequest = GetProfileRequest(ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+            ApplicationSharedPref.read(ApplicationSharedPref.MS_EMAIL,"")!!, ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")?.toInt()!!,
+            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!
+        )
+
+
+        model.getprofiledata(getProfileRequest)
 
 
 

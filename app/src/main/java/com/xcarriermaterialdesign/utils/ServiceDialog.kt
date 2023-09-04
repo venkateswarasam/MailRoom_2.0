@@ -22,7 +22,6 @@ object ServiceDialog{
     var permissionMessage: TextView? = null
 
     fun ShowDialog(context: Context?, message: String?) {
-        val ok: Button
         val dialog = Dialog(context!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -46,7 +45,6 @@ object ServiceDialog{
         lp.copyFrom(window!!.attributes)
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        val isFinishing = false
         window.attributes = lp
         dialog.show()
 

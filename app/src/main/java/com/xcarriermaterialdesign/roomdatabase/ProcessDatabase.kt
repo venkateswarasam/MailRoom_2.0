@@ -2,6 +2,7 @@ package com.xcarriermaterialdesign.roomdatabase
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.xcarriermaterialdesign.dbmodel.CarrierDao
 import com.xcarriermaterialdesign.dbmodel.CarrierPackage
 import com.xcarriermaterialdesign.dbmodel.LocationDao
@@ -16,12 +17,15 @@ import com.xcarriermaterialdesign.dbmodel.StorageLocationPackage
 
 @Database(entities = [ProcessPackage::class, BulkPackage::class, StatusPackage::class,
                      LocationPackage::class, StorageLocationPackage::class,
-                     ReasonPackage::class, CarrierPackage::class], version = 1)
+                     ReasonPackage::class, CarrierPackage::class, CameraPackage::class], version = 1)
+
 abstract class ProcessDatabase : RoomDatabase() {
 
     abstract fun processDao(): ProcessDao
 
     abstract fun bulkDao(): BulkDao
+
+    abstract fun cameraDao():CamerDao
 
     abstract fun statusDao(): StatusDao
 

@@ -16,31 +16,25 @@
     </style>
 
 
-    <style
-        name="ForgotPassword"
-        parent="@style/Widget.AppCompat.TextView">
+    <style name="ForgotPassword" parent="@style/Widget.AppCompat.TextView">
         <item name="android:fontFamily">.SF NS Display</item>
         <item name="android:textColor">#27AAE1</item>
         <item name="android:textSize">13.82sp</item>
     </style>
 
 
-    <style
-        name="Button">
+    <style name="Button">
         <item name="android:fontFamily">Open Sans</item>
         <item name="android:textSize">13.55sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-        <style
-            name="ButtonText"
-            >
-            <item name="android:fontFamily">Open Sans</item>
-            <item name="android:textColor">#FBFBFB</item>
-            <item name="android:textSize">13.55sp</item>
-            <item name="android:textStyle">bold</item>
-        </style>
-
+    <style name="ButtonText">
+        <item name="android:fontFamily">Open Sans</item>
+        <item name="android:textColor">#FBFBFB</item>
+        <item name="android:textSize">13.55sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 
     <style name="Circular">
@@ -76,19 +70,24 @@
     </style>
 
 
-
-
-    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:textSize">15.8sp</item>
     </style>
 
 
-
-
-    <style name="AppList" parent="@android:style/Widget.ListView" >
+    <style name="AppList" parent="@android:style/Widget.ListView">
         <item name="android:textSize">15.8sp</item>
         <item name="android:textColor">#99000000</item>
         <item name="fontFamily">@font/open_sans_bold</item>
     </style>
+
+    <style name="Theme.XCarrierMaterialDesign.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.XCarrierMaterialDesign.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.XCarrierMaterialDesign.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

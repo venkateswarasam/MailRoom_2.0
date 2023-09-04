@@ -115,38 +115,6 @@ class EditPackageActivity : AppCompatActivity() {
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         binding.profile.setOnClickListener {
 
 

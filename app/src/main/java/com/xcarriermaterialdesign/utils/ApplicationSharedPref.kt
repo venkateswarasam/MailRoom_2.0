@@ -19,7 +19,20 @@ object ApplicationSharedPref {
     const val TOKEN= "TOKEN"
     const val REFRESH_TOKEN= "REFRESH_TOKEN"
     const val USERNAME= "USERNAME"
+    const val USERALIAS= "USERALIAS"
+    const val USERROLE= "USERROLE"
     const val PROFILEIMAGE= "PROFILEIMAGE"
+    const val ROLEID= "ROLEID"
+    const val PLANTNAME= "PLANTNAME"
+    const val BUILDING= "BUILDING"
+
+
+    const val CUSTOMERNAME= "CUSTOMERNAME"
+    const val DEPARTMENT= "DEPARTMENT"
+    const val DESIGNATION= "DESIGNATION"
+
+    const val SMSCHECK= false
+    const val BUILDINGCHECK= false
 
 
 
@@ -51,6 +64,18 @@ object ApplicationSharedPref {
     fun write(key: String?, value: String?) {
         val prefsEditor: SharedPreferences.Editor = mSharedPref!!.edit()
         prefsEditor.putString(key, value)
+        prefsEditor.apply()
+        prefsEditor.commit()
+    }
+
+
+    fun readboolean(key: Boolean, defValue: Boolean?): Boolean? {
+        return mSharedPref!!.getBoolean(key.toString(), defValue!!)
+    }
+
+    fun writeboolean(key: Boolean, value: Boolean?) {
+        val prefsEditor: SharedPreferences.Editor = mSharedPref!!.edit()
+        prefsEditor.putBoolean(key.toString(), value!!)
         prefsEditor.apply()
         prefsEditor.commit()
     }

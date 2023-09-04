@@ -51,6 +51,13 @@
             </androidx.appcompat.widget.Toolbar>
 
 
+            <LinearLayout
+                android:id="@+id/tracklayout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
             <TextView
                 android:id="@+id/track_text"
                 android:textColor="#DE000000"
@@ -101,6 +108,7 @@
 
 
             <TextView
+                android:id="@+id/statusdate"
                 android:textColor="#99000000"
                 android:textSize="13.82sp"
                 android:fontFamily="@font/open_sans"
@@ -117,6 +125,7 @@
 
 
             <LinearLayout
+                android:visibility="gone"
 
 
                 android:layout_marginTop="31.5dp"
@@ -460,21 +469,17 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="31.5dp"
+                android:layout_marginEnd="23.5dp"
                 android:layout_marginStart="23.5dp"
+
+
 
                 android:id="@+id/statuslist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             </androidx.recyclerview.widget.RecyclerView>
-
-
-
-
-
-
-
-
 
 
 
@@ -539,6 +544,7 @@
                     android:text="Carrier:" />
 
                 <TextView
+                    android:id="@+id/carriername"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -569,6 +575,7 @@
                     android:text="Carrier Tracking #:" />
 
                 <TextView
+                    android:id="@+id/carriertrackingnumber"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -623,6 +630,7 @@
                     android:text="Package Type:" />
 
                 <TextView
+                    android:id="@+id/packagetype"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -653,6 +661,7 @@
                     android:text="Weight:" />
 
                 <TextView
+                    android:id="@+id/packageweight"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -708,6 +717,7 @@
                     android:text="Ship From:" />
 
                 <TextView
+                    android:id="@+id/shipfrom"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -738,6 +748,7 @@
                     android:text="Ship To:" />
 
                 <TextView
+                    android:id="@+id/shipto"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -772,6 +783,7 @@
                     android:text="Ship To Email:" />
 
                 <TextView
+                    android:id="@+id/shipemail"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:textColor="#DE000000"
@@ -786,6 +798,8 @@
             </LinearLayout>
 
 
+
+            </LinearLayout>
 
 
         </LinearLayout>
