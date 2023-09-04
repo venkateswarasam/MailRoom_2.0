@@ -25,10 +25,10 @@ import com.xcarriermaterialdesign.databinding.FragmentDashboardBinding
 import com.xcarriermaterialdesign.model.LstResponse
 import com.xcarriermaterialdesign.model.PendingRequest
 import com.xcarriermaterialdesign.model.PendingResponse
-import com.xcarriermaterialdesign.pending.PendingDeliveriesActvity
 import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.*
 import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.pending.PendingDeliveriesActivity
 import com.xcarriermaterialdesign.trackreport.TrackReportActivty
 import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.LoadingView
@@ -62,6 +62,11 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
     private val ctegroieslist: MutableList<LstResponse> = mutableListOf()
+
+
+    var rowcount = 0
+
+    var itemcount = 0
 
 
     override fun onCreateView(
@@ -124,9 +129,15 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         }*/
 
 
-        binding.loadmore.setOnClickListener {
+        binding.loadmore.setOnClickListener{
 
 
+
+            rowcount += 50
+
+            println("==rowcount==$rowcount")
+
+            getpackageactivedetails()
            /* bulkDao.getAllBulkPackages()
 
             adapter =
@@ -266,7 +277,7 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         binding.searchLayouts.setOnClickListener {
 
 
-            val intent = Intent(context, PendingDeliveriesActvity::class.java)
+            val intent = Intent(context, PendingDeliveriesActivity::class.java)
             startActivity(intent)
         }
 
@@ -299,44 +310,75 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
         binding.last60.setOnClickListener {
 
+            bulkDao.deleteAllBulkPackages()
+            ctegroieslist.clear()
+            rowcount = 0
+
             binding.last60.setBackgroundResource(R.drawable.text_bg_new)
             binding.last90.setBackgroundResource(R.drawable.text_bg)
             binding.last30.setBackgroundResource(R.drawable.text_bg)
+
+
+            lastDays = model.getBeforeDate(true,true,true,59)
+
+            getpackageactivedetails()
+
         }
 
 
         binding.last30.setOnClickListener {
 
+            bulkDao.deleteAllBulkPackages()
+            rowcount = 0
+            ctegroieslist.clear()
+
+
 
             binding.last30.setBackgroundResource(R.drawable.text_bg_new)
             binding.last90.setBackgroundResource(R.drawable.text_bg)
             binding.last60.setBackgroundResource(R.drawable.text_bg)
+
+
+           lastDays = model.getBeforeDate(true,true,true,29)
+
+            getpackageactivedetails()
+
+
+
+
         }
 
 
         binding.last90.setOnClickListener {
+            bulkDao.deleteAllBulkPackages()
+
+            rowcount = 0
+            ctegroieslist.clear()
+
 
 
             binding.last30.setBackgroundResource(R.drawable.text_bg)
             binding.last90.setBackgroundResource(R.drawable.text_bg_new)
             binding.last60.setBackgroundResource(R.drawable.text_bg)
+
+
+            lastDays = model.getBeforeDate(true,true,true,89)
+
+            getpackageactivedetails()
+
         }
 
 
-        lastDays = model.getBeforeDate(true,true,true,6)
+        //lastDays = model.getBeforeDate(true,true,true,6)
 
 
-        val pendingRequest = PendingRequest("",
-            ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
-            lastDays,"",
-            ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!.toInt(),
-            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,"","","", SimpleDateFormat("yyyy-MM-dd").format(Date()),1)
 
-        model.loadingpendingdeliveries(pendingRequest)
+
+
 
         // response
 
-        model.pendingResponse.observe(this, Observer<PendingResponse> { item ->
+        model.pendingResponse.observe(activity as AppCompatActivity, Observer<PendingResponse> { item ->
 
             LoadingView.hideLoading()
 
@@ -356,7 +398,35 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
                 if (item.Result.lstResponse.isNotEmpty()){
 
 
-                    adapter = ProcessAdapter_new(activity as AppCompatActivity, item.Result.lstResponse)
+                    itemcount = item.Result.TotalCount
+
+                    println("==itemcount==$itemcount")
+
+
+                    if (itemcount> 50){
+
+
+                        binding.loadmore.visibility = View.VISIBLE
+
+                        //  rowcount = 50
+
+
+                    }
+
+
+
+
+
+
+                 /*   if (item.Result.TotalCount>50){
+
+                        binding.loadmore.visibility = View.VISIBLE
+                    }*/
+
+
+                    ctegroieslist.addAll(item.Result.lstResponse)
+
+                    adapter = ProcessAdapter_new(activity as AppCompatActivity, ctegroieslist)
 
 
 
@@ -365,6 +435,23 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
                     binding.pendinglist!!.layoutManager = manager
                     binding.pendinglist!!.adapter = adapter
+
+                    for (i in 0 until item.Result.lstResponse.size){
+
+
+                        val itemviewmodel = item.Result.lstResponse[i]
+
+
+                        bulkDao.insertBulkPackage(BulkPackage(itemviewmodel.InternalTrackNo,
+                            itemviewmodel.CurrentStatus,
+                            itemviewmodel.UpdatedOn,
+                            "",itemviewmodel.BuildingId,
+                            itemviewmodel.CarrierDescription))
+                    }
+
+
+
+
 
 
                 }
@@ -380,19 +467,21 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
 
+            }
 
+            else if (item.Result.ReturnMsg == "No data to display"){
 
+                ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
 
-
-
-
-
+                binding.loadmore.visibility = View.INVISIBLE
 
             }
 
             else{
 
                 ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
+
+
             }
 
 
@@ -417,6 +506,14 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
 
 
+        default()
+
+       // getpackageactivedetails()
+
+
+
+
+
 
 
 
@@ -424,6 +521,43 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
         return root
     }
 
+
+    fun getpackageactivedetails(){
+
+
+
+        println("==lastdate==$lastDays")
+
+        val pendingRequest = PendingRequest("",
+            ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+            lastDays,"",
+            ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!.toInt(),
+            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,"","","", SimpleDateFormat("yyyy-MM-dd").format(Date()),rowcount)
+
+        model.loadingpendingdeliveries(pendingRequest)
+
+
+    }
+
+
+    fun default()
+    {
+
+        bulkDao.deleteAllBulkPackages()
+        rowcount = 0
+        ctegroieslist.clear()
+
+
+
+        binding.last30.setBackgroundResource(R.drawable.text_bg_new)
+        binding.last90.setBackgroundResource(R.drawable.text_bg)
+        binding.last60.setBackgroundResource(R.drawable.text_bg)
+
+
+        lastDays = model.getBeforeDate(true,true,true,29)
+
+        getpackageactivedetails()
+    }
 
 
     inner class ProcessAdapter_new(val context : Context, private val mList: List<LstResponse>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>() {
@@ -460,49 +594,218 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
             holder.dateandtime.text = itemsViewModel.UpdatedOn
 
+            when(itemsViewModel.CurrentStatus){
+
+                "Delivered"->{
+
+                    holder.status.setTextColor(Color.parseColor("#007CBB"))
 
 
 
-            if (itemsViewModel.CarrierDescription == "DHL"){
+                }
+                "Cancelled"->{
 
-                holder.pen_image.setImageResource(R.drawable.dhll)
-            }
+                    holder.status.setTextColor(Color.parseColor("#B00020"))
 
-            else if (itemsViewModel.CarrierDescription == "USPS"){
+                }
 
-            //    holder.status.setTextColor(Color.parseColor("#007CBB"))
+                else->{
 
-                holder.pen_image.setImageResource(R.drawable.usps)
-
-            }
+                    holder.status.setTextColor(Color.parseColor("#99000000"))
 
 
-            else if (itemsViewModel.CarrierDescription == "FedEx"){
 
-             //   holder.status.setTextColor(Color.parseColor("#007CBB"))
 
-                holder.pen_image.setImageResource(R.drawable.fedex)
-
-            }
-
-            else if (itemsViewModel.CarrierDescription == "UPS"){
-
-                //   holder.status.setTextColor(Color.parseColor("#007CBB"))
-
-                holder.pen_image.setImageResource(R.drawable.ups)
+                }
 
             }
 
 
+            val carrier = itemsViewModel.CarrierDescription
 
 
-            else{
 
-            //    holder.status.setTextColor(Color.parseColor("#007CBB"))
+            when(carrier){
 
-                holder.pen_image.setImageResource(R.drawable.fedex)
+                "ACTION FREIGHT SYSTEM"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.actionfreight)
+
+                }
+
+                "Amazon"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.amazonlogo)
+
+                }
+                "CEVA"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.cevalogo)
+
+                }
+                "DB Schenker"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.dbschenkerlogo)
+
+                }
+                "EAGLE TRANSPORT INC."->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.eagletransportlogo)
+
+                }
+                "EZXPEDITORS"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.expeditorslogo)
+
+                }
+                "Hard Drives Northwest"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.harddriveslogo)
+
+                }
+                "lone star"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.lonestarlogo)
+
+                }
+                "LOWES"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.loweslogo)
+
+                }
+                "LYNDEN INTERNATIONAL"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.lyndenlogo)
+
+                }
+                "OAK HARBOR FREIGHT LINES"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.oakhlogo)
+
+                }
+                "OFFICE DEPOT"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.officedepotlogo)
+
+                }
+
+
+                "DHL"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.dhllogo)
+
+
+                }
+                "OnTrac"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.ontracklogo)
+
+
+                }
+                "Overnight Express"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.overnitenet)
+
+
+                }
+                "SAIA MOTOR FREIGHT"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.saialogo)
+
+
+                }
+                "SHO AIR"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.shoairlogo)
+
+
+                }
+                "STAPLES"->{
+
+
+
+                    holder.pen_image.setImageResource(R.drawable.stapleslogo)
+
+
+                }
+                "United States Postal Service"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.uspslogo)
+
+
+                }
+                "UPS"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.ups)
+
+
+                }
+
+
+                "USF Reddaway"->{
+
+
+                    holder.pen_image.setImageResource(R.drawable.reddawaylogo)
+
+
+                }
+
+                "WORLD WIDE TECH"->{
+
+                    holder.pen_image.setImageResource(R.drawable.wwtlogo)
+
+                }
+
+                "YRC Worldwide"->{
+
+                    holder.pen_image.setImageResource(R.drawable.yrclogo)
+
+                }
+                "Zones"->{
+
+                    holder.pen_image.setImageResource(R.drawable.zoneslogo)
+
+                }
+
+
+
+                "FedEx"->{
+
+                    holder.pen_image.setImageResource(R.drawable.fedexlogo)
+
+
+                }
+
+
+                else->{
+
+                    holder.pen_image.setImageResource(R.drawable.box)
+
+                }
 
             }
+
+
+
 
 
 

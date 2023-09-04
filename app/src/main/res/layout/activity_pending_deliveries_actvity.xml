@@ -104,7 +104,7 @@
                     android:iconifiedByDefault="false"
                     android:gravity="center"
                     android:lineSpacingMultiplier="1.52"
-                    android:queryHint="Search Route, Tracking, Bin …"
+                    android:queryHint="Search Tracking No"
                     android:textColorHint="#61000000"
                      />
 

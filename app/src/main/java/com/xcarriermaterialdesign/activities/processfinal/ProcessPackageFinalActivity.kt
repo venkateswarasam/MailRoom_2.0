@@ -95,6 +95,11 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
     val buil = 4
     val route = 5
     val track = 0
+    val mail = 6
+    val doc = 7
+
+
+
 
 
     var digitalSignResult =
@@ -154,6 +159,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
         val intent = Intent(this, BottomNavigationActivity::class.java)
 
         startActivity(intent)
+        finish()
 
     }
 
@@ -171,7 +177,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
 
-        DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action2),"true")
+        DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action5),"true")
 
 
         startService(Intent(applicationContext, NetWorkService::class.java))
@@ -187,24 +193,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         }
 
-        //  val dropdown_item = findViewById<AutoCompleteTextView>(R.id.dropdown_item)
 
-    /*    val araylist:ArrayList<String> = ArrayList()
-        araylist.add("Received")
-        araylist.add("Delivered")
-        araylist.add("In-Transit")
-        araylist.add("Delivery Attempt 1")
-        araylist.add("Delivery Attempt 2")
-        araylist.add("Delivery Attempt 3")
-        araylist.add("Handover to Carrier")
-        araylist.add("Picked Up")
-        araylist.add("Exception")
-        araylist.add("Returned")
-        araylist.add("Cancelled")
-        araylist.add("Dropped Off at Front Desk")
-        araylist.add("Left at Disk")
-        araylist.add("Left in Office")
-        araylist.add("Dropped Off at Mailroom")*/
 
 
 
@@ -260,11 +249,17 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             val intent = Intent(this, BottomNavigationActivity::class.java)
 
             startActivity(intent)
+            finish()
 
         }
 
         binding.backbutton.setOnClickListener {
 
+            processDao.deleteAllProcessPackages()
+
+            val intent = Intent(this, BottomNavigationActivity::class.java)
+
+            startActivity(intent)
             finish()
         }
 
@@ -556,6 +551,39 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                         binding.carriersignature.visibility = View.GONE
                         binding.route.visibility = View.GONE
                         binding.locker.visibility = View.GONE
+                        binding.reasonLay.visibility = View.GONE
+                        binding.required.visibility = View.GONE
+
+
+                    }
+
+                    else->{
+
+                        binding.buildingLay.visibility = View.VISIBLE
+                        binding.mailstopLay.visibility = View.VISIBLE
+                        binding.stoargelay.visibility = View.VISIBLE
+                        binding.binLay.visibility = View.VISIBLE
+                        binding.dock.visibility = View.VISIBLE
+                        binding.signedby.visibility = View.VISIBLE
+                        binding.signhere.visibility = View.VISIBLE
+                        binding.noteshere.visibility = View.VISIBLE
+                        binding.captureImages.visibility = View.VISIBLE
+
+                        binding.bottomactionlay.visibility = View.VISIBLE
+                        binding.savechanges.visibility = View.VISIBLE
+
+                        binding.signature.text = getString(R.string.signedhere)
+
+
+                        binding.locatondrop.visibility = View.GONE
+                        binding.locatondrop1.visibility = View.GONE
+                        binding.imagesLayout.visibility = View.GONE
+
+
+                        binding.drivername.visibility = View.GONE
+                        binding.carriersignature.visibility = View.GONE
+                        binding.route.visibility = View.VISIBLE
+                        binding.locker.visibility = View.VISIBLE
                         binding.reasonLay.visibility = View.GONE
                         binding.required.visibility = View.GONE
 
@@ -891,6 +919,59 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         }
 
+        binding.buildingname.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                buil
+            }else{
+                track
+            }
+
+        }
+
+        binding.mailStop.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                mail
+            }else{
+                track
+            }
+
+        }
+
+        binding.docNumber.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                doc
+            }else{
+                track
+            }
+
+        }
+
+
+
+
+
+
+
+
+        binding.routeText.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                route
+            }else{
+                track
+            }
+
+        }
+
+
+        binding.lockertext.setOnFocusChangeListener { _,hasFocus ->
+            scanType = if(hasFocus){
+                lock
+            }else{
+                track
+            }
+
+        }
+
 
 
     }
@@ -937,7 +1018,20 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                 route -> {
                     binding.routeText.setText(decodedData)
                 }
+
+                mail->{
+
+                    binding.mailStop.setText(decodedData)
+                }
+
+                doc->{
+
+                    binding.docNumber.setText(decodedData)
+                }
+
+
                 else -> {
+
 
                 }
             }
@@ -1010,7 +1104,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                 if (resultCode == RESULT_OK) {
                     val name = data!!.getStringExtra("barcode")
                     println("==name$name")
-                    binding.mailstop!!.setText(name)
+                    binding.mailStop!!.setText(name)
                 }
 
 
@@ -1048,7 +1142,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                 if (resultCode == RESULT_OK) {
                     val name = data!!.getStringExtra("barcode")
                     println("==name$name")
-                    binding.docnumber!!.setText(name)
+                    binding.docNumber!!.setText(name)
                 }
 
 

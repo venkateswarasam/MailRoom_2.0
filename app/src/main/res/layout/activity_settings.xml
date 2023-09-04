@@ -57,8 +57,8 @@
 
 
         <LinearLayout
+            android:weightSum="3"
 
-            android:layout_marginStart="27.33dp"
 
 
             android:layout_marginTop="38.33dp"
@@ -68,6 +68,7 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileimage"
+                android:layout_weight="1"
                 app:civ_border_color="@color/purple_200"
                 android:src="@drawable/account_circle_blue"
                 android:layout_width="33.33dp"
@@ -75,12 +76,13 @@
 
 
             <LinearLayout
-                android:layout_marginLeft="19.34dp"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/username"
                     android:fontFamily="@font/open_sans"
 
                     android:layout_width="fill_parent"
@@ -93,6 +95,8 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:lines="2"
+                    android:id="@+id/useremail"
                     android:fontFamily="@font/open_sans"
 
                     android:textSize="14sp"
@@ -101,10 +105,10 @@
                     android:layout_height="wrap_content"
                     android:layout_width="fill_parent"
                     android:lineSpacingMultiplier="1.71"
-                    android:text="jappleseed@elemica.com"
-                    android:width="176dp" />
+                    android:text="jappleseed@elemica.com" />
 
                 <TextView
+                    android:id="@+id/user_mobile"
                     android:fontFamily="@font/open_sans"
 
                     android:textSize="14sp"
@@ -119,8 +123,8 @@
             </LinearLayout>
 
             <ImageView
+                android:layout_weight="1"
                 android:id="@+id/logout_img"
-                android:layout_marginStart="56dp"
 
                 android:layout_gravity="center"
                 android:src="@drawable/outline_logout_24"
@@ -212,11 +216,13 @@
 
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_text"
+                android:id="@+id/firstname"
                 android:textSize="13.82sp"
                 android:padding="10dp"
-                android:inputType="textEmailAddress"
+                android:maxLength="20"
+                android:inputType="text|textPersonName"
                 android:fontFamily="@font/open_sans"
+
 
 
                 android:textColor="@color/black"
@@ -239,6 +245,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/lastname"
+                android:maxLength="20"
+                android:inputType="text|textPersonName"
 
                 android:fontFamily="@font/open_sans"
 
@@ -261,7 +270,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/address1"
                 android:fontFamily="@font/open_sans"
+                android:inputType="textPostalAddress"
+                android:maxLength="30"
 
 
                 android:textColor="@color/black"
@@ -285,6 +297,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/address2"
+                android:inputType="textPostalAddress"
+                android:maxLength="30"
+
 
                 android:fontFamily="@font/open_sans"
 
@@ -309,7 +325,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/city"
                 android:fontFamily="@font/open_sans"
+                android:maxLength="30"
 
 
                 android:textColor="@color/black"
@@ -323,6 +341,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="20dp"
+            android:visibility="gone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -336,6 +355,7 @@
                 android:layout_height="40dp"
                 android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
 
+                android:id="@+id/state"
                 android:fontFamily="@font/open_sans"
 
                 android:padding="10dp"
@@ -348,6 +368,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
+            android:visibility="gone"
             android:layout_marginTop="20dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -360,6 +381,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/country"
 
                 android:fontFamily="@font/open_sans"
 
@@ -369,6 +391,67 @@
                 android:layout_height="40dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="20dp"
+            android:id="@+id/dropdownlay_state"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
+
+
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:hint="@string/state">
+
+            <!--this is the actual edit text which takes the input-->
+            <AutoCompleteTextView
+                android:focusable="false"
+                android:fontFamily="@font/open_sans"
+                android:padding="10dp"
+                android:background="@null"
+                android:id="@+id/dropdown_item_state"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/black"
+                android:textSize="13.82sp"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="20dp"
+            android:id="@+id/dropdownlay"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
+
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:hint="@string/country">
+
+            <!--this is the actual edit text which takes the input-->
+            <AutoCompleteTextView
+                android:focusable="false"
+                android:fontFamily="@font/open_sans"
+                android:padding="10dp"
+                android:background="@null"
+                android:id="@+id/dropdownitem"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/black"
+                android:textSize="13.82sp"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="20dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -382,7 +465,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/postalcode"
                 android:fontFamily="@font/open_sans"
+                android:maxLength="10"
+
 
 
                 android:textColor="@color/black"
@@ -404,6 +490,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/mobilenumber"
+                android:maxLength="10"
+                android:inputType="numberDecimal"
+
 
                 android:fontFamily="@font/open_sans"
 
@@ -427,6 +517,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:editable="false"
+                android:id="@+id/emailaddress"
+                android:focusable="false"
+
 
                 android:fontFamily="@font/open_sans"
 
@@ -751,6 +845,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#61000000"
             android:layout_marginEnd="24dp"
             android:hint="@string/oldpassword">
 
@@ -758,7 +854,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
-                android:drawableEnd="@drawable/ic_baseline_visibility_24"
+                android:inputType="textPassword"
+                android:id="@+id/oldpassword"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#$!."
+                android:maxLength="16"
+
 
                 android:fontFamily="@font/open_sans"
 
@@ -767,6 +867,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/old_visibile"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="-30dp"
+                android:layout_gravity="end"
+
+                android:src="@drawable/baseline_visibility_off_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </ImageView>
+
+
+
+
+
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -774,6 +892,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#61000000"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:hint="@string/newpass">
@@ -782,10 +902,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
-                android:drawableEnd="@drawable/ic_baseline_visibility_24"
+                android:id="@+id/newpassword"
+                android:inputType="textPassword"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#$!."
 
                 android:fontFamily="@font/open_sans"
 
+                android:maxLength="16"
                 android:textColor="@color/black"
 
                 android:layout_width="match_parent"
@@ -800,15 +923,21 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#61000000"
             android:hint="@string/confirmpass">
 
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:textSize="13.82sp"
                 android:padding="10dp"
+                android:id="@+id/confirmpassword"
                 android:drawableEnd="@drawable/ic_baseline_visibility_24"
                 android:fontFamily="@font/open_sans"
+                android:inputType="textPassword"
+                android:maxLength="16"
 
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#$!."
 
                 android:textColor="@color/black"
 
@@ -1104,6 +1233,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/notifyme"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1157,6 +1287,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/recevied"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1209,6 +1340,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/delivered"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1263,6 +1395,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/exceptions"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1317,6 +1450,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/allstatues"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1370,6 +1504,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/notifyothers"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1388,12 +1523,18 @@
 
 
         <EditText
+            android:visibility="gone"
+            android:gravity="start"
+            android:padding="10dp"
+
+            android:textSize="13.82sp"
+            android:id="@+id/othersmail"
             android:layout_marginTop="10dp"
 
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
 
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textEmailAddress"
             android:background="@drawable/et_bg"
             android:layout_width="match_parent"
             android:layout_height="100dp">
@@ -1409,12 +1550,10 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-            android:elevation="2dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
+
+            android:orientation="horizontal">
 
 
 
@@ -1443,6 +1582,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:enabled="true"
+                android:id="@+id/sms"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1484,7 +1624,8 @@
 
         <LinearLayout
 
-            android:id="@+id/savechanges"
+            android:visibility="gone"
+
             android:layout_marginTop="32dp"
 
 
@@ -1513,8 +1654,6 @@
 
                 android:layout_marginStart="15dp"
                 android:gravity="center"
-                android:layout_centerInParent="true"
-                android:id="@+id/savebutton"
 
 
                 android:textSize="13.5sp"
@@ -1524,16 +1663,72 @@
                 android:layout_gravity="center_vertical"
                 android:height="16dp"
                 android:layout_height="wrap_content"
-                android:layout_width="120dp"
+                android:layout_width="wrap_content"
                 android:letterSpacing="0.125"
                 android:lineSpacingMultiplier="1.18"
-                android:text="SAVE CHANGES"
-                android:width="116dp" />
+                android:text="@string/savechanges"
+                 />
 
 
 
 
         </LinearLayout>
+
+
+<!--
+        new button
+-->
+
+
+
+        <RelativeLayout
+            android:layout_marginTop="32dp"
+
+            android:id="@+id/savechanges"
+
+            android:layout_marginStart="49dp"
+            android:layout_marginEnd="48dp"
+
+
+            android:gravity="center"
+
+
+            android:background="@drawable/buttonshape"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <TextView
+                android:gravity="center"
+                android:id="@+id/savebutton"
+
+                android:textSize="13.5sp"
+
+                android:textStyle="bold"
+                android:fontFamily="@font/open_sans"
+                android:layout_gravity="center_vertical"
+
+                android:letterSpacing="0.125"
+                android:lineSpacingMultiplier="1.18"
+                android:textColor="@color/white"
+
+
+                android:drawablePadding="15dp"
+                android:layout_centerHorizontal="true"
+
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/savechanges"
+                app:drawableLeftCompat="@drawable/ic_baseline_save_24" />
+
+        </RelativeLayout>
+
+
+
+
+
+
+
+
 
 
         <TextView

@@ -17,22 +17,29 @@ import androidx.room.Room
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.adapter.ContactAdapterNew
 import com.xcarriermaterialdesign.databinding.ActivityPendingDeliveriesActvityBinding
+import com.xcarriermaterialdesign.model.PendingRequest
+import com.xcarriermaterialdesign.model.PendingResponse
 import com.xcarriermaterialdesign.pendingnew.SearchPackagesActivity
 import com.xcarriermaterialdesign.roomdatabase.*
-import com.xcarriermaterialdesign.trackreport.TrackReportViewModel
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.ApplicationSharedPref
+import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
+import com.xcarriermaterialdesign.utils.ServiceDialog
+import java.text.SimpleDateFormat
 import java.util.*
+import androidx.lifecycle.Observer
 
 
-class PendingDeliveriesActvity : AppCompatActivity(), ContactsAdapter.ContactsAdapterListener,
+
+class PendingDeliveriesActivity : AppCompatActivity(), ContactsAdapter.ContactsAdapterListener,
 ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerReceiverListener{
 
 
     private lateinit var binding: ActivityPendingDeliveriesActvityBinding
 
-    val model: TrackReportViewModel by viewModels()
+    val model: PendingViewModel by viewModels()
 
 
     private var adapter: ContactsAdapter? = null
@@ -53,7 +60,12 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
     lateinit var programmingLanguagesList: ArrayList<String>;
     lateinit var programmingLanguagesList_new: ArrayList<String>;
 
-    lateinit var searchnameslist: ArrayList<String>;
+    lateinit var searchnameslist: ArrayList<String>
+
+    var rowcount = 0
+
+    var lastDays = ""
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,14 +132,16 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
        binding.searchlist.setHasFixedSize(true);
         binding.searchlist.layoutManager =
-         LinearLayoutManager(this@PendingDeliveriesActvity);
+         LinearLayoutManager(this);
+
+
         binding.binlistNew.setHasFixedSize(true);
         binding.binlistNew.layoutManager =
-            LinearLayoutManager(this@PendingDeliveriesActvity);
+            LinearLayoutManager(this);
 
 
 
-        adapter = ContactsAdapter(this,bulkPackage,this@PendingDeliveriesActvity)
+        adapter = ContactsAdapter(this,bulkPackage,this)
 
         binding.searchlist.adapter = adapter
 
@@ -144,9 +158,12 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
                 // on below line we are checking
                 // if query exist or not.
 
+
+               // getpackageactivedetails(query!!)
+
                 adapter?.filter?.filter(query)
 
-                adapter_bin?.filter?.filter(query)
+             //   adapter_bin?.filter?.filter(query)
 
 
                 /*  if (query != null) {
@@ -282,10 +299,11 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
                         binding.searchImg.setImageResource(R.drawable.close_new)
 
+                       // getpackageactivedetails(newText!!)
 
                         binding.searchMainLayout.setBackgroundResource(R.drawable.pendingbg)
                         binding.trackingList.visibility = View.VISIBLE
-                        binding.binlist.visibility = View.VISIBLE
+                     // binding.binlist.visibility = View.VISIBLE
 
 
                     }
@@ -296,7 +314,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
                 adapter?.filter?.filter(newText)
 
-                adapter_bin?.filter?.filter(newText)
+                //adapter_bin?.filter?.filter(newText)
 
 
 
@@ -355,7 +373,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
 
                 listAdapter = ArrayAdapter<String>(
-                    this@PendingDeliveriesActvity,
+                    this@PendingDeliveriesActivity,
                     android.R.layout.simple_list_item_1,
                     programmingLanguagesList
                 )
@@ -367,7 +385,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
 
                 listAdapter = ArrayAdapter<String>(
-                    this@PendingDeliveriesActvity,
+                    this@PendingDeliveriesActivity,
                     android.R.layout.simple_list_item_1,
                     programmingLanguagesList_new
                 )
@@ -456,6 +474,25 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
             }
         })
 */
+
+
+
+        //pending details response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -479,7 +516,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
             binding.trackingList.visibility = View.VISIBLE
 
             listAdapter = ArrayAdapter<String>(
-                this@PendingDeliveriesActvity,
+                this@PendingDeliveriesActivity,
                 android.R.layout.simple_list_item_1,
                 programmingLanguagesList
             )
@@ -504,7 +541,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
             binding.binlist.visibility = View.VISIBLE
 
             listAdapter = ArrayAdapter<String>(
-                this@PendingDeliveriesActvity,
+                this@PendingDeliveriesActivity,
                 android.R.layout.simple_list_item_1,
                 programmingLanguagesList_new
             )
@@ -583,7 +620,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
               //  finish()
 
-                val intent = Intent(this@PendingDeliveriesActvity, SearchPackagesActivity::class.java)
+                val intent = Intent(this@PendingDeliveriesActivity, SearchPackagesActivity::class.java)
 
               //  intent.putExtra("trackingnumber", names[position])
 
@@ -712,7 +749,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
                 //  finish()
 
-                val intent = Intent(this@PendingDeliveriesActvity, SearchPackagesActivity::class.java)
+                val intent = Intent(this@PendingDeliveriesActivity, SearchPackagesActivity::class.java)
 
                 //  intent.putExtra("trackingnumber", names[position])
 
@@ -789,7 +826,7 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
         AnalyticsApplication.instance?.setCompanyId("")
 
-        val intent = Intent(this@PendingDeliveriesActvity, SearchPackagesActivity::class.java)
+        val intent = Intent(this@PendingDeliveriesActivity, SearchPackagesActivity::class.java)
 
         //  intent.putExtra("trackingnumber", contact?.trackingNumber)
 
@@ -806,14 +843,14 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
     override fun onContactbinSelected(contact: BulkPackage?) {
 
-        AnalyticsApplication.instance?.setCompanyId(contact?.binnumber)
-        AnalyticsApplication.instance?.setPlantId("")
+       // AnalyticsApplication.instance?.setCompanyId(contact?.binnumber)
+        //AnalyticsApplication.instance?.setPlantId("")
 
         println("==bin==${AnalyticsApplication.instance?.getCompanyId()}")
 
         //  finish()
 
-        val intent = Intent(this@PendingDeliveriesActvity, SearchPackagesActivity::class.java)
+        val intent = Intent(this@PendingDeliveriesActivity, SearchPackagesActivity::class.java)
 
       //   intent.putExtra("trackingnumber", contact?.binnumber)
 
@@ -860,6 +897,28 @@ ContactAdapterNew.ContactsAdapterBinListener, NetworkChangeReceiver.NetCheckerRe
 
 
     // new change
+
+
+
+    fun getpackageactivedetails(trackingnumer:String){
+
+
+
+
+
+
+       // println("==lastdate==$lastDays")
+
+        val pendingRequest = PendingRequest("",
+            ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+            "",trackingnumer,
+            ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!.toInt(),
+            ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,"","","", SimpleDateFormat("yyyy-MM-dd").format(Date()),rowcount)
+
+        model.loadingpendingdeliveries(pendingRequest)
+
+
+    }
 
 
 

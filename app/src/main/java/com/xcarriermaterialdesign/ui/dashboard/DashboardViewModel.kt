@@ -57,7 +57,7 @@ class DashboardViewModel : ViewModel() {
             try {
 
 
-                var result: PendingResponse? = repsonse!!.getpackagedetails(pendingRequest,"Bearer"+ ApplicationSharedPref.read(
+                val result: PendingResponse? = repsonse!!.getpackagedetails(pendingRequest,"Bearer"+ ApplicationSharedPref.read(
                     ApplicationSharedPref.TOKEN,""))
                 pendingResponse?.postValue(result!!)
 

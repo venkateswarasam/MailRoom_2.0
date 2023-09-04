@@ -10,6 +10,8 @@ import android.os.LocaleList
 import android.os.StrictMode
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatDelegate
+import com.xcarriermaterialdesign.activities.country.Country
+import com.xcarriermaterialdesign.dbmodel.CountriesItem
 import java.util.*
 
 class AnalyticsApplication : Application() {
@@ -42,6 +44,10 @@ class AnalyticsApplication : Application() {
 
     private  var locationNameStr : String? = null
 
+
+
+
+     var araylist_states:CountriesItem?= null
 
 
 
@@ -326,4 +332,20 @@ class AnalyticsApplication : Application() {
     {
         return locationNameStr
     }
+
+
+    fun loadCountriesArraySet(carriersArray: CountriesItem) {
+
+        this.araylist_states = carriersArray
+
+    }
+
+    fun getCountriesArraySet(): CountriesItem? {
+        return araylist_states
+    }
+
+
+
+
+
 }

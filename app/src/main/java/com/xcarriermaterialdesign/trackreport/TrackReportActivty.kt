@@ -1,25 +1,35 @@
 package com.xcarriermaterialdesign.trackreport
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.ActivityTrackReportActivtyBinding
-import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.model.LstHistory
+import com.xcarriermaterialdesign.model.TrackReportResponse
+import com.xcarriermaterialdesign.ui.dashboard.DashboardFragment
+import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
+import com.xcarriermaterialdesign.utils.ServiceDialog
 
 class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
@@ -27,15 +37,30 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
     val model: TrackReportViewModel by viewModels()
 
-    lateinit var searchnameslist: ArrayList<String>;
+//    lateinit var searchnameslist: ArrayList<String>
 
-    lateinit var listAdapter: ArrayAdapter<String>
 
     var adapter:ProcessAdapter_new?=null
 
 
+    var retrun = false
 
 
+    override fun onBackPressed() {
+
+        val intent = Intent(this, BottomNavigationActivity::class.java)
+
+        intent.putExtra("navcheck","true")
+
+        startActivity(intent)
+
+        finish()
+    }
+
+
+
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,19 +75,30 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
         val trackingno = intent.getStringExtra("trackingno")
 
+
+        trackreportapicall(trackingno!!)
+
         binding.toolbar.setNavigationOnClickListener {
+
+
+
+            val intent = Intent(this, BottomNavigationActivity::class.java)
+
+            intent.putExtra("navcheck","true")
+
+            startActivity(intent)
 
             finish()
         }
 
         if (!NetworkConnection().isNetworkAvailable(this)) {
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profile.setImageResource(R.drawable.syncyellow)
 
         }
         else{
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
+            binding.profile.setImageResource(R.drawable.syncnew)
 
         }
 
@@ -73,22 +109,10 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
         binding.headertext.text = "Tracking #$trackingno"
         binding.trackText.text = "#$trackingno"
 
-        searchnameslist = ArrayList()
 
-        searchnameslist.add("On Rack")
-        searchnameslist.add("Received")
-        searchnameslist.add("See 3 more Updates")
-       // searchnameslist.add("Routed")
 
-      //  searchnameslist.add("Location Scan")
 
-        binding.statuslist.setHasFixedSize(true);
-        binding.statuslist.layoutManager =
-            LinearLayoutManager(this@TrackReportActivty);
 
-        adapter = ProcessAdapter_new(this, searchnameslist)
-
-        binding.statuslist.adapter = adapter
 
         binding.actionupandown.setOnClickListener {
 
@@ -116,7 +140,7 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
         }
 
 
-        binding.signImage.setImageBitmap(AnalyticsApplication.instance?.getBitmapSign())
+       // binding.signImage.setImageBitmap(AnalyticsApplication.instance?.getBitmapSign())
 
 
 
@@ -125,7 +149,119 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
     }
 
 
-    inner class ProcessAdapter_new(val context : Context, private val mList: ArrayList<String>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>()
+
+
+
+
+
+    // Trackreport
+
+    fun trackreportapicall(trackno:String){
+
+
+
+        model.trackReportResponse.observe(this, Observer<TrackReportResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            println("==statuscode${item.StatusCode}")
+
+            if (item.StatusCode == 200) {
+
+                binding.tracklayout.visibility = View.VISIBLE
+
+
+                for (i in 0 until item.Result.lstHistory.size){
+
+
+                    binding.statusdate.text = item.Result.lstHistory[0].StatusDate
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                binding.carriertest.text = "Carrier #:"+item.Result.packageInformation.CarrierTrackingNo
+
+                binding.shipemail.text = item.Result.packageAddressInfo.Email
+                binding.shipfrom.text = item.Result.packageAddressInfo.ShipFromName
+
+                val address = item.Result.packageAddressInfo.ShipToName+"\n"+item.Result.packageAddressInfo.Address1+"\n"+item.Result.packageAddressInfo.Address2+"\n"+item.Result.packageAddressInfo.City+"\n"+item.Result.packageAddressInfo.State+"\n"+item.Result.packageAddressInfo.Country+"" +
+                        "\n"+item.Result.packageAddressInfo.ZipCode
+
+                binding.shipto.text = address
+
+                binding.carriername.text = item.Result.packageInformation.Carrier
+                binding.packagetype.text = item.Result.packageInformation.PackageType
+                binding.packageweight.text = item.Result.packageInformation.Weight
+                binding.carriertrackingnumber.text = item.Result.packageInformation.CarrierTrackingNo
+
+
+                binding.statuslist.setHasFixedSize(true)
+                binding.statuslist.layoutManager =
+                    LinearLayoutManager(this@TrackReportActivty)
+
+
+               // adapterfunction(item.Result.lstHistory as ArrayList<LstHistory>)
+
+               adapter = ProcessAdapter_new(this, item.Result.lstHistory as ArrayList<LstHistory>)
+
+                binding.statuslist.adapter = adapter
+
+
+
+
+                return@Observer
+
+            }
+
+            else{
+
+
+
+                ServiceDialog.ShowDialog(this, item.Result.ReturnMsg)
+
+
+
+
+
+                return@Observer
+            }
+
+
+
+
+
+
+        })
+
+
+        model.trackreport(trackno)
+
+
+    }
+
+    private fun adapterfunction(lstHistory: ArrayList<LstHistory>){
+
+        adapter = ProcessAdapter_new(this, lstHistory)
+
+        binding.statuslist.adapter = adapter
+    }
+
+
+    inner class ProcessAdapter_new(val context : Context, private val mList: ArrayList<LstHistory>) : RecyclerView.Adapter<ProcessAdapter_new.ViewHolder>()
 
     {
 
@@ -144,17 +280,93 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-
-
             val itemsViewModel = mList[position]
 
-            if (itemsViewModel == "See 3 more Updates"){
+            holder.statusTv.text = itemsViewModel.StatusDescription
+            holder.latestatus.text = itemsViewModel.StatusDescription
+            holder.date_tv.text = itemsViewModel.StatusDate
+            holder.latest_date.text = itemsViewModel.StatusDate
 
-              /*  holder.trackingNo.setTextColor(resources.getColor(R.color.purple_700))
+
+            holder.binvalue.text = itemsViewModel.Bin
+            holder.locationvalue.text = itemsViewModel.StorageLocation
+            holder.signedby.text = itemsViewModel.SignByName
+
+
+
+
+
+            when(position){
+
+                0->{
+
+
+                    holder.latestlayout.visibility = View.VISIBLE
+
+                }
+
+               4->{
+
+                    holder.seemorelayout.visibility = View.VISIBLE
+                }
+
+
+
+                else->{
+
+                    holder.defaultlayout.visibility = View.VISIBLE
+                }
+            }
+
+
+
+
+            holder.actionupandown.setOnClickListener {
+
+                holder.actionupandown1.visibility = View.VISIBLE
+                holder.indetails_lay.visibility = View.VISIBLE
+                holder.actionupandown.visibility = View.GONE
+            }
+
+            holder.actionupandown1.setOnClickListener {
+
+                holder.actionupandown1.visibility = View.GONE
+                holder.indetails_lay.visibility = View.GONE
+                holder.actionupandown.visibility = View.VISIBLE
+
+            }
+
+
+            holder.seemorelayout.setOnClickListener {
+
+
+               // Toast.makeText(this@TrackReportActivty, "click", Toast.LENGTH_SHORT).show()
+
+                holder.seemorelayout.visibility = View.GONE
+
+               // adapterfunction(mList)
+
+
+                retrun = true
+
+              //  adapterfunction(lstHistory = mList)
+
+               // mList.size
+            }
+
+
+
+
+
+            /* val itemsViewModel = mList[position]
+
+             if (itemsViewModel == "See 3 more Updates"){
+
+               *//*  holder.trackingNo.setTextColor(resources.getColor(R.color.purple_700))
 
               //  holder.trackingNo.textSize = 11.85F
                 holder.trackingNo.textSize = 12F
-*/
+*//*
                 holder.date_tv.visibility = View.GONE
                 holder.trackingNo.visibility = View.GONE
                 holder.seemore.visibility = View.VISIBLE
@@ -187,8 +399,8 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
                 }
             }
 
-
-            holder.trackingNo.text = itemsViewModel ?: ""
+*/
+         //   holder.trackingNo.text = itemsViewModel ?: ""
 
 
 
@@ -204,15 +416,68 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
         // return the number of the items in the list
         override fun getItemCount(): Int {
-            return mList.size
+
+
+            if (mList.size>5){
+
+
+                if(!retrun){
+
+
+                    return 5
+
+                }
+                else{
+
+                    return mList.size
+                }
+
+
+            }
+
+            else{
+
+
+                return mList.size
+            }
+
+           /* if (!retrun){
+                return 2
+
+            }
+            else{
+
+                return mList.size
+            }*/
         }
 
         // Holds the views for adding it to image and text
         inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
 
-            val trackingNo: TextView = itemView.findViewById(R.id.statusTv)
+            val statusTv: TextView = itemView.findViewById(R.id.statusTv)
             val date_tv: TextView = itemView.findViewById(R.id.date_tv)
-            val seemore: TextView = itemView.findViewById(R.id.seemore)
+            val latestatus: TextView = itemView.findViewById(R.id.latestatus)
+            val latest_date: TextView = itemView.findViewById(R.id.latest_date)
+
+            val binvalue: TextView = itemView.findViewById(R.id.binvalue)
+            val locationvalue: TextView = itemView.findViewById(R.id.locationvalue)
+            val docvalue: TextView = itemView.findViewById(R.id.docvalue)
+            val signedby: TextView = itemView.findViewById(R.id.signedby)
+
+
+
+            val actionupandown: ImageView = itemView.findViewById(R.id.actionupandown)
+            val actionupandown1: ImageView = itemView.findViewById(R.id.actionupandown1)
+
+            val defaultlayout:RelativeLayout = itemView.findViewById(R.id.defaultlayout)
+            val seemorelayout:RelativeLayout = itemView.findViewById(R.id.seemorelayout)
+            val latestlayout:LinearLayout = itemView.findViewById(R.id.latestlayout)
+            val indetails_lay:LinearLayout = itemView.findViewById(R.id.indetails_lay)
+
+
+
+
+
 
 
         }
@@ -235,7 +500,7 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
         if (!isConnected) {
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profile.setImageResource(R.drawable.syncyellow)
 
 
 
@@ -244,7 +509,7 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
         } else {
 
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
+            binding.profile.setImageResource(R.drawable.syncnew)
 
 
 

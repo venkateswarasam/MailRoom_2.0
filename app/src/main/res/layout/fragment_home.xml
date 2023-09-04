@@ -43,7 +43,7 @@
             android:text="@string/goodafter"
             android:width="216dp" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile"
 
             android:layout_marginRight="20dp"

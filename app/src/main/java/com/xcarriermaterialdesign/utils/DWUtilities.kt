@@ -21,7 +21,6 @@ object DWUtilities {
             ACTION_DATAWEDGE,
             EXTRA_CREATE_PROFILE,
             PROFILE_NAME
-
         )
 
         //  Requires DataWedge 6.4

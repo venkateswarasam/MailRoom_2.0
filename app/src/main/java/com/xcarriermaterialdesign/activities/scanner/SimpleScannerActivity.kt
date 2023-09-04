@@ -80,6 +80,11 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         Manifest.permission.CAMERA
     )
 
+    override fun onBackPressed() {
+
+        finish()
+    }
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -279,9 +284,26 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         else {
 
 
+            if (!checkDuplicateTrackNo(rawResult?.text!!)){
 
 
-            if (arrayList.contains(rawResult?.text)) {
+                try {
+                    val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    val r = RingtoneManager.getRingtone(applicationContext, notification)
+                    r.play()
+                } catch (e: Exception) {
+                }
+
+                processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,"", 1))
+                arrayList.add(rawResult?.text!!)
+
+                displaycount()
+            }
+
+
+
+
+          /*  if (arrayList.contains(rawResult?.text)) {
 
 
                 playNotificationSound()
@@ -312,7 +334,7 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
                 ok.setOnClickListener {
 
-                    processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,""))
+                    processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,"",1))
                     arrayList.add(rawResult?.text!!)
                     dialog.dismiss()
                     displaycount()
@@ -334,13 +356,13 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                 } catch (e: Exception) {
                 }
 
-                processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,""))
+                processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,"", 1))
                 arrayList.add(rawResult?.text!!)
 
                 displaycount()
 
             }
-
+*/
 
 
 
@@ -398,5 +420,92 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
 
 
+    }
+
+    private fun checkDuplicateTrackNo(barcode : String) : Boolean
+    {
+
+        processPackage = processDao.getAllProcessPackages()
+
+        for (item in processPackage.indices)
+        {
+            var bar = processPackage[item]
+
+            if (bar.trackingNumber == barcode)
+            {
+
+
+                playNotificationSound()
+
+
+                val dialog = Dialog(this@SimpleScannerActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.info_layout_new)
+
+                val ok = dialog.findViewById<TextView>(R.id.oktext)
+                val cancel = dialog.findViewById<TextView>(R.id.cancel)
+
+                val info_msg = dialog.findViewById<TextView>(R.id.info_msg)
+
+                info_msg.text = "This barcode already scanned.Do you want to continue?"
+
+
+                val lp = WindowManager.LayoutParams()
+                val window = dialog.window
+                lp.copyFrom(window!!.attributes)
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+                window.attributes = lp
+                dialog.show()
+
+                ok.setOnClickListener {
+
+                    //
+
+
+                    bar.count = bar.count+1
+
+                    //  processPackage.removeAt(item)
+
+                    processDao.updateProcessPackageCount(bar.id.toString(), bar.count)
+                    arrayList.add(barcode)
+
+
+                    displaycount()
+                   // savedata()
+                    dialog.dismiss()
+
+
+                }
+
+                cancel.setOnClickListener {
+
+                    dialog.dismiss()
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+                return true
+
+
+            }
+
+
+        }
+
+        return false
     }
 }

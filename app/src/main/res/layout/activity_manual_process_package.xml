@@ -95,7 +95,7 @@
 
             android:imeOptions="actionDone"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-            android:inputType="textFilter"
+            android:inputType="text"
 
             android:textColor="@color/black"
 

@@ -1,8 +1,11 @@
 package com.xcarriermaterialdesign.activities.scannerprocess
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.media.ToneGenerator
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -11,13 +14,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.zxing.Result
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.utils.ServiceDialog
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 class SimpleProcessActivty : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -61,6 +68,59 @@ class SimpleProcessActivty : AppCompatActivity(), ZXingScannerView.ResultHandler
     internal var info_layout: LinearLayout?= null
     internal var ok_text:TextView?= null
 
+    private val neededPermissions = arrayOf(
+        Manifest.permission.CAMERA
+    )
+
+
+    private fun requestPermissions(permissions: Array<String?>) {
+        ActivityCompat.requestPermissions(this, permissions, BottomNavigationActivity.REQUEST_CODE
+        )
+    }
+
+
+    private fun checkPermission(): Boolean {
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= Build.VERSION_CODES.M) {
+            val permissionsNotGranted = java.util.ArrayList<String>()
+            for (permission in neededPermissions) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        permission
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    permissionsNotGranted.add(permission)
+                }
+            }
+            if (permissionsNotGranted.size > 0) {
+                var shouldShowAlert = false
+                for (permission in permissionsNotGranted) {
+                    shouldShowAlert =
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+                }
+
+                val arr = arrayOfNulls<String>(permissionsNotGranted.size)
+                val permissions = permissionsNotGranted.toArray(arr)
+                if (shouldShowAlert) {
+
+
+
+
+
+
+                    // showPermissionAlert(permissions)
+                } else {
+                    requestPermissions(permissions)
+                }
+                return false
+            }
+
+
+        }
+        return true
+    }
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +133,7 @@ class SimpleProcessActivty : AppCompatActivity(), ZXingScannerView.ResultHandler
 
         val contentFrame = findViewById<ViewGroup>(R.id.content_frame)
 
+        checkPermission()
         mScannerView = ZXingScannerView(this)
         contentFrame.addView(mScannerView)
 
@@ -99,6 +160,11 @@ class SimpleProcessActivty : AppCompatActivity(), ZXingScannerView.ResultHandler
 
 
                 info_layout?.visibility = View.VISIBLE
+            }
+
+            else if (barcodeData!!.contains(" ")){
+
+                ServiceDialog.ShowDialog(this,"Please Scan  valid barcode")
             }
             else{
 

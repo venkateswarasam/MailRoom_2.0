@@ -15,7 +15,7 @@ interface ProcessDao{
     fun getAllProcessPackages(): List<ProcessPackage>
 
     @Query("SELECT * FROM ProcessPackage_table WHERE trackingNumber = :trackingNumber")
-    fun isDataExist(trackingNumber: String?): Int
+    fun isDataExist(trackingNumber: String?): Boolean
 
     @Query("SELECT * FROM ProcessPackage_table WHERE trackingNumber = :trackingNumber")
     fun isData(trackingNumber: String?): List<ProcessPackage>
@@ -30,6 +30,9 @@ interface ProcessDao{
     @Query("UPDATE ProcessPackage_table SET carriername = :carriername WHERE id = :id")
     fun updateProcessPackageCarrier(id: String?,carriername: String?)
 
+
+    @Query("UPDATE ProcessPackage_table SET count = :count WHERE id = :id")
+    fun updateProcessPackageCount(id: String?,count: Int?)
 
 
 

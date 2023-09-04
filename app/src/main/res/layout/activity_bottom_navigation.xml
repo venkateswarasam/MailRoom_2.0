@@ -27,11 +27,11 @@
         app:menu="@menu/bottom_nav_menu" />
 
     <fragment
+        app:defaultNavHost="true"
         android:id="@+id/nav_host_fragment_activity_bottom_navigation"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/nav_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -111,6 +111,10 @@
 
     </RelativeLayout>
 
+
+<!--
+
+-->
 
 
 

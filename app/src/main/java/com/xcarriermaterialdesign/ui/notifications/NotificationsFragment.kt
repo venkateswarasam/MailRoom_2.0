@@ -16,11 +16,19 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.zxing.integration.android.IntentIntegrator
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.FragmentNotificationsBinding
 import com.xcarriermaterialdesign.activities.scannerprocess.SimpleProcessActivty
+import com.xcarriermaterialdesign.model.BuildingRequest
+import com.xcarriermaterialdesign.model.BuildingResponse
+import com.xcarriermaterialdesign.model.CheckRequest
+import com.xcarriermaterialdesign.model.CheckinoutResponse
+import com.xcarriermaterialdesign.model.GetProfileResponse
+import com.xcarriermaterialdesign.ui.home.HomeViewModel
 import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
@@ -36,7 +44,6 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var qrScanIntegrator: IntentIntegrator? = null
 
     lateinit var sharedPreference : SharedPreferences
 
@@ -48,6 +55,9 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
     var seconds:String = ""
 
 
+  //  val model: NotificationsViewModel by viewModels()
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -55,24 +65,50 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         val notificationsViewModel =
             ViewModelProvider(this)[NotificationsViewModel::class.java]
+
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        setupScanner()
+
+        notificationsViewModel.config(activity as AppCompatActivity)
+
+
+        //setupScanner()
         (activity as AppCompatActivity).supportActionBar?.hide()
 
+        val check = false
+
+        if (!check){
+
+
+            (activity as AppCompatActivity).startService(Intent( (activity as AppCompatActivity), NetWorkService::class.java))
+
+
+        }
+
+        if (arguments!= null){
+
+            //  strtext = arguments!!.getString("decode")!!
+
+            val bundle = arguments
+            val message = bundle!!.getString("decode")
+
+            requireActivity().runOnUiThread(java.lang.Runnable {
+
+
+                binding!!.buildingText.setText(message)
 
 
 
-        /* val textView: TextView = binding.textNotifications
-         notificationsViewModel.text.observe(viewLifecycleOwner) {
-             textView.text = it
-         }*/
+            })
 
-        (activity as AppCompatActivity).startService(Intent( (activity as AppCompatActivity), NetWorkService::class.java))
+        }
+
+
 
 
         sharedPreference = (activity as AppCompatActivity).getSharedPreferences("CheckInPref", Context.MODE_PRIVATE)
@@ -86,49 +122,137 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
             binding.checkintime.text = sharedPreference!!.getString("time","")
             binding.buildingText.setText(sharedPreference!!.getString("buildId",""))
 
-            checkintime = sharedPreference!!.getString("timestamp","")!!
+            checkintime = sharedPreference.getString("timestamp","")!!
 
         }
 
 
         if (!NetworkConnection().isNetworkAvailable((activity as AppCompatActivity))) {
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            _binding!!.profile!!.setImageResource(R.drawable.syncyellow)
 
         }
         else{
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
-
-        }
-
-
-        val check = false
-
-        if (!check){
-
-            //initactionbar()
+            _binding!!.profile!!.setImageResource(R.drawable.syncnew)
 
         }
 
 
 
 
-/*
-        val batchScanResultLauncher  = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
-            if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                val intentResult = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
 
 
-                Toast.makeText(activity, intentResult.contents, Toast.LENGTH_SHORT).show()
+        // response handling
 
-                // binding.batchIdTV.setText(intentResult.contents.toString())
+
+        notificationsViewModel.buildingResponse.observe(activity as AppCompatActivity, Observer<BuildingResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            if (item.StatusCode == 200){
+
+
+               // Toast.makeText(activity as AppCompatActivity, item.Result.ReturnMsg, Toast.LENGTH_SHORT).show()
+
+                checkintime =  SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+
+
+                val checkRequest = CheckRequest(binding.buildingText.text.toString(),
+                    checkintime,"",
+                    ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+                    "0",
+                    ApplicationSharedPref.read(ApplicationSharedPref.LATTITUDE,"17.45")!!,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LONGITUDE,"72.56")!!,
+                    "CHECKIN",
+                    ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,
+                )
+
+                println("==checkinrequest==$checkRequest")
+
+
+                notificationsViewModel.savebuilding(checkRequest)
             }
-        }
-*/
 
-        binding.barcode.setOnClickListener()
+
+            else{
+
+
+                _binding!!.buildingText.setText("")
+
+                ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
+            }
+
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+        notificationsViewModel.checkinoutResponse.observe(activity as AppCompatActivity, Observer<CheckinoutResponse> { item ->
+
+            LoadingView.hideLoading()
+
+
+
+            if (item.StatusCode == 200){
+
+
+
+
+
+
+                if (item.Result.Message == "Checked-in Successfully"){
+
+
+
+                    //  Toast.makeText(activity as AppCompatActivity, item.Result.ReturnMsg, Toast.LENGTH_SHORT).show()
+
+                    checkbuilding(item.Result.Message)
+
+
+                    return@Observer
+                }
+
+
+                checkoutmessage(item.Result.DiffTime)
+
+
+
+
+
+            }
+
+
+            else{
+
+
+                ServiceDialog.ShowDialog(activity as AppCompatActivity, item.Result.ReturnMsg)
+            }
+
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+        _binding!!.barcode.setOnClickListener()
         {
 
             if (sharedPreference?.getBoolean("checkIn",false)!!)
@@ -148,7 +272,8 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
 
 
-        binding.checkin.setOnClickListener {
+        _binding!!.checkin.setOnClickListener {
+
 
             if (sharedPreference?.getBoolean("checkIn",false)!!)
             {
@@ -162,48 +287,21 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
 
 
+            val buildingRequest = BuildingRequest(binding.buildingText.text.toString(),
+                ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+                ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,
+            )
 
 
-            if (binding.buildingText.text.toString().isEmpty()){
-
-                Toast.makeText(activity,"Please Enter or Scan Building Name", Toast.LENGTH_SHORT).show()
-            }
-            else{
-
-
-
-                Toast.makeText(activity,"Checked in successfully", Toast.LENGTH_SHORT).show()
-
-                binding.checkInDetailsLL.visibility = View.VISIBLE
-
-                binding.checkintime.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-
-
-
-
-
-
-                 checkintime = SimpleDateFormat("HH:mm:ss").format(Date())
-
-                updateCheckinDetailsToPref(write = true)
-
-
-
-            }
-
-
+            notificationsViewModel.check_building(binding.buildingText.text.toString(),buildingRequest)
 
 
 
         }
 
-        binding.oktext.setOnClickListener {
 
-            binding.infoLayout.visibility= View.GONE
 
-        }
-
-        binding.checkout.setOnClickListener {
+        _binding!!.checkout.setOnClickListener {
 
 
 
@@ -211,94 +309,25 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
             if (binding.buildingText.text.toString().isEmpty()){
 
                 Toast.makeText(activity,"Please do Check-In before Check-Out", Toast.LENGTH_SHORT).show()
-            }
-            else{
 
-
-                binding.checkInDetailsLL.visibility = View.INVISIBLE
-
-                binding.buildingText.setText("")
-
-                binding.infoLayout.visibility= View.VISIBLE
-
-
-
-                val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
-                val date1: Date = simpleDateFormat.parse(checkintime)
-                val date2: Date = simpleDateFormat.parse(SimpleDateFormat("HH:mm:ss").format(Date()))
-
-                val differenceInMilliSeconds = Math.abs(date2.time - date1.time)
-                var differenceInHours = (differenceInMilliSeconds / (60 * 60 * 1000)
-                        % 24)
-
-
-
-                val differenceInMinutes = differenceInMilliSeconds / (60 * 1000) % 60
-
-                val differenceInSeconds = differenceInMilliSeconds / 1000 % 60
-
-                //Toast.makeText(activity as AppCompatActivity, this, differenceInSeconds.toString(), Toast.LENGTH_SHORT)
-
-
-
-                if (differenceInHours< 10){
-
-                    hour = "0$differenceInHours"
-
-                }
-                else{
-
-                    hour = differenceInHours.toString()
-                }
-
-                if (differenceInMinutes< 10){
-
-                    minutes = "0$differenceInMinutes"
-
-                }
-                else{
-
-                    minutes = differenceInMinutes.toString()
-                }
-
-                if (differenceInSeconds< 10){
-
-                    seconds = "0$differenceInSeconds"
-
-                }
-                else{
-
-                    seconds = differenceInSeconds.toString()
-                }
-
-
-
-
-
-
-
-
-
-
-
-                println(
-                    "Difference is " + differenceInHours + " hours "
-                            + differenceInMinutes + " minutes "
-                            + differenceInSeconds + " Seconds. ");
-
-
-
-
-
-                binding.checkoutMsg.text = "Successfully Checked-Out at "+SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())+" and the time difference is "+hour+":"+minutes+":"+seconds
-
-
-                updateCheckinDetailsToPref(write = false)
-
+                return@setOnClickListener
             }
 
 
+                val checkRequest = CheckRequest(binding.buildingText.text.toString(),
+                    checkintime,
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
+                    ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+                    "0",
+                    ApplicationSharedPref.read(ApplicationSharedPref.LATTITUDE,"17.45")!!,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LONGITUDE,"72.56")!!,
+                    "CHECKOUT",
+                    ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,
+                )
 
+
+                notificationsViewModel.savebuilding(checkRequest)
 
         }
 
@@ -311,14 +340,115 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
 
 
-
-
-
-
-        // initactionbar()
         return root
     }
 
+    fun processnfc(decodevalue:String){
+
+
+
+
+
+
+    }
+
+
+
+    fun checkoutmessage(difftime:String){
+
+
+
+
+        _binding!!.checkInDetailsLL.visibility = View.INVISIBLE
+
+        _binding!!.buildingText.text!!.clear()
+
+       // binding.infoLayout.visibility= View.VISIBLE
+
+        val message = "Successfully Checked-Out at "+SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())+" and the time difference is "+difftime
+
+
+        ServiceDialog.ShowDialog(activity as AppCompatActivity,message)
+
+
+
+
+        updateCheckinDetailsToPref(write = false)
+
+    }
+
+
+
+    fun checkbuilding(returnmsg:String){
+
+        println("==return==$returnmsg")
+
+        Toast.makeText(activity,returnmsg, Toast.LENGTH_SHORT).show()
+
+        _binding!!.checkInDetailsLL.visibility = View.VISIBLE
+
+        _binding!!.checkintime.text = checkintime
+
+
+
+
+        updateCheckinDetailsToPref(write = true)
+
+    }
+
+
+    private fun timedifference(){
+
+
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        val date1: Date = simpleDateFormat.parse(checkintime)
+        val date2: Date = simpleDateFormat.parse(SimpleDateFormat("HH:mm:ss").format(Date()))
+
+        val differenceInMilliSeconds = Math.abs(date2.time - date1.time)
+        var differenceInHours = (differenceInMilliSeconds / (60 * 60 * 1000)
+                % 24)
+
+
+
+        val differenceInMinutes = differenceInMilliSeconds / (60 * 1000) % 60
+
+        val differenceInSeconds = differenceInMilliSeconds / 1000 % 60
+
+        if (differenceInHours< 10){
+
+            hour = "0$differenceInHours"
+
+        }
+        else{
+
+            hour = differenceInHours.toString()
+        }
+
+        if (differenceInMinutes< 10){
+
+            minutes = "0$differenceInMinutes"
+
+        }
+        else{
+
+            minutes = differenceInMinutes.toString()
+        }
+
+        if (differenceInSeconds< 10){
+
+            seconds = "0$differenceInSeconds"
+
+        }
+        else{
+
+            seconds = differenceInSeconds.toString()
+        }
+
+        println(
+            "Difference is " + differenceInHours + " hours "
+                    + differenceInMinutes + " minutes "
+                    + differenceInSeconds + " Seconds. ");
+    }
 
 
     private fun time_difference(){
@@ -368,40 +498,10 @@ class NotificationsFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiv
 
 
 
-    private fun setupScanner() {
-        qrScanIntegrator = IntentIntegrator(activity)
-        qrScanIntegrator?.setOrientationLocked(false)
-        qrScanIntegrator?.setPrompt("")
-        qrScanIntegrator?.captureActivity
-
-    }
 
 
 
-    private fun initactionbar(){
 
-        (activity as AppCompatActivity).supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowCustomEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setCustomView(R.layout.actionbarnew)
-        val view1: View =  (activity as AppCompatActivity).supportActionBar!!.customView
-        val toolbar: Toolbar = view1.parent as Toolbar
-        toolbar.setContentInsetsAbsolute(0, 0)
-     //   toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-        val headertext:TextView = view1.findViewById(R.id.headertext)
-        headertext.text = getString(R.string.checkin)
-        val profile: ImageView = view1.findViewById(R.id.profile)
-       // val back: ImageView = view1.findViewById(R.id.back)
-
-        profile.setImageResource(R.drawable.ic_outline_save_24)
-
-
-        profile.setOnClickListener {
-
-
-            Toast.makeText(activity,"checkIn successfully", Toast.LENGTH_SHORT).show()
-
-        }
-    }
 
 
     override fun onDestroyView() {
