@@ -11,6 +11,8 @@ import com.xcarriermaterialdesign.model.BuildingResponse
 import com.xcarriermaterialdesign.model.ChangePasswordRequest
 import com.xcarriermaterialdesign.model.ChangePasswordResponse
 import com.xcarriermaterialdesign.model.CheckRequest
+import com.xcarriermaterialdesign.model.CheckTrackingResponse
+import com.xcarriermaterialdesign.model.CheckingTrackRequest
 import com.xcarriermaterialdesign.model.CheckinoutResponse
 import com.xcarriermaterialdesign.model.ConfigRequest
 import com.xcarriermaterialdesign.model.ConfigResponse
@@ -22,9 +24,14 @@ import com.xcarriermaterialdesign.model.PendingResponse
 import com.xcarriermaterialdesign.model.ProfilePicRequest
 import com.xcarriermaterialdesign.model.ProfilePicResponse
 import com.xcarriermaterialdesign.model.TrackReportResponse
+import com.xcarriermaterialdesign.model.TrackingNumbersRequest
+import com.xcarriermaterialdesign.model.TrackingNumbersRequestItem
 import com.xcarriermaterialdesign.model.UpdateProfileRequest
 import com.xcarriermaterialdesign.model.UpdateResponse
+import com.xcarriermaterialdesign.process.CheckingResponse
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -118,6 +125,13 @@ interface ApiInterface {
 
     @GET("Package/TrackReport")
     suspend fun trackreport(@Query("TrackingNo") trackingnumber: String, @Header("Authorization") token: String): TrackReportResponse?
+
+
+
+
+
+    @POST(value = "Package/CheckTrackingNo")
+    suspend fun checktrackingnumbers(@Body trackingNumbers: List<TrackingNumbersRequestItem>, @Header("Authorization") token: String): CheckTrackingResponse?
 
 
 

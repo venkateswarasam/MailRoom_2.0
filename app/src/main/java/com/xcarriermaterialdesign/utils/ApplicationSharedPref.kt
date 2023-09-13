@@ -25,6 +25,7 @@ object ApplicationSharedPref {
     const val ROLEID= "ROLEID"
     const val PLANTNAME= "PLANTNAME"
     const val BUILDING= "BUILDING"
+    const val DEVICE= "DEVICE"
 
 
     const val CUSTOMERNAME= "CUSTOMERNAME"
@@ -32,6 +33,10 @@ object ApplicationSharedPref {
     const val DESIGNATION= "DESIGNATION"
 
     const val SMSCHECK= false
+    const val AUTOSCANCHECK= false
+
+
+    const val AUTOSCANCHECK1= false
     const val BUILDINGCHECK= false
 
 

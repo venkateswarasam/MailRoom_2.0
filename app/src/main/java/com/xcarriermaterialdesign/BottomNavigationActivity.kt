@@ -124,6 +124,8 @@ class BottomNavigationActivity : AppCompatActivity() {
         Manifest.permission.CAMERA
     )
 
+    val firstTimeUse = false;
+
 
     override fun onBackPressed() {
 
@@ -146,6 +148,9 @@ class BottomNavigationActivity : AppCompatActivity() {
         DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action2),"true")
 
 
+        ApplicationSharedPref.write(ApplicationSharedPref.DEVICE, Build.MODEL)
+
+        //Toast.makeText(this, Build.MODEL, Toast.LENGTH_SHORT).show()
 
         //   AnalyticsApplication.instance?.setPlantId("")
 
@@ -385,6 +390,24 @@ class BottomNavigationActivity : AppCompatActivity() {
 
             }
         }
+
+
+
+
+
+
+        // auto scan
+
+
+
+
+
+
+
+
+
+
+
 
 
 

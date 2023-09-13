@@ -197,8 +197,20 @@ class SearchPackagesActivity : AppCompatActivity() {
 
                     binding.scannerEntry!!.setOnClickListener {
 
-                        val intent = Intent(this, SimpleScannerActivity::class.java)
-                        startActivity(intent)
+                        if (ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!){
+
+
+                            val intent = Intent(this, SimpleScannerActivity::class.java)
+                            startActivity(intent)
+
+                        }
+
+                        else{
+
+                            val intent = Intent(this, ManualProcessPackageActivity::class.java)
+                            startActivity(intent)
+
+                        }
                     }
 
                     buttonClicked = 1

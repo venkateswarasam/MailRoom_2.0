@@ -289,8 +289,20 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
         binding.scannerEntry.setOnClickListener {
 
-            val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
-            startActivity(intent)
+            if (ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!){
+
+
+                val intent = Intent(activity, SimpleScannerActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
+
+            else{
+
+                val intent = Intent(activity, ManualProcessPackageActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
         }
 
 
@@ -302,8 +314,20 @@ class DashboardFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverLi
 
         binding.scannerfab.setOnClickListener {
 
-            val intent = Intent((activity as AppCompatActivity), SimpleScannerActivity::class.java)
-            startActivity(intent)
+            if (ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!){
+
+
+                val intent = Intent(activity, SimpleScannerActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
+
+            else{
+
+                val intent = Intent(activity, ManualProcessPackageActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
         }
 
 

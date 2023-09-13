@@ -194,9 +194,24 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
 
 
 
+            if (ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!){
 
-            val intent = Intent(activity, SimpleScannerActivity::class.java)
-            activity?.startActivity(intent)
+
+                val intent = Intent(activity, SimpleScannerActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
+
+            else{
+
+                val intent = Intent(activity, ManualProcessPackageActivity::class.java)
+                activity?.startActivity(intent)
+
+            }
+
+
+
+
 
             // batchScanResultLauncher.launch(qrScanIntegrator?.createScanIntent())
         }

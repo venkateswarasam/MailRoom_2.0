@@ -135,6 +135,8 @@
     <string name="title_activity_tab_navigations">TabNavigations</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="scanalereay">This barcode already scanned.Do you want to continue?</string>
+    <string name="alertscan">The previous scanned or entered data will be lost.Do you want to continue?</string>
 
 
 </resources>

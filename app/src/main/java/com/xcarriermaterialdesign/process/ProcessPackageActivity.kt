@@ -11,36 +11,27 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.activities.editpackage.EditPackageActivity
 import com.xcarriermaterialdesign.activities.manual.ManualProcessPackageActivity
 import com.xcarriermaterialdesign.activities.processfinal.ProcessPackageFinalActivity
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
 import com.xcarriermaterialdesign.databinding.ActivityProcessPackageBinding
+import com.xcarriermaterialdesign.model.CheckTrackingResponse
+import com.xcarriermaterialdesign.model.TrackingNumbersRequestItem
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
-import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
-import com.xcarriermaterialdesign.utils.CourseModal
-import com.xcarriermaterialdesign.utils.NetWorkService
-import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
-import com.xcarriermaterialdesign.utils.NetworkConnection
-import com.xcarriermaterialdesign.utils.SwipeHelper
 import com.xcarriermaterialdesign.utils.*
-import com.xcarriermaterialdesign.utils.SwipeHelper.UnderlayButtonClickListener
-import java.lang.reflect.Type
 
 
 class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
@@ -48,6 +39,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
+    // tracking numbers
+    var packageNames: MutableList<String?>? = ArrayList()
 
 
 
@@ -58,11 +51,14 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     var adaptercount = 0
 
 
+    var statusArray = mutableListOf<String>()
+
 
     private var mDetector: GestureDetector? = null
 
 
     private var courseModalArrayList: ArrayList<CourseModal>? = null
+
 
     private var adapter: ProcessAdapter_new? = null
 
@@ -70,6 +66,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     private lateinit var processDao: ProcessDao
 
     private lateinit var processPackage: List<ProcessPackage>
+    private lateinit var bookingHistoryList: List<TrackingNumbersRequestItem>
 
 
     private lateinit var binding: ActivityProcessPackageBinding
@@ -79,6 +76,12 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
     val arrayList = ArrayList<String>()
 
+
+    private val EXTRA_SCANNERINPUTPLUGIN = "com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN"
+    private val ACTION_DATAWEDGE = "com.symbol.datawedge.api.ACTION"
+
+
+    var listitems:String = ""
 
 
     private fun showMessage(isConnected: Boolean) {
@@ -106,10 +109,79 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
     }
 
 
+
+
+    fun exit_message(){
+
+
+        val ok: Button
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.info_layout_logout)
+
+        val header_title = dialog.findViewById<TextView>(R.id.header_title)
+        val oktext = dialog.findViewById<TextView>(R.id.oktext)
+        val cancel = dialog.findViewById<TextView>(R.id.cancel)
+
+
+
+        header_title.text = getString(R.string.alertscan)
+
+
+
+        //   tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null)
+
+        val lp = WindowManager.LayoutParams()
+        val window = dialog.window
+        lp.copyFrom(window!!.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        window.attributes = lp
+        dialog.show()
+
+        oktext.setOnClickListener {
+
+            dialog.dismiss()
+
+
+            processDao.deleteAllProcessPackages()
+
+
+            val intent = Intent(this, BottomNavigationActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+
+            /* val intent = Intent(context, MainActivity::class.java)
+             context.startActivity(intent)*/
+        }
+
+
+        cancel.setOnClickListener {
+
+
+            dialog.dismiss()
+        }
+
+    }
+
+
     override fun onBackPressed() {
-        val intent = Intent(this,  BottomNavigationActivity::class.java)
+
+
+        exit_message()
+
+     //   ServiceDialogBottomNavigation.ShowDialog(this,"The previous scanned or entered data will be lost.Do you want to continue?")
+
+
+
+
+       /* val intent = Intent(this,  BottomNavigationActivity::class.java)
         startActivity(intent)
-        finish()
+        finish()*/
     }
 
 
@@ -132,9 +204,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         binding.toolbar.setNavigationOnClickListener {
 
-            val intent = Intent(this,  BottomNavigationActivity::class.java)
+
+
+            exit_message()
+
+         //   ServiceDialogBottomNavigation.ShowDialog(this,"The previous scanned or entered data will be lost.Do you want to continue?")
+
+           /* val intent = Intent(this,  BottomNavigationActivity::class.java)
             startActivity(intent)
-            finish()
+            finish()*/
         }
 
 
@@ -327,8 +405,24 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         binding.scannerEntry.setOnClickListener {
 
-            val intent = Intent(this, SimpleScannerActivity::class.java)
-            startActivity(intent)
+
+            if (ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, true)!!){
+
+                val intent = Intent(this, SimpleScannerActivity::class.java)
+                startActivity(intent)
+            }
+
+            else{
+
+
+                ServiceDialog.ShowDialog(this,"Please Turn on the Auto scan in Settings screen")
+
+
+            }
+
+
+
+
         }
 
 
@@ -350,9 +444,75 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         binding.nextbutton.setOnClickListener {
 
-            val intent = Intent(this, ProcessPackageFinalActivity::class.java)
+
+
+            val intent = Intent(this , ProcessPackageFinalActivity::class.java)
+            startActivity(intent)
+
+            processPackage = processDao.getAllProcessPackages()
+
+
+           /* val trackingRequests = listOf(
+                TrackingNumbersRequestItem(processPackage.forEach { packageItem ->
+                    // Access and work with each ProcessPackage object (packageItem) here
+                    // For example:
+
+                    packageItem.trackingNumber
+                 //   println(packageItem.trackingNumber) // Access a property of ProcessPackage
+
+
+                })
+            )
+
+
+            println("==request==$trackingRequests")
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // new
+
+
+
+
+
+
+
+
+
+
+
+            /*val intent = Intent(this, ProcessPackageFinalActivity::class.java)
 
             startActivity(intent)
+*/
+           /* val trackingRequests = listOf(
+                TrackingNumbersRequestItem("test123"),
+                TrackingNumbersRequestItem("test12345"),
+                TrackingNumbersRequestItem("RPS13729"),
+                TrackingNumbersRequestItem("53245732")
+            )*/
+
+
+           // println("==request==$trackingRequests")
+
+         //   model.checktrackingnumbers(trackingRequests)
+
         }
 
 
@@ -370,7 +530,67 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         }
 
 
+
+
+        // process package check tracking numbers response
+
+        model.checkinoutResponse.observe(this, Observer<CheckTrackingResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            println("==statuscode${item.StatusCode}")
+
+            if (item.StatusCode == 200) {
+
+
+
+
+               println("==response==${item.Result.CheckPackages}")
+
+
+             /*   val intent = Intent(this, ProcessPackageFinalActivity::class.java)
+
+                startActivity(intent)
+*/
+               // ShowDialog(this, item.Result.ReturnMsg)
+
+
+
+                return@Observer
+
+            }
+
+            else{
+
+
+                ServiceDialog.ShowDialog(this, item.Result.ReturnMsg)
+
+
+
+
+
+
+
+
+
+
+                return@Observer
+            }
+
+
+
+
+
+
+        })
+
+
+
     }
+
+
+
+
 
 
     // data wedge  implementation
@@ -456,6 +676,10 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             {
 
 
+                DWUtilities.sendDataWedgeIntentWithExtras(this, ACTION_DATAWEDGE,EXTRA_SCANNERINPUTPLUGIN,"SUSPEND_PLUGIN")
+
+
+
                 playNotificationSound()
 
 
@@ -471,7 +695,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
                 val info_msg = dialog.findViewById<TextView>(R.id.info_msg)
 
-                info_msg.text = "This barcode already scanned.Do you want to continue?"
+                info_msg.text = getString(R.string.scanalereay)
 
 
                 val lp = WindowManager.LayoutParams()
@@ -485,6 +709,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 ok.setOnClickListener {
 
                  //
+
+                    DWUtilities.sendDataWedgeIntentWithExtras(this, ACTION_DATAWEDGE,EXTRA_SCANNERINPUTPLUGIN,"RESUME_PLUGIN")
 
 
                     bar.count = bar.count+1
@@ -520,11 +746,6 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 }
 
 
-
-
-                // DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action), "false")
-
-              //  DWUtilities.sendDataWedgeIntentWithExtras(this, ACTION_DATAWEDGE,EXTRA_SCANNERINPUTPLUGIN,"SUSPEND_PLUGIN")
 
 
 

@@ -713,6 +713,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
 
+
         binding.toolbar.setNavigationOnClickListener {
 
             finish()
@@ -1211,6 +1212,128 @@ class SettingsActivity : AppCompatActivity() {
 
 
 
+
+
+
+       if (Build.MANUFACTURER.contains("Zebra")){
+
+
+           if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!.equals(true)){
+
+               binding.autoscan.isChecked = true
+               println("==autoscan1==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+           }
+
+           else if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, true)!!.equals(false)){
+
+
+               println("==autoscan2==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+//               if (binding.autoscan.isChecked.equals(false))
+//               {
+//                  // ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+//                   binding.autoscan.isChecked = true
+//               }
+
+               binding.autoscan.isChecked = false
+           }
+           else{
+
+
+               ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, false)
+
+               println("==autoscan3==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+               binding.autoscan.isChecked = false
+
+
+           }
+
+
+
+
+
+        }
+
+        else{
+
+            println("==autoscan==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+            if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!.equals(true)){
+
+                binding.autoscan.isChecked = true
+                println("==autoscan1==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+            }
+
+           else if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, true)!!.equals(false)){
+
+
+                println("==autoscan2==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+//               if (binding.autoscan.isChecked.equals(false))
+//               {
+//                  // ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+//                   binding.autoscan.isChecked = true
+//               }
+
+               binding.autoscan.isChecked = false
+            }
+           else{
+
+
+                ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+
+                println("==autoscan3==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+                binding.autoscan.isChecked = true
+
+
+            }
+
+
+        }
+
+
+
+        binding.autoscan.setOnCheckedChangeListener { buttonView, isChecked ->
+
+
+
+
+            if (isChecked){
+
+
+                ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK,true)
+
+                println("==autoscan4==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+            }
+
+            else{
+
+                ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, false)
+
+                println("==autoscan5==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
         // country code check
 
 
@@ -1242,7 +1365,7 @@ class SettingsActivity : AppCompatActivity() {
         )
 
 
-        model.getprofiledata(getProfileRequest)
+       model.getprofiledata(getProfileRequest)
 
     }
 

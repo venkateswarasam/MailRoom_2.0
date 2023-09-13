@@ -433,8 +433,23 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
         runOnUiThread(java.lang.Runnable {
 
+
             binding.editText.setText(decodedData)
 
+            if (!checkDuplicateTrackNo(binding.editText.text.toString())) {
+
+                processDao.insertProcessPackage(ProcessPackage(binding.editText.text.toString(),"",1))
+
+                savedata()
+            }
+
+
+
+
+
+         /*   binding.editText.setText(decodedData)
+
+            savedata()*/
 
 
         })
