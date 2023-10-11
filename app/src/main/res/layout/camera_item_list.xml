@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginStart="10dp"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_marginStart="5dp"
+
+        android:layout_marginTop="10dp"
+        app:shapeAppearanceOverlay="@style/RoundedSquare"
+
+
+
+        android:id="@+id/image3IV"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="fitXY" />
+
+
+    <ImageView
+
+        android:id="@+id/cancel_img3"
+
+        android:layout_marginTop="-8dp"
+        android:layout_alignTop="@+id/image3IV"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/baseline_cancel_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+</RelativeLayout>

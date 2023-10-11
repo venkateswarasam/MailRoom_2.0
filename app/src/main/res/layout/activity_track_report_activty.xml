@@ -748,6 +748,8 @@
                     android:text="Ship To:" />
 
                 <TextView
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
                     android:id="@+id/shipto"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"

@@ -31,7 +31,9 @@ import com.xcarriermaterialdesign.model.TrackingNumbersRequestItem
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
 import com.xcarriermaterialdesign.utils.*
+import java.io.Serializable
 
 
 class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
@@ -64,9 +66,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
 
     private lateinit var processPackage: List<ProcessPackage>
-    private lateinit var bookingHistoryList: List<TrackingNumbersRequestItem>
+
+
+
+    private lateinit var trackingpackage: List<TrackingNumbersRequestItem>
+
+
 
 
     private lateinit var binding: ActivityProcessPackageBinding
@@ -82,6 +90,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
     var listitems:String = ""
+
+
+    internal var trackingRequests:List<com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem>?= null
+
+
+    lateinit var  trackingNumbersRequestItem:TrackingNumbersRequestItem
+
+
+    var bulk_flag = false
 
 
     private fun showMessage(isConnected: Boolean) {
@@ -148,6 +165,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
             processDao.deleteAllProcessPackages()
+            trackingDao.deleteAllProcessPackages()
 
 
             val intent = Intent(this, BottomNavigationActivity::class.java)
@@ -174,18 +192,12 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         exit_message()
 
-     //   ServiceDialogBottomNavigation.ShowDialog(this,"The previous scanned or entered data will be lost.Do you want to continue?")
 
-
-
-
-       /* val intent = Intent(this,  BottomNavigationActivity::class.java)
-        startActivity(intent)
-        finish()*/
     }
 
 
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        // setContentView(R.layout.activity_process_package)
@@ -208,11 +220,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
             exit_message()
 
-         //   ServiceDialogBottomNavigation.ShowDialog(this,"The previous scanned or entered data will be lost.Do you want to continue?")
 
-           /* val intent = Intent(this,  BottomNavigationActivity::class.java)
-            startActivity(intent)
-            finish()*/
         }
 
 
@@ -236,6 +244,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
         ).allowMainThreadQueries().build()
 
         processDao = db.processDao()
+        trackingDao = db.TrackingDao()
 
         processPackage = processDao.getAllProcessPackages()
 
@@ -248,7 +257,7 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
          adapter =
-            ProcessAdapter_new(this, processDao.getAllProcessPackages())
+             ProcessAdapter_new(this, processDao.getAllProcessPackages())
 
         val manager = LinearLayoutManager(this)
         binding.trackinglist.setHasFixedSize(true)
@@ -276,13 +285,19 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
         binding.checkConsle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
             if ( binding.checkConsle.isChecked) {
+
                 binding.checkConsle.isChecked = true
 
-                binding.bulkidLayout.visibility = View.VISIBLE
+                bulk_flag = true
+
+              //  binding.bulkidLayout.visibility = View.VISIBLE
 
             } else {
                 binding.checkConsle.isChecked = false
-                binding.bulkidLayout.visibility = View.GONE
+
+                bulk_flag = false
+
+              //  binding.bulkidLayout.visibility = View.GONE
 
             }
         })
@@ -446,72 +461,46 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
 
 
 
-            val intent = Intent(this , ProcessPackageFinalActivity::class.java)
-            startActivity(intent)
+            // Alternate option
 
-            processPackage = processDao.getAllProcessPackages()
+           /* val intent = Intent(this, ProcessPackageFinalActivity::class.java)
 
+            intent.putExtra("bulkflag", bulk_flag)
 
-           /* val trackingRequests = listOf(
-                TrackingNumbersRequestItem(processPackage.forEach { packageItem ->
-                    // Access and work with each ProcessPackage object (packageItem) here
-                    // For example:
-
-                    packageItem.trackingNumber
-                 //   println(packageItem.trackingNumber) // Access a property of ProcessPackage
-
-
-                })
-            )
-
-
-            println("==request==$trackingRequests")
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // new
-
-
-
-
-
-
-
-
-
-
-
-            /*val intent = Intent(this, ProcessPackageFinalActivity::class.java)
 
             startActivity(intent)
-*/
-           /* val trackingRequests = listOf(
+            finish()*/
+
+
+
+
+
+            // working scenario
+
+
+         trackingRequests = trackingDao.getAllProcessPackages()
+
+            println("==send==$trackingRequests")
+
+
+            model.checktrackingnumbers(trackingRequests!!)
+
+
+
+            // static packages sending request
+
+          /*  val trackingRequests = listOf(
                 TrackingNumbersRequestItem("test123"),
                 TrackingNumbersRequestItem("test12345"),
                 TrackingNumbersRequestItem("RPS13729"),
                 TrackingNumbersRequestItem("53245732")
-            )*/
+            )
+
+            model.checktrackingnumbers(trackingRequests)
+*/
 
 
-           // println("==request==$trackingRequests")
 
-         //   model.checktrackingnumbers(trackingRequests)
 
         }
 
@@ -548,10 +537,15 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                println("==response==${item.Result.CheckPackages}")
 
 
-             /*   val intent = Intent(this, ProcessPackageFinalActivity::class.java)
+                val intent = Intent(this, ProcessPackageFinalActivity::class.java)
+
+                intent.putExtra("checklist", item.Result.CheckPackages as Serializable)
+
+                intent.putExtra("bulkflag", bulk_flag)
 
                 startActivity(intent)
-*/
+                finish()
+
                // ShowDialog(this, item.Result.ReturnMsg)
 
 
@@ -629,7 +623,13 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 } catch (e: Exception) {
                 }
 
+
+
+
                 processDao.insertProcessPackage(ProcessPackage(decodedData,"",1))
+
+                trackingDao.insertProcessPackage(com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem(decodedData))
+
 
 
                adapter =
@@ -718,6 +718,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                   //  processPackage.removeAt(item)
 
                     processDao.updateProcessPackageCount(bar.id.toString(), bar.count)
+
+
 
 
                    // processDao.insertProcessPackage(ProcessPackage(barcode,"", 1))
@@ -811,17 +813,23 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
             val itemsViewModel = mList[position]
 
 
-            holder.trackingNo.text = itemsViewModel.trackingNumber ?:""
-            holder.carruername.text = itemsViewModel.carriername ?: ""
-            holder.trackingcount.text = itemsViewModel.count.toString()?:""
+          /*  trackingNumbersRequestItem = TrackingNumbersRequestItem(itemsViewModel.trackingNumber)
+            trackingRequests = listOf(trackingNumbersRequestItem)*/
+
+            println("==check==$trackingRequests")
+
+
+            holder.trackingNo.text = itemsViewModel.trackingNumber
+            holder.carruername.text = itemsViewModel.carriername
+            holder.trackingcount.text = itemsViewModel.count.toString()
 
             if (itemsViewModel.carriername == ""){
 
-                holder.carruername.text = "Carrier Name"
+                holder.carruername.text = getString(R.string.carriernmae)
             }
             else{
 
-                holder.carruername.text = itemsViewModel.carriername ?: ""
+                holder.carruername.text = itemsViewModel.carriername
 
             }
 
@@ -902,6 +910,8 @@ class ProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.NetChe
                 ok.setOnClickListener {
 
                     processDao.deleteProcessPackages(itemsViewModel.trackingNumber)
+                    trackingDao.deleteProcessPackages(itemsViewModel.trackingNumber)
+
 
                     //arrayList.remove(itemsViewModel)
 

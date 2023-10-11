@@ -79,7 +79,7 @@ class NetWorkService: Service() {
     override fun onTaskRemoved(rootIntent: Intent) {
         val restartServiceIntent = Intent(applicationContext, this.javaClass)
         restartServiceIntent.setPackage(packageName)
-        startService(restartServiceIntent)
+       startService(restartServiceIntent)
         super.onTaskRemoved(rootIntent)
     }
 }

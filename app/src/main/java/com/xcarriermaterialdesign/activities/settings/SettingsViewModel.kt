@@ -90,7 +90,7 @@ class SettingsViewModel : ViewModel() {
 
 
             }
-            catch (throwable:Throwable){
+            catch (throwable:Exception){
 
                 when(throwable){
 
@@ -109,6 +109,19 @@ class SettingsViewModel : ViewModel() {
 
 
                     }
+
+                    else->{
+
+
+                        LoadingView.hideLoading()
+
+                        Handler(Looper.getMainLooper()).post {
+
+                            ServiceDialog.ShowDialog(activity, throwable.toString())
+
+                        }
+                    }
+
 
                 }
             }
@@ -407,7 +420,7 @@ class SettingsViewModel : ViewModel() {
 
 
             }
-            catch (throwable:Throwable){
+            catch (throwable:Exception){
 
                 when(throwable){
 
@@ -426,6 +439,19 @@ class SettingsViewModel : ViewModel() {
 
 
                     }
+
+                    else->{
+
+
+                        LoadingView.hideLoading()
+
+                        Handler(Looper.getMainLooper()).post {
+
+                            ServiceDialog.ShowDialog(activity, throwable.toString())
+
+                        }
+                    }
+
 
                 }
             }
@@ -468,7 +494,7 @@ class SettingsViewModel : ViewModel() {
 
 
             }
-            catch (throwable:Throwable){
+            catch (throwable:Exception){
 
                 when(throwable){
 
@@ -487,6 +513,18 @@ class SettingsViewModel : ViewModel() {
 
 
                     }
+                    else->{
+
+
+                        LoadingView.hideLoading()
+
+                        Handler(Looper.getMainLooper()).post {
+
+                            ServiceDialog.ShowDialog(activity, throwable.toString())
+
+                        }
+                    }
+
 
                 }
             }
@@ -528,7 +566,7 @@ class SettingsViewModel : ViewModel() {
 
 
             }
-            catch (throwable:Throwable){
+            catch (throwable:Exception){
 
                 when(throwable){
 
@@ -547,6 +585,19 @@ class SettingsViewModel : ViewModel() {
 
 
                     }
+
+                    else->{
+
+
+                        LoadingView.hideLoading()
+
+                        Handler(Looper.getMainLooper()).post {
+
+                            ServiceDialog.ShowDialog(activity, throwable.toString())
+
+                        }
+                    }
+
 
                 }
             }
@@ -609,8 +660,6 @@ class SettingsViewModel : ViewModel() {
 
 
                     }
-
-
                     else->{
 
 

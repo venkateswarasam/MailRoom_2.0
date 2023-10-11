@@ -30,6 +30,7 @@ import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
 import com.xcarriermaterialdesign.utils.ServiceDialog
+import org.jetbrains.anko.toast
 
 class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
 
@@ -136,7 +137,9 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
             val clip: ClipData = ClipData.newPlainText("text", trackingno)
             clipboard.setPrimaryClip(clip)
 
-            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+            toast("Copied")
+
+          //  Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -179,29 +182,37 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
                 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 binding.carriertest.text = "Carrier #:"+item.Result.packageInformation.CarrierTrackingNo
 
                 binding.shipemail.text = item.Result.packageAddressInfo.Email
                 binding.shipfrom.text = item.Result.packageAddressInfo.ShipFromName
 
-                val address = item.Result.packageAddressInfo.ShipToName+"\n"+item.Result.packageAddressInfo.Address1+"\n"+item.Result.packageAddressInfo.Address2+"\n"+item.Result.packageAddressInfo.City+"\n"+item.Result.packageAddressInfo.State+"\n"+item.Result.packageAddressInfo.Country+"" +
-                        "\n"+item.Result.packageAddressInfo.ZipCode
+                val address = item.Result.packageAddressInfo.ShipToName+"\n "+item.Result.packageAddressInfo.Address1+" "+item.Result.packageAddressInfo.Address2+"\n "+item.Result.packageAddressInfo.City+" "+item.Result.packageAddressInfo.State+" "+item.Result.packageAddressInfo.Country+"" +
+                        " "+item.Result.packageAddressInfo.ZipCode
 
-                binding.shipto.text = address
+
+                if (item.Result.packageAddressInfo.Address1 == ""){
+
+                    binding.shipto.text = ""
+
+                }
+
+                else{
+
+                    binding.shipto.text = address
+
+                }
+
+
+
+                println("==add==$address")
+
+
+
+
+
+
+
 
                 binding.carriername.text = item.Result.packageInformation.Carrier
                 binding.packagetype.text = item.Result.packageInformation.PackageType
@@ -291,6 +302,8 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
             holder.binvalue.text = itemsViewModel.Bin
             holder.locationvalue.text = itemsViewModel.StorageLocation
             holder.signedby.text = itemsViewModel.SignByName
+            holder.docvalue.text = itemsViewModel.DockNo
+
 
 
 
@@ -357,50 +370,6 @@ class TrackReportActivty : AppCompatActivity(), NetworkChangeReceiver.NetChecker
 
 
 
-
-            /* val itemsViewModel = mList[position]
-
-             if (itemsViewModel == "See 3 more Updates"){
-
-               *//*  holder.trackingNo.setTextColor(resources.getColor(R.color.purple_700))
-
-              //  holder.trackingNo.textSize = 11.85F
-                holder.trackingNo.textSize = 12F
-*//*
-                holder.date_tv.visibility = View.GONE
-                holder.trackingNo.visibility = View.GONE
-                holder.seemore.visibility = View.VISIBLE
-
-
-
-
-
-
-
-            }
-
-
-            holder.seemore.setOnClickListener {
-
-
-                if (itemsViewModel == "See 3 more Updates"){
-
-                    searchnameslist.remove("See 3 more Updates")
-
-                  searchnameslist.add("Routed")
-                  searchnameslist.add("Location Scan")
-                    searchnameslist.add("Returned")
-
-                    adapter = ProcessAdapter_new(this@TrackReportActivty, searchnameslist)
-
-                    binding.statuslist.adapter = adapter
-
-
-                }
-            }
-
-*/
-         //   holder.trackingNo.text = itemsViewModel ?: ""
 
 
 

@@ -17,11 +17,13 @@ import com.xcarriermaterialdesign.dbmodel.StorageLocationPackage
 
 @Database(entities = [ProcessPackage::class, BulkPackage::class, StatusPackage::class,
                      LocationPackage::class, StorageLocationPackage::class,
-                     ReasonPackage::class, CarrierPackage::class, CameraPackage::class], version = 1)
+                     ReasonPackage::class, CarrierPackage::class, CameraPackage::class,
+                     TrackingNumbersRequestItem::class], version = 1)
 
 abstract class ProcessDatabase : RoomDatabase() {
 
     abstract fun processDao(): ProcessDao
+    abstract fun TrackingDao(): TrackingDao
 
     abstract fun bulkDao(): BulkDao
 

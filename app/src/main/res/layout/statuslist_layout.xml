@@ -257,7 +257,6 @@
                     android:layout_width="fill_parent"
                     android:letterSpacing="0.025"
                     android:lineSpacingMultiplier="1.45"
-                    android:text="doc1"
                     android:width="116dp" />
             </LinearLayout>
 

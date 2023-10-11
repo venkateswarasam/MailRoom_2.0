@@ -137,6 +137,9 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="scanalereay">This barcode already scanned.Do you want to continue?</string>
     <string name="alertscan">The previous scanned or entered data will be lost.Do you want to continue?</string>
+    <string name="carriernmae">Carrier Name</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="back_to_sign_in">Back to Sign In</string>
 
 
 </resources>

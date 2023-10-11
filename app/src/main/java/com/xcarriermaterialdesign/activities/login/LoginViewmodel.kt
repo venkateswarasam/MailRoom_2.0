@@ -106,7 +106,7 @@ class LoginViewmodel : ViewModel() {
 
 
              }
-             catch (throwable:Throwable){
+             catch (throwable:Exception){
 
                  println("==throw==$throwable")
                  when(throwable){
@@ -139,7 +139,7 @@ class LoginViewmodel : ViewModel() {
 
                         Handler(Looper.getMainLooper()).post {
 
-                               ServiceDialog.ShowDialog(activity, "Invalid Credentials")
+                               ServiceDialog.ShowDialog(activity, throwable.toString())
 
 
 
@@ -229,7 +229,7 @@ class LoginViewmodel : ViewModel() {
                 loginResponse?.postValue(result!!)
 
             }
-            catch (throwable:Throwable){
+            catch (throwable:Exception){
 
                 when(throwable){
 
@@ -269,7 +269,7 @@ class LoginViewmodel : ViewModel() {
                         Handler(Looper.getMainLooper()).post {
 
 
-                            ServiceDialog.ShowDialog(activity, "The server encountered an internal error or misconfiguration and was unable to complete your request.")
+                            ServiceDialog.ShowDialog(activity, throwable.toString())
 
                         }
                     }

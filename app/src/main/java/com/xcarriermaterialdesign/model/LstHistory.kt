@@ -8,5 +8,6 @@ data class LstHistory(
     val StatusDate: String,
     val StatusDescription: String,
     val StorageLocation: String,
-    val UpdatedOn: String
+    val UpdatedOn: String,
+    val DockNo: String,
 )

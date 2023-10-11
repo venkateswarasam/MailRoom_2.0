@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+            <androidx.appcompat.widget.Toolbar
+
+                android:id="@+id/toolbar"
+                android:background="@color/purple_700"
+                android:layout_width="fill_parent"
+                android:layout_height="56dp">
+
+                <ImageView
+                    android:visibility="gone"
+                    android:src="@drawable/navigation_back"
+                    android:id="@+id/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showAsAction="always"
+                    />
+                <TextView
+                    android:id="@+id/headertext"
+                    android:textSize="19.74sp"
+                    android:textColor="#FBFBFB"
+                    android:height="24dp"
+                    android:layout_height="24dp"
+                    android:layout_width="216dp"
+                    android:lineSpacingMultiplier="1.16"
+                    android:text="@string/goodafter"
+                    android:width="216dp" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile"
+
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_outline_account_circle_24"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"/>
+
+            </androidx.appcompat.widget.Toolbar>
+
+
+            <LinearLayout
+                android:visibility="gone"
+
+                android:id="@+id/onlinepackages"
+
+                android:elevation="3dp"
+                android:orientation="vertical"
+                android:background="@drawable/offline_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="9dp"
+                    android:width="234dp"
+                    android:height="17dp"
+                    android:drawableLeft="@drawable/outline_check_24"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:lineSpacingMultiplier="1.42"
+                    android:text="All packages synced!"
+                    android:textColor="#99000000"
+                    android:textSize="12sp" />
+
+
+                <TextView
+                    android:layout_marginStart="16dp"
+
+                    android:drawablePadding="8dp"
+                    android:drawableLeft="@drawable/baseline_sync_24"
+                    android:textColor="#99000000"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/open_sans"
+                    android:height="13dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:lineSpacingMultiplier="1.40"
+                    android:text="Last sync a few seconds ago"
+                    android:width="243dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:visibility="gone"
+
+                android:id="@+id/offlinepackages"
+
+                android:elevation="3dp"
+                android:orientation="vertical"
+                android:background="@drawable/offline_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="9dp"
+                    android:width="234dp"
+                    android:height="17dp"
+                    android:drawableLeft="@drawable/outline_warning_amber_24"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:lineSpacingMultiplier="1.42"
+                    android:text="Packages are not synced."
+                    android:textColor="#99000000"
+                    android:textSize="12sp" />
+
+
+                <TextView
+                    android:layout_marginStart="16dp"
+
+                    android:drawablePadding="8dp"
+                    android:drawableLeft="@drawable/baseline_sync_24"
+                    android:textColor="#99000000"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/open_sans"
+                    android:height="13dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:lineSpacingMultiplier="1.40"
+                    android:text="Last sync 2 hours ago"
+                    android:width="243dp" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginTop="89dp"
+                android:src="@drawable/code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:id="@+id/scanner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="61dp"
+                android:layout_marginEnd="48dp"
+                android:width="236dp"
+                android:height="16dp"
+                android:background="@drawable/buttonshape"
+
+
+                android:fontFamily="@font/open_sans_bold"
+                android:gravity="center"
+                android:letterSpacing="0.125"
+
+                android:text="SCAN  BARCODES"
+                android:textColor="@color/white"
+                android:textSize="13.55sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_marginBottom="60dp"
+                android:id="@+id/manual_package"
+                android:layout_width="fill_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="48dp"
+                android:width="248dp"
+                android:height="16dp"
+                android:textSize="13.55sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:gravity="center"
+
+                android:letterSpacing="0.125"
+                android:lineSpacingMultiplier="1.18"
+                android:text="ADD PACKAGES MANUALLY"
+                android:textColor="#99000000"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="55dp"
+
+        android:layout_alignParentBottom="true"
+
+
+        android:id="@+id/offlineconnection"
+        android:background="@drawable/botoom_bg1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/outline_cloud_off_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/offlinetext"
+                android:fontFamily="@font/open_sans_semibold"
+                android:gravity="start"
+                android:layout_centerHorizontal="true"
+                android:textColor="#99000000"
+                android:textSize="12sp"
+                android:layout_centerInParent="true"
+                android:height="17dp"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:lineSpacingMultiplier="1.42"
+                android:text="YOU’RE OFFLINE NOW"
+                android:width="234dp" />
+
+            <TextView
+                android:height="28dp"
+                android:gravity="start"
+                android:layout_below="@+id/offlinetext"
+                android:textColor="#99000000"
+                android:textSize="9sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:lineSpacingMultiplier="1.33"
+                android:text="You can still add packages, but the changes will be applied once an internet connection is restored."
+                android:width="237dp" />
+        </LinearLayout>
+
+
+
+        <ImageView
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/close_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

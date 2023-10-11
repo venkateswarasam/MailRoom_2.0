@@ -17,9 +17,7 @@ import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
-import com.google.zxing.integration.android.IntentIntegrator
-import com.journeyapps.barcodescanner.CaptureManager
-import com.journeyapps.barcodescanner.DecoratedBarcodeView
+
 import com.xcarriermaterialdesign.R
 import java.io.IOException
 
@@ -46,10 +44,10 @@ class ProcessBarcodeScannerActivity : AppCompatActivity() {
 
     //using zxing barcode scanner
 
-    private var capture: CaptureManager? = null
+  /*  private var capture: CaptureManager? = null
     private var barcodeScannerView: DecoratedBarcodeView? = null
 
-    private var qrScanIntegrator: IntentIntegrator? = null
+    private var qrScanIntegrator: IntentIntegrator? = null*/
 
     val ASK_QUESTION_REQUEST = 1000
 

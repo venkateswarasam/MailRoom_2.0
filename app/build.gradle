@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.xcarriermaterialdesign"
-        minSdk 28
+        minSdk 23
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -50,14 +50,14 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.1'
-    implementation 'com.android.car.ui:car-ui-lib:2.5.1'
+    //implementation 'com.android.car.ui:car-ui-lib:2.5.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
 
     // scanner
-    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+   // implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
 
     // new scanner functionality
 
@@ -172,6 +172,9 @@ dependencies {
 
     // picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // toast
+    implementation "org.jetbrains.anko:anko-common:0.8.3"
 
 
 }

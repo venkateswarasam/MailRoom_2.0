@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.zxing.integration.android.IntentIntegrator
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.FragmentNotificationsBinding
 import com.xcarriermaterialdesign.activities.scannerprocess.SimpleProcessActivty

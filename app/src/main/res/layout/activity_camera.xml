@@ -44,7 +44,6 @@
             android:textColor="@color/white"
             android:textSize="13.82sp"
             android:layout_marginTop="21dp"
-            android:height="48dp"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:lineSpacingMultiplier="1.74"
@@ -75,11 +74,19 @@
 
 
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/camerarecylerview"
+            android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
 
 
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_marginStart="10dp"
 
             android:layout_marginTop="5dp"
@@ -123,6 +130,7 @@
 
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_marginStart="10dp"
 
             android:layout_marginTop="5dp"
@@ -162,6 +170,7 @@
 
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_marginStart="10dp"
 
             android:layout_marginTop="5dp"
@@ -206,18 +215,18 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/takeIV"
+        <ImageView
+            android:id="@+id/takeIV"
 
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_above="@id/bottomactionlay"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_twotone_circle_24">
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_above="@id/bottomactionlay"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/ic_twotone_circle_24">
 
-    </ImageView>
+        </ImageView>
 
 
 
@@ -299,7 +308,7 @@
                 android:height="24dp"
 
                 android:lineSpacingMultiplier="1.74"
-                android:text="NEXT"
+                android:text="@string/next"
                 app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24"
 
 

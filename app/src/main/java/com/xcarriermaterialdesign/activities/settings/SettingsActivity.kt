@@ -65,6 +65,7 @@ import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.ServiceDialog
 import com.xcarriermaterialdesign.utils.ServiceDialogNavigation
+import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -507,6 +508,8 @@ class SettingsActivity : AppCompatActivity() {
 
 
                 countrycode = itemObjcode.getString("alpha2Code")
+
+
 
 
               //  Toast.makeText(this, countrycode, Toast.LENGTH_SHORT).show()
@@ -1549,11 +1552,10 @@ class SettingsActivity : AppCompatActivity() {
             REQUEST_CODE -> {
                 for (result in grantResults) {
                     if (result == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(
-                            this,
-                            R.string.permission_warning,
-                            Toast.LENGTH_LONG
-                        ).show()
+
+
+
+                        toast( R.string.permission_warning)
                         return
                     }
                 }

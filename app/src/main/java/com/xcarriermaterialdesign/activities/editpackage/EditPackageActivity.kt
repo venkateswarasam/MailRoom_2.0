@@ -16,11 +16,14 @@ import com.xcarriermaterialdesign.process.ProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
+import com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem
 
 class EditPackageActivity : AppCompatActivity() {
 
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
 
     private lateinit var processPackage: List<ProcessPackage>
     private lateinit var carrierPackage: List<CarrierPackage>
@@ -82,6 +85,7 @@ class EditPackageActivity : AppCompatActivity() {
 
         processDao = db.processDao()
 
+        trackingDao = db.TrackingDao()
         carrierDao = db.carrierDao()
 
         processPackage = processDao.getAllProcessPackages()
@@ -136,6 +140,8 @@ class EditPackageActivity : AppCompatActivity() {
 
 
                 processDao.updateProcessPackages(id,binding.editText.text.toString())
+                trackingDao.updateProcessPackages(id,binding.editText.text.toString())
+
                 processDao.updateProcessPackageCarrier(id, binding.dropdownItem.text.toString())
 
 

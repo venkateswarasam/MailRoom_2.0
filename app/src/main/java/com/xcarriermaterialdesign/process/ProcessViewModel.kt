@@ -8,11 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.api.ApiInterface
 import com.xcarriermaterialdesign.api.ApiUtilities
-import com.xcarriermaterialdesign.model.CheckRequest
 import com.xcarriermaterialdesign.model.CheckTrackingResponse
-import com.xcarriermaterialdesign.model.CheckingTrackRequest
-import com.xcarriermaterialdesign.model.CheckinoutResponse
-import com.xcarriermaterialdesign.model.TrackingNumbersRequest
 import com.xcarriermaterialdesign.model.TrackingNumbersRequestItem
 import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.LoadingView
@@ -37,7 +33,9 @@ class ProcessViewModel: ViewModel() {
 
 
 
-    fun checktrackingnumbers(trackingNumbersRequest: List<TrackingNumbersRequestItem>){
+    fun checktrackingnumbers(trackingNumbersRequest: List<com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem>){
+
+
         if (!NetworkConnection().isNetworkAvailable(context = activity ))
 
         {

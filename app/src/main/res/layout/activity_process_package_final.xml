@@ -332,7 +332,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:textSize="13.82sp"
                         android:padding="10dp"
-                        android:id="@+id/mail_stop"
+                        android:id="@+id/mailstop"
 
                         android:fontFamily="@font/open_sans"
 
@@ -510,9 +510,10 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:textSize="13.82sp"
                         android:padding="10dp"
+                        android:maxLength="10"
                         android:fontFamily="@font/open_sans"
 
-                        android:id="@+id/doc_number"
+                        android:id="@+id/docnumber"
 
                         android:textColor="@color/black"
 
@@ -868,6 +869,7 @@
                     android:fontFamily="@font/open_sans"
 
                     android:padding="10dp"
+                    android:id="@+id/signname"
 
                     android:textColor="@color/black"
                     android:textSize="13.82sp"
@@ -892,6 +894,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:fontFamily="@font/open_sans"
+                    android:id="@+id/drivertext"
 
 
                     android:padding="10dp"
@@ -996,6 +999,7 @@
                     android:layout_height="80dp"
 
                     android:fontFamily="@font/open_sans"
+                    android:id="@+id/notestext"
 
                     android:padding="10dp"
 

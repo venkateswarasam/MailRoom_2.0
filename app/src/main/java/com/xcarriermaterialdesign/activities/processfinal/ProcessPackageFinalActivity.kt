@@ -1,45 +1,48 @@
 package com.xcarriermaterialdesign.activities.processfinal
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import com.xcarriermaterialdesign.BottomNavigationActivity
-import com.xcarriermaterialdesign.activities.camera.CameraActivity
+import com.xcarriermaterialdesign.BuildConfig
 import com.xcarriermaterialdesign.R
+import com.xcarriermaterialdesign.activities.camera.CameraActivity
+import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.activities.signature.SigantureviewActivity
 import com.xcarriermaterialdesign.databinding.ActivityProcessPackageFinalBinding
-import com.xcarriermaterialdesign.dbmodel.CarrierPackage
 import com.xcarriermaterialdesign.dbmodel.LocationDao
-import com.xcarriermaterialdesign.dbmodel.LocationPackage
 import com.xcarriermaterialdesign.dbmodel.ReasonDao
-import com.xcarriermaterialdesign.dbmodel.ReasonPackage
 import com.xcarriermaterialdesign.dbmodel.StatusDao
 import com.xcarriermaterialdesign.dbmodel.StorageLocationDao
-import com.xcarriermaterialdesign.dbmodel.StorageLocationPackage
-import com.xcarriermaterialdesign.activities.signature.SigantureviewActivity
-import com.xcarriermaterialdesign.roomdatabase.*
-import com.xcarriermaterialdesign.activities.scanner.SimpleScannerActivity
+import com.xcarriermaterialdesign.model.CheckPackage
+import com.xcarriermaterialdesign.roomdatabase.BulkDao
+import com.xcarriermaterialdesign.roomdatabase.CamerDao
+import com.xcarriermaterialdesign.roomdatabase.ProcessDao
+import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
+import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
+import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.DWUtilities
+import com.xcarriermaterialdesign.utils.LoadingView
 import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
-import com.xcarriermaterialdesign.utils.*
+import com.xcarriermaterialdesign.utils.ServiceDialog
+import org.jetbrains.anko.toast
+import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 
 class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.NetCheckerReceiverListener {
@@ -49,30 +52,35 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
     private lateinit var binding: ActivityProcessPackageFinalBinding
 
-    var image1Bitmap : Bitmap? = null
 
     val model: ProcessPackageFinalViewModel by viewModels()
 
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
     private lateinit var bulkDao: BulkDao
     private lateinit var statusDao: StatusDao
+    private lateinit var camerDao: CamerDao
 
 
     private lateinit var reasonDao: ReasonDao
     private lateinit var locationDao: LocationDao
     private lateinit var storageLocationDao: StorageLocationDao
 
+    var statusCode : String = ""
+    var reasonCode : String = ""
+    var storageCode : String = ""
+
+
+    // update package
+    var trueCount = 0
+    var falseCount = 0
 
 
 
 
     private lateinit var processPackage: List<ProcessPackage>
 
-    private lateinit var carrierPackage: List<CarrierPackage>
-    private lateinit var reasonPackage: List<ReasonPackage>
-    private lateinit var locationPackage: List<LocationPackage>
-    private lateinit var storageLocationPackage: List<StorageLocationPackage>
 
     private  var statusArray = mutableListOf<String>()
 
@@ -81,12 +89,16 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
     private  var storagelocationArray = mutableListOf<String>()
 
 
-    var bitMap1: Bitmap? = null
 
 
     var digitalSignBase64Str : String = ""
 
-    var trackingnumbers:String = ""
+    var image1 :String = ""
+    var image2 :String = ""
+    var image3 :String = ""
+
+
+
     var packagestatus:String = ""
     var scanType = 0
     val storage = 1
@@ -99,7 +111,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
     val doc = 7
 
 
-
+    var checkPackages: List<CheckPackage>?= null
 
 
     var digitalSignResult =
@@ -139,12 +151,10 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
                     // println("==bitmap==${result.data!!.hasExtra("RESULT_TEXT")}")
 
-                   /*digitalSignBase64Str =
-                        AnalyticsApplication.instance?.getDigitalSignBase64().toString()
+                   digitalSignBase64Str = AnalyticsApplication.instance?.getDigitalSignBase64()!!
 
                     println("==proceesdign==$digitalSignBase64Str")
 
-                    Log.i("msg==",digitalSignBase64Str)*/
 
                 }
             }
@@ -155,6 +165,9 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
         processDao.deleteAllProcessPackages()
+        trackingDao.deleteAllProcessPackages()
+        camerDao.deleteAllBulkPackages()
+
 
         val intent = Intent(this, BottomNavigationActivity::class.java)
 
@@ -163,7 +176,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
     }
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
      //   setContentView(R.layout.activity_process_package_final)
@@ -171,10 +183,50 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
         model.config(this)
         supportActionBar?.hide()
 
-        //   initactionbar()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_process_package_final)
 
+
+        val intent = intent
+
+         checkPackages = intent.getSerializableExtra("checklist") as List<CheckPackage>
+
+
+        // true and false count
+
+
+
+        for (i in 0 until checkPackages!!.size) {
+            val packageData: CheckPackage = checkPackages!![i]
+            val checkExist = packageData.CheckExist
+            if (checkExist) {
+                trueCount++
+            } else {
+                falseCount++
+            }
+        }
+
+
+
+        // Print the counts
+        System.out.println("Number of 'true' values: $trueCount");
+        System.out.println("Number of 'false' values: $falseCount");
+
+
+
+
+
+
+
+
+
+
+
+
+        //intent.getBooleanExtra("bulkflag", false)
+
+
+        println("==boolean==${intent.getBooleanExtra("bulkflag",false)}")
 
 
         DWUtilities.CreateDWProfile(this, resources.getString(R.string.activity_intent_filter_action5),"true")
@@ -184,12 +236,12 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         if (!NetworkConnection().isNetworkAvailable(this)) {
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profile.setImageResource(R.drawable.syncyellow)
 
         }
         else{
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
+            binding.profile.setImageResource(R.drawable.syncnew)
 
         }
 
@@ -203,8 +255,10 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
         ).allowMainThreadQueries().build()
 
         processDao = db.processDao()
+        trackingDao = db.TrackingDao()
         bulkDao = db.bulkDao()
         statusDao = db.statusDao()
+        camerDao = db.cameraDao()
 
         reasonDao = db.reasonDao()
         locationDao = db.locationDao()
@@ -213,25 +267,25 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         processPackage = processDao.getAllProcessPackages()
 
-        statusDao.getAllStatusPackages()?.forEach{
+        statusDao.getAllStatusPackages().forEach{
 
             statusArray.add(it.StatusDescription)
         }
 
 
 
-        reasonDao.getAllReasonPackages()?.forEach{
+        reasonDao.getAllReasonPackages().forEach{
 
             reasonArray.add(it.ReasonDescription)
         }
 
-        locationDao.getAllLocationPackages()?.forEach{
+        locationDao.getAllLocationPackages().forEach{
 
             locationArray.add(it.LocationName)
         }
 
 
-        storageLocationDao.getAllStorageLocationPackages()?.forEach{
+        storageLocationDao.getAllStorageLocationPackages().forEach{
 
             storagelocationArray.add(it.StorageLocationDescription)
         }
@@ -239,12 +293,12 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
 
-        // binding.image1.setImageBitmap(AnalyticsApplication.instance().getPackageImage1())
 
 
         binding.toolbar.setNavigationOnClickListener {
 
             processDao.deleteAllProcessPackages()
+            trackingDao.deleteAllProcessPackages()
 
             val intent = Intent(this, BottomNavigationActivity::class.java)
 
@@ -256,6 +310,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
         binding.backbutton.setOnClickListener {
 
             processDao.deleteAllProcessPackages()
+            trackingDao.deleteAllProcessPackages()
 
             val intent = Intent(this, BottomNavigationActivity::class.java)
 
@@ -263,7 +318,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             finish()
         }
 
-      //  dropdownlay.setOnKeyListener=null
+
         ArrayAdapter(this, android.R.layout.simple_list_item_1, statusArray).also {
                 adapter ->
             binding.dropdownItem.setAdapter(adapter)
@@ -602,32 +657,175 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         binding.savechanges.setOnClickListener {
 
-         //   processDao.deleteAllProcessPackages()
-
-            for (element in processPackage){
-
-              //  trackingnumbers = element.trackingNumber
-
-                val enDate = SimpleDateFormat("EEE MMM d yyyy • HH:mm aa", Locale("en"))
-
-                val date: String = enDate.format(Calendar.getInstance().time)
 
 
-                bulkDao.insertBulkPackage(BulkPackage(element.trackingNumber,packagestatus, date,binding.routeText.text.toString(),
-                    binding.bin.text.toString(),element.carriername))
+
+
+             image1 = ApplicationSharedPref.read(ApplicationSharedPref.IMAGE1,"")!!
+             image2 = ApplicationSharedPref.read(ApplicationSharedPref.IMAGE2,"")!!
+             image3 = ApplicationSharedPref.read(ApplicationSharedPref.IMAGE3,"")!!
+
+
+
+
+
+            val packageImages = PackageImages(
+                image1,
+                image2,
+                image3,
+                digitalSignBase64Str)
+
+
+            val predicatedResult =  statusDao.getAllStatusPackages()?.filter { it.StatusDescription == binding.dropdownItem.text.toString()}
+
+
+            statusCode = try {
+
+
+                predicatedResult!![0].StatusCode?:""
+
+            } catch (e:java.lang.IndexOutOfBoundsException){
+
+
+                ""
 
             }
 
-            processDao.deleteAllProcessPackages()
 
-            Toast.makeText(this, "Data saved successfully", Toast.LENGTH_SHORT).show()
-
+            val predicatedResult_reason =  reasonDao.getAllReasonPackages()?.filter { it.ReasonDescription == binding.reasonItem.text.toString()}
 
 
 
-            val intent = Intent(this, BottomNavigationActivity::class.java)
 
-            startActivity(intent)
+            reasonCode = try {
+
+
+                predicatedResult_reason!![0].ReasonId?:""
+
+            } catch (e:java.lang.IndexOutOfBoundsException){
+
+
+                ""
+
+            }
+
+
+            val predicatedResult_storage =  storageLocationDao.getAllStorageLocationPackages()?.filter { it.StorageLocationDescription == binding.storageItem.text.toString()}
+
+
+
+
+            storageCode = try {
+
+
+                predicatedResult_storage!![0].StorageLocationId?:""
+
+            } catch (e:java.lang.IndexOutOfBoundsException){
+
+
+                ""
+
+            }
+
+
+            if (trueCount==0){
+
+
+
+                val createUpdateRequest = CreateUpdateRequest("Android",
+                    BuildConfig.VERSION_NAME,
+                    binding.bin.text.toString(),
+                    binding.buildingname.text.toString(),
+                    intent.getBooleanExtra("bulkflag", false),
+                    "",
+                    ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!,
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
+                    Build.MODEL,
+                    binding.docnumber.text.toString(),
+                    binding.drivertext.text.toString(),
+                    ApplicationSharedPref.read(ApplicationSharedPref.LATTITUDE,"17.23")!!,
+                    binding.lockertext.text.toString(),
+                    ApplicationSharedPref.read(ApplicationSharedPref.LONGITUDE,"72.56")!!,
+                    binding.mailstop.text.toString(),
+                    binding.notestext.text.toString(),
+                    Build.VERSION.RELEASE,
+                    ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,
+                    reasonCode,
+                    binding.routeText.text.toString(),
+                    statusCode,
+                    storageCode,
+                    intent.getSerializableExtra("checklist") as List<CheckPackage>,
+                    packageImages = packageImages,binding.signname.text.toString())
+
+
+                println("==createrequest==$createUpdateRequest")
+
+
+
+
+                model.createpackage(createUpdateRequest)
+
+
+            }
+
+            else{
+
+                val createUpdateRequest = UpdatePackageRequest("Android",
+                    BuildConfig.VERSION_NAME,
+                    binding.bin.text.toString(),
+                    binding.buildingname.text.toString(),
+                    intent.getBooleanExtra("bulkflag", false),
+                    "",
+                    ApplicationSharedPref.read(ApplicationSharedPref.COMPANY_ID,"")!!,
+                    Build.MODEL,
+                    binding.docnumber.text.toString(),
+                    binding.drivertext.text.toString(),
+                    ApplicationSharedPref.read(ApplicationSharedPref.LATTITUDE,"17.23")!!,
+
+                    binding.lockertext.text.toString(),
+
+                    ApplicationSharedPref.read(ApplicationSharedPref.LONGITUDE,"17.23")!!,
+                    binding.mailstop.text.toString(),
+
+                    binding.notestext.text.toString(),
+
+                    Build.VERSION.RELEASE,
+                    ApplicationSharedPref.read(ApplicationSharedPref.PLANT_ID,"")!!,
+
+                    reasonCode,
+                    binding.routeText.text.toString(),
+                    binding.signname.text.toString(),
+                    statusCode,
+                    storageCode,
+                    ApplicationSharedPref.read(ApplicationSharedPref.LOGINID,"")!!,
+
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
+                    intent.getSerializableExtra("checklist") as List<CheckPackage>,
+                    packageImages
+                    )
+
+
+                println("==updaterequest==$createUpdateRequest")
+
+
+
+
+                model.updatepackage(createUpdateRequest)
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
         }
 
 
@@ -638,9 +836,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
             intent.putExtra("flag","process")
 
-           // startActivity(intent)
-
-         //   intent.putExtra("scanning","Scanning")
 
            startActivityForResult(intent,54321)
         }
@@ -651,7 +846,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             val intent = Intent(this, SimpleScannerActivity::class.java)
             intent.putExtra("flag","process")
 
-            //   intent.putExtra("scanning","Scanning")
 
             startActivityForResult(intent,54322)
         }
@@ -662,7 +856,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             intent.putExtra("flag","process")
 
 
-            //   intent.putExtra("scanning","Scanning")
 
             startActivityForResult(intent,54323)
         }
@@ -676,7 +869,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             intent.putExtra("flag","process")
 
 
-            //   intent.putExtra("scanning","Scanning")
 
             startActivityForResult(intent,54324)
         }
@@ -689,7 +881,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             intent.putExtra("flag","process")
 
 
-            //   intent.putExtra("scanning","Scanning")
 
             startActivityForResult(intent,54325)
         }
@@ -731,12 +922,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
                     println("==count==$countcheck")
 
-
-
-
-
-
-                 //  Toast.makeText(this, countcheck, Toast.LENGTH_SHORT).show()
 
                     when(countcheck){
 
@@ -844,6 +1029,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         //    PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
 
+            camerDao.deleteAllBulkPackages()
 
 
             var intent: Intent = Intent(this, CameraActivity::class.java)
@@ -856,7 +1042,10 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         binding.cardimage4.setOnClickListener {
 
-           // PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+
+            camerDao.deleteAllBulkPackages()
+
+            // PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
 
             var intent: Intent = Intent(this, CameraActivity::class.java)
             cameraActivityWithResult.launch(intent)
@@ -866,6 +1055,9 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         binding.cardimage1.setOnClickListener {
 
+            camerDao.deleteAllBulkPackages()
+
+
             var intent: Intent = Intent(this, CameraActivity::class.java)
             cameraActivityWithResult.launch(intent)
 
@@ -874,12 +1066,18 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         binding.cardimage2.setOnClickListener {
 
+            camerDao.deleteAllBulkPackages()
+
+
             var intent: Intent = Intent(this, CameraActivity::class.java)
             cameraActivityWithResult.launch(intent)
 
 
         }
         binding.cardimage3.setOnClickListener {
+
+            camerDao.deleteAllBulkPackages()
+
 
             var intent: Intent = Intent(this, CameraActivity::class.java)
             cameraActivityWithResult.launch(intent)
@@ -928,7 +1126,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         }
 
-        binding.mailStop.setOnFocusChangeListener { _,hasFocus ->
+        binding.mailstop.setOnFocusChangeListener { _,hasFocus ->
             scanType = if(hasFocus){
                 mail
             }else{
@@ -937,7 +1135,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         }
 
-        binding.docNumber.setOnFocusChangeListener { _,hasFocus ->
+        binding.docnumber.setOnFocusChangeListener { _,hasFocus ->
             scanType = if(hasFocus){
                 doc
             }else{
@@ -971,6 +1169,60 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
             }
 
         }
+
+
+
+
+
+
+
+        // response handling
+
+        model.checkinoutResponse.observe(this, Observer<CreateUpdateResponse> { item ->
+
+            LoadingView.hideLoading()
+
+            println("==statuscode${item.StatusCode}")
+
+
+            if (item.StatusCode == 200){
+
+
+                toast(item.Result.ReturnMsg)
+
+              //  Toast.makeText(this, item.Result.ReturnMsg, Toast.LENGTH_SHORT).show()
+
+
+
+
+                ApplicationSharedPref.write(ApplicationSharedPref.IMAGE1,"")
+                ApplicationSharedPref.write(ApplicationSharedPref.IMAGE2,"")
+                ApplicationSharedPref.write(ApplicationSharedPref.IMAGE3,"")
+
+                onBackPressed()
+
+            }
+
+            else{
+
+
+
+                ServiceDialog.ShowDialog(this, item.Result.ReturnMsg)
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+        })
+
 
 
 
@@ -1021,12 +1273,12 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
                 mail->{
 
-                    binding.mailStop.setText(decodedData)
+                    binding.mailstop.setText(decodedData)
                 }
 
                 doc->{
 
-                    binding.docNumber.setText(decodedData)
+                    binding.docnumber.setText(decodedData)
                 }
 
 
@@ -1059,29 +1311,6 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
 
-    private fun initactionbar(){
-
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setCustomView(R.layout.actionbarnew)
-        val view1: View =  supportActionBar!!.customView
-        val toolbar: Toolbar = view1.parent as Toolbar
-        toolbar.setContentInsetsAbsolute(0, 0)
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        val headertext: TextView = view1.findViewById(R.id.headertext)
-        headertext.text = getString(R.string.process)
-        val profile: ImageView = view1.findViewById(R.id.profile)
-         // val back: ImageView = view1.findViewById(R.id.back)
-
-
-        profile.setImageResource(R.drawable.syncnew)
-
-        profile.setOnClickListener {
-
-
-
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -1104,7 +1333,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                 if (resultCode == RESULT_OK) {
                     val name = data!!.getStringExtra("barcode")
                     println("==name$name")
-                    binding.mailStop!!.setText(name)
+                    binding.mailstop!!.setText(name)
                 }
 
 
@@ -1142,7 +1371,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
                 if (resultCode == RESULT_OK) {
                     val name = data!!.getStringExtra("barcode")
                     println("==name$name")
-                    binding.docNumber!!.setText(name)
+                    binding.docnumber!!.setText(name)
                 }
 
 
@@ -1193,7 +1422,7 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
         if (!isConnected) {
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profile.setImageResource(R.drawable.syncyellow)
 
 
 
@@ -1202,11 +1431,10 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
         } else {
 
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
+            binding.profile.setImageResource(R.drawable.syncnew)
 
 
 
-            //  save!!.setImageDrawable(resources.getDrawable(R.drawable.savegreen))
 
         }
 
@@ -1221,14 +1449,14 @@ class ProcessPackageFinalActivity : AppCompatActivity(), NetworkChangeReceiver.N
 
 
 
-            binding.profile!!.setImageResource(R.drawable.syncnew)
+            binding.profile.setImageResource(R.drawable.syncnew)
 
 
         }
         else{
 
 
-            binding.profile!!.setImageResource(R.drawable.syncyellow)
+            binding.profile.setImageResource(R.drawable.syncyellow)
 
 
 

@@ -10,12 +10,10 @@ object ApplicationSharedPref {
     const val LONGITUDE = "LONGITUDE"
     const val LOGINCHECK = "LOGINCHECK"
     const val MS_EMAIL = "MS_EMAIL"
-    const val MS_PASSWORD= "MS_PASSWORD"
     const val PLANT_ID= "PLANT_ID"
     const val LOGINID= "LOGINID"
     const val COMPANY_ID= "COMPANY_ID"
     const val EMP_ID= "EMP_ID"
-    const val LOCATIONNAME= "LOCATIONNAME"
     const val TOKEN= "TOKEN"
     const val REFRESH_TOKEN= "REFRESH_TOKEN"
     const val USERNAME= "USERNAME"
@@ -24,7 +22,6 @@ object ApplicationSharedPref {
     const val PROFILEIMAGE= "PROFILEIMAGE"
     const val ROLEID= "ROLEID"
     const val PLANTNAME= "PLANTNAME"
-    const val BUILDING= "BUILDING"
     const val DEVICE= "DEVICE"
 
 
@@ -32,21 +29,12 @@ object ApplicationSharedPref {
     const val DEPARTMENT= "DEPARTMENT"
     const val DESIGNATION= "DESIGNATION"
 
+    const val IMAGE1= "IMAGE1"
+    const val IMAGE2= "IMAGE2"
+    const val IMAGE3= "IMAGE3"
+
     const val SMSCHECK= false
     const val AUTOSCANCHECK= false
-
-
-    const val AUTOSCANCHECK1= false
-    const val BUILDINGCHECK= false
-
-
-
-
-
-
-
-
-
 
 
 

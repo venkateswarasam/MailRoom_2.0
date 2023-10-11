@@ -67,7 +67,9 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 
             // code change here
 
-            context.startForegroundService(Intent(context, NetWorkService::class.java))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(Intent(context, NetWorkService::class.java))
+            }
         }
     }
 

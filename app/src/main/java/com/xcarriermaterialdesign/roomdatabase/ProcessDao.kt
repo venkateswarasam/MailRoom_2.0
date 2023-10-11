@@ -54,4 +54,10 @@ interface ProcessDao{
     suspend fun deleteProcessPackage(processPackage: ProcessPackage)
 
 
+    // get values from specific column
+
+    @Query("SELECT trackingNumber FROM ProcessPackage_table")
+    fun getColumnValues(): List<String?>?
+
+
 }

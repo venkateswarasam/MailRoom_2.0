@@ -86,6 +86,22 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
+
+    <style name="AlertDialogTheme" parent="Theme.XCarrierMaterialDesign">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+
+
+
+
+
     <style name="Theme.XCarrierMaterialDesign.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.XCarrierMaterialDesign.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

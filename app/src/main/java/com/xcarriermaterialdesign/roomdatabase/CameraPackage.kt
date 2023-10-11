@@ -1,5 +1,6 @@
 package com.xcarriermaterialdesign.roomdatabase
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -10,26 +11,15 @@ import org.json.JSONArray
 
 data class CameraPackage(
 
-    @ColumnInfo(name = "country")
-    var country: String,
+    @ColumnInfo(name = "ImageString")
+    var ImageString: String,
 
-
-    @ColumnInfo(name = "alpha2Code")
-    var alpha2Code: String,
-
-
-    @ColumnInfo(name = "alpha3Code")
-    var alpha3Code: String,
+/*
+    @ColumnInfo(name = "ImageBitmap")
+    var ImageBitmap: Bitmap*/
 
 
 
-    @ColumnInfo(name = "numberCode")
-    var numberCode: String,
-
-
-
-    @ColumnInfo(name = "states")
-    var states: String
 
     )
 

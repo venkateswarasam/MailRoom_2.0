@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Base64
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -13,9 +14,13 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.room.Room
 import com.github.gcacace.signaturepad.views.SignaturePad
 import com.kyanogen.signatureview.SignatureView
 import com.xcarriermaterialdesign.R
+import com.xcarriermaterialdesign.roomdatabase.CamerDao
+import com.xcarriermaterialdesign.roomdatabase.CameraPackage
+import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
 import java.io.ByteArrayOutputStream
 
@@ -37,6 +42,8 @@ class SigantureviewActivity : AppCompatActivity() {
 
 
     private var mSignaturePad: SignaturePad? = null
+
+    private lateinit var camerDao: CamerDao
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -70,16 +77,17 @@ class SigantureviewActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-      /*  val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
 
-        (this).windowManager
-            .defaultDisplay
-            .getMetrics(displayMetrics)*/
 
         toolbar = findViewById(R.id.toolbar)
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            ProcessDatabase::class.java, "Process_database"
+        ).allowMainThreadQueries().build()
+
+        camerDao = db.cameraDao()
+
 
 
         saveimage = findViewById<ImageView>(R.id.saveimage)
@@ -159,10 +167,6 @@ class SigantureviewActivity : AppCompatActivity() {
                 signatureBitmap = mSignaturePad?.signatureBitmap!!
 
 
-                  // signatureBitmap = signatureView.signatureBitmap
-
-              //  bitmap = signatureBitmap!!
-
                 println("==bitmapsign==$signatureBitmap")
 
                 AnalyticsApplication.instance?.setBitmapSign(signatureBitmap)
@@ -198,45 +202,27 @@ class SigantureviewActivity : AppCompatActivity() {
 
 
     fun saveImage(myBitmap: Bitmap): String {
-        val bytes = ByteArrayOutputStream()
+
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+
+
+        val encoded = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+
+     /*   val bytes = ByteArrayOutputStream()
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
 
-        val bytesArray = bytes.toByteArray()
+        val bytesArray = bytes.toByteArray()*/
 
-       // MyApplication.applicationContext().setDigitalSignBase64(Base64.encodeToString(bytesArray, Base64.DEFAULT))
+        AnalyticsApplication.instance!!.setDigitalSignBase64(encoded)
 
-//        val wallpaperDirectory = File(
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + IMAGE_DIRECTORY /*iDyme folder*/
-//        )
-//        // have the object build the directory structure, if needed.
-//        if (!wallpaperDirectory.exists()) {
-//            wallpaperDirectory.mkdirs()
-//            Log.d("hhhhh", wallpaperDirectory.toString())
-//        }
-//
-//        try {
-//            val f = File(
-//                wallpaperDirectory, Calendar.getInstance()
-//                    .timeInMillis.toString() + ".jpg"
-//            )
-//            f.createNewFile()
-//            val fo = FileOutputStream(f)
-//            fo.write(bytes.toByteArray())
-//            MediaScannerConnection.scanFile(
-//                this,
-//                arrayOf(f.path),
-//                arrayOf("image/jpeg"), null
-//            )
-//            fo.close()
-//            Log.d("TAG", "File Saved::--->" + f.absolutePath)
-////            Toast.makeText(applicationContext, "Signature Saved !!!", Toast.LENGTH_SHORT)
-////                .show()
-//            signatureView.clearCanvas()
+      //  camerDao.insertCameraPackage(CameraPackage(encoded))
 
-//            return f.absolutePath
-//        } catch (e1: Exception) {
-//            e1.printStackTrace()
-//        }
+
+
 
         return ""
 

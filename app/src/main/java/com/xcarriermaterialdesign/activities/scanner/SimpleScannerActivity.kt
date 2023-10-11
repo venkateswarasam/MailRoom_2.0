@@ -26,15 +26,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.room.Room
 import com.google.zxing.Result
-import com.google.zxing.integration.android.IntentIntegrator
-import com.journeyapps.barcodescanner.CaptureManager
-import com.journeyapps.barcodescanner.DecoratedBarcodeView
+
 import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.process.ProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
+import com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -60,14 +60,15 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     //using zxing barcode scanner
 
-    private var capture: CaptureManager? = null
+  /*  private var capture: CaptureManager? = null
     private var barcodeScannerView: DecoratedBarcodeView? = null
 
     private var qrScanIntegrator: IntentIntegrator? = null
-
+*/
     val ASK_QUESTION_REQUEST = 1000
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
 
     var check:String?= null
 
@@ -109,6 +110,7 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
 
         processDao = db.processDao()
+        trackingDao = db.TrackingDao()
 
         processPackage = processDao.getAllProcessPackages()
 
@@ -295,6 +297,7 @@ class SimpleScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                 }
 
                 processDao.insertProcessPackage(ProcessPackage(rawResult?.text!!,"", 1))
+                trackingDao.insertProcessPackage(TrackingNumbersRequestItem(rawResult.text))
                 arrayList.add(rawResult?.text!!)
 
                 displaycount()

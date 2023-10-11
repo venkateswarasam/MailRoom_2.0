@@ -19,7 +19,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.zxing.integration.android.IntentIntegrator
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -47,7 +46,9 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+/*
     private var qrScanIntegrator: IntentIntegrator? = null
+*/
 
 
     internal var count = 10
@@ -180,10 +181,10 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
         val batchScanResultLauncher  = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 
             if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                val intentResult = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
+              //  val intentResult = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
 
 
-                Toast.makeText(activity, intentResult.contents, Toast.LENGTH_SHORT).show()
+              //  Toast.makeText(activity, intentResult.contents, Toast.LENGTH_SHORT).show()
 
                // binding.batchIdTV.setText(intentResult.contents.toString())
             }
@@ -374,10 +375,10 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.NetCheckerReceiverListene
 
 
     private fun setupScanner() {
-        qrScanIntegrator = IntentIntegrator(activity)
+       /* qrScanIntegrator = IntentIntegrator(activity)
         qrScanIntegrator?.setOrientationLocked(false)
         qrScanIntegrator?.setPrompt("")
-        qrScanIntegrator?.captureActivity
+        qrScanIntegrator?.captureActivity*/
 
     }
 

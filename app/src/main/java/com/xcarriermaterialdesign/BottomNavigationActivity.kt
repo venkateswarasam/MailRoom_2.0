@@ -195,6 +195,7 @@ class BottomNavigationActivity : AppCompatActivity() {
         carrierDao = db.carrierDao()
 
         bulkDao.deleteAllBulkPackages()
+        camerDao.deleteAllBulkPackages()
 
 
 
@@ -398,6 +399,82 @@ class BottomNavigationActivity : AppCompatActivity() {
 
         // auto scan
 
+
+
+        if (Build.MANUFACTURER.contains("Zebra")){
+
+
+            if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!.equals(true)){
+
+                println("==autoscan1==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+            }
+
+            else if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, true)!!.equals(false)){
+
+
+                println("==autoscan2==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+//               if (binding.autoscan.isChecked.equals(false))
+//               {
+//                  // ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+//                   binding.autoscan.isChecked = true
+//               }
+
+            }
+            else{
+
+
+                ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, false)
+
+                println("==autoscan3==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+
+            }
+
+
+
+
+
+        }
+
+        else{
+
+            println("==autoscan==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+            if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)!!.equals(true)){
+
+                println("==autoscan1==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+            }
+
+            else if(ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, true)!!.equals(false)){
+
+
+                println("==autoscan2==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+//               if (binding.autoscan.isChecked.equals(false))
+//               {
+//                  // ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+//                   binding.autoscan.isChecked = true
+//               }
+
+            }
+            else{
+
+
+                ApplicationSharedPref.writeboolean(ApplicationSharedPref.AUTOSCANCHECK, true)
+
+                println("==autoscan3==${ApplicationSharedPref.readboolean(ApplicationSharedPref.AUTOSCANCHECK, false)}")
+
+
+
+            }
+
+
+        }
 
 
 
@@ -946,7 +1023,7 @@ class BottomNavigationActivity : AppCompatActivity() {
                         val errorMessage = "Location settings are inadequate, and cannot be " +
                                 "fixed here. Fix in Settings."
                         Log.e(ContentValues.TAG, errorMessage)
-                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                       // Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
                 updateLocationUI()
@@ -961,6 +1038,12 @@ class BottomNavigationActivity : AppCompatActivity() {
 
             println("==latitude===$latitude")
             println("==longi===$longitude")
+
+
+            ApplicationSharedPref.write(ApplicationSharedPref.LATTITUDE, latitude.toString())
+            ApplicationSharedPref.write(ApplicationSharedPref.LONGITUDE, longitude.toString())
+
+
             // ToastCustomClass(this, latitude.toString())
 
 

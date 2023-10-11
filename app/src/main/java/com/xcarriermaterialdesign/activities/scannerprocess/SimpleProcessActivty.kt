@@ -17,9 +17,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.zxing.Result
-import com.google.zxing.integration.android.IntentIntegrator
-import com.journeyapps.barcodescanner.CaptureManager
-import com.journeyapps.barcodescanner.DecoratedBarcodeView
+
 import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
@@ -51,10 +49,10 @@ class SimpleProcessActivty : AppCompatActivity(), ZXingScannerView.ResultHandler
 
     //using zxing barcode scanner
 
-    private var capture: CaptureManager? = null
+   /* private var capture: CaptureManager? = null
     private var barcodeScannerView: DecoratedBarcodeView? = null
 
-    private var qrScanIntegrator: IntentIntegrator? = null
+    private var qrScanIntegrator: IntentIntegrator? = null*/
 
     val ASK_QUESTION_REQUEST = 1000
 

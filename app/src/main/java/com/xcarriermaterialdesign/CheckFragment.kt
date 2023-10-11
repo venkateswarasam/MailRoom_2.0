@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.media.session.MediaButtonReceiver.handleIntent
 import com.xcarriermaterialdesign.activities.scannerprocess.SimpleProcessActivty
 import com.xcarriermaterialdesign.databinding.FragmentCheckBinding
 import com.xcarriermaterialdesign.model.BuildingRequest
@@ -24,6 +23,7 @@ import com.xcarriermaterialdesign.utils.NetWorkService
 import com.xcarriermaterialdesign.utils.NetworkChangeReceiver
 import com.xcarriermaterialdesign.utils.NetworkConnection
 import com.xcarriermaterialdesign.utils.ServiceDialog
+import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -158,6 +158,9 @@ open class CheckFragment : Fragment(),NetworkChangeReceiver.NetCheckerReceiverLi
 
 
                 ServiceDialog.ShowDialog(activity as AppCompatActivity,"You are already Checked-In")
+
+
+               // (activity as AppCompatActivity).toast("You are already Checked-In")
 
 
             //    Toast.makeText(activity,"You are already Checked-In", Toast.LENGTH_SHORT).show()

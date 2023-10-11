@@ -19,10 +19,7 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Detector.Detections
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
-import com.google.zxing.integration.android.IntentIntegrator
-import com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE
-import com.journeyapps.barcodescanner.CaptureManager
-import com.journeyapps.barcodescanner.DecoratedBarcodeView
+
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.process.ProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
@@ -54,11 +51,11 @@ open class BarcodeScannerActivity : AppCompatActivity() {
 
     //using zxing barcode scanner
 
-    private var capture: CaptureManager? = null
+   /* private var capture: CaptureManager? = null
     private var barcodeScannerView: DecoratedBarcodeView? = null
 
     private var qrScanIntegrator: IntentIntegrator? = null
-
+*/
     val ASK_QUESTION_REQUEST = 1000
 
     private lateinit var processDao: ProcessDao
@@ -140,14 +137,15 @@ open class BarcodeScannerActivity : AppCompatActivity() {
     }*/
 
     private fun setupScanner() {
-        qrScanIntegrator = IntentIntegrator(this)
+      /*  qrScanIntegrator = IntentIntegrator(this)
         qrScanIntegrator?.setOrientationLocked(false)
         qrScanIntegrator?.setPrompt("")
-        qrScanIntegrator?.captureActivity
+        qrScanIntegrator?.captureActivity*/
 
     }
 
 
+/*
     private fun zxing_barcodescanner(savedInstanceState: Bundle?){
 
 
@@ -175,7 +173,8 @@ open class BarcodeScannerActivity : AppCompatActivity() {
         //Toast.makeText(this, capture!!.decode().toString(), Toast.LENGTH_SHORT).show()
 
 
-      /*  val batchScanResultLauncher  = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+      */
+/*  val batchScanResultLauncher  = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 
             if (it.resultCode == RESULT_OK) {
                 val intentResult = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
@@ -185,13 +184,15 @@ open class BarcodeScannerActivity : AppCompatActivity() {
 
                 // binding.batchIdTV.setText(intentResult.contents.toString())
             }
-        }*/
+        }*//*
+
 
 
       //   batchScanResultLauncher.launch(qrScanIntegrator?.createScanIntent())
 
 
     }
+*/
 
 
  /*   protected fun onSaveInstanceState(outState: Bundle?) {

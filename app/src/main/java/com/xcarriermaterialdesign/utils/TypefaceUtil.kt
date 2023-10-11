@@ -14,7 +14,7 @@ object TypefaceUtil {
             defaultFontTypefaceField.isAccessible = true
             defaultFontTypefaceField.set(null, customFontTypeface)
         } catch (e: Exception) {
-            Toast.makeText(context,e.toString(), Toast.LENGTH_SHORT).show()
+           // Toast.makeText(context,e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }

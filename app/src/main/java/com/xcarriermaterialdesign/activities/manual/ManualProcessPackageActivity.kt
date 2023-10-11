@@ -25,10 +25,12 @@ import com.google.gson.reflect.TypeToken
 import com.xcarriermaterialdesign.BottomNavigationActivity
 import com.xcarriermaterialdesign.R
 import com.xcarriermaterialdesign.databinding.ActivityManualProcessPackageBinding
+import com.xcarriermaterialdesign.model.TrackingNumbersRequestItem
 import com.xcarriermaterialdesign.process.ProcessPackageActivity
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
 import com.xcarriermaterialdesign.roomdatabase.ProcessPackage
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
 import com.xcarriermaterialdesign.utils.CourseModal
 import com.xcarriermaterialdesign.utils.DWUtilities
 import com.xcarriermaterialdesign.utils.NetWorkService
@@ -46,6 +48,7 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
 
 
 
@@ -64,6 +67,10 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
     private lateinit var binding: ActivityManualProcessPackageBinding
 
     val model: ManualPackageViewModel by viewModels()
+
+
+    lateinit var trackingRequests:List<TrackingNumbersRequestItem>
+    lateinit var  trackingNumbersRequestItem:TrackingNumbersRequestItem
 
 
 
@@ -125,6 +132,8 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
         processDao = db.processDao()
 
+        trackingDao = db.TrackingDao()
+
         processPackage = processDao.getAllProcessPackages()
 
 
@@ -158,7 +167,18 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
                         if (!checkDuplicateTrackNo(binding.editText.text.toString())) {
 
+                            trackingNumbersRequestItem = TrackingNumbersRequestItem(binding.editText.text.toString())
+
+
+                            trackingRequests = listOf(trackingNumbersRequestItem)
+
+                            println("==sending==$trackingRequests")
+
+
+
                             processDao.insertProcessPackage(ProcessPackage(binding.editText.text.toString(),"",1))
+
+                            trackingDao.insertProcessPackage(com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem(binding.editText.text.toString()))
 
                             savedata()
                         }
@@ -438,7 +458,20 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
 
             if (!checkDuplicateTrackNo(binding.editText.text.toString())) {
 
+                trackingNumbersRequestItem = TrackingNumbersRequestItem(binding.editText.text.toString())
+
+
+                trackingRequests = listOf(trackingNumbersRequestItem)
+
+                println("==sending==$trackingRequests")
+
+
+
                 processDao.insertProcessPackage(ProcessPackage(binding.editText.text.toString(),"",1))
+
+                trackingDao.insertProcessPackage(com.xcarriermaterialdesign.roomdatabase.TrackingNumbersRequestItem(binding.editText.text.toString()))
+
+
 
                 savedata()
             }
@@ -600,6 +633,14 @@ class ManualProcessPackageActivity : AppCompatActivity(), NetworkChangeReceiver.
                     //  processPackage.removeAt(item)
 
                     processDao.updateProcessPackageCount(bar.id.toString(), bar.count)
+
+                   // trackingDao.updateProcessPackages(bar.id.toString(),bar.trackingNumber)
+
+                    trackingNumbersRequestItem = TrackingNumbersRequestItem(binding.editText.text.toString())
+
+
+                    trackingRequests = listOf(trackingNumbersRequestItem)
+                    println("==sending==$trackingRequests")
 
 
                     savedata()

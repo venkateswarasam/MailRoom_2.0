@@ -46,7 +46,7 @@
 
 
 
-    <com.journeyapps.barcodescanner.BarcodeView
+   <!-- <com.journeyapps.barcodescanner.BarcodeView
 
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
 
 
 
-
+-->
 
 
 

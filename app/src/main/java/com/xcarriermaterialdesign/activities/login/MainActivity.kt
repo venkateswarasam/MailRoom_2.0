@@ -1,6 +1,7 @@
 package com.xcarriermaterialdesign.activities.login
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
@@ -32,6 +33,7 @@ import com.xcarriermaterialdesign.databinding.ActivityMainBinding
 import com.xcarriermaterialdesign.roomdatabase.BulkDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDao
 import com.xcarriermaterialdesign.roomdatabase.ProcessDatabase
+import com.xcarriermaterialdesign.roomdatabase.TrackingDao
 import com.xcarriermaterialdesign.utils.AnalyticsApplication
 import com.xcarriermaterialdesign.utils.ApplicationSharedPref
 import com.xcarriermaterialdesign.utils.LoadingView
@@ -45,6 +47,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var processDao: ProcessDao
+    private lateinit var trackingDao: TrackingDao
     private lateinit var bulkDao: BulkDao
 
     private val neededPermissions = arrayOf(
@@ -79,12 +83,13 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AnalyticsApplication.instance!!.setLocaleFa(this)
 
      //   setContentView(R.layout.activity_main)
-        supportActionBar?.hide();
+        supportActionBar?.hide()
 
 
         ApplicationSharedPref.init(this)
@@ -143,23 +148,28 @@ class MainActivity : AppCompatActivity() {
         ).allowMainThreadQueries().build()
 
         processDao = db.processDao()
+        trackingDao = db.TrackingDao()
         bulkDao = db.bulkDao()
 
       processDao.deleteAllProcessPackages()
+      trackingDao.deleteAllProcessPackages()
+
+
      //   bulkDao.deleteAllBulkPackages()
 
-        binding.privacy!!.setOnClickListener {
+        binding.privacy.setOnClickListener {
 
 
             val intent = Intent(this, WebActvity::class.java)
 
             startActivity(intent)
+            finish()
         }
 
 
 
 
-        binding.forgotpassword!!.setOnClickListener {
+        binding.forgotpassword.setOnClickListener {
 
 
             val intent = Intent(this, ForgotPassword::class.java)
@@ -258,10 +268,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                val loginrequest = LoginRequestNew(binding.emailtext.text.toString(),binding.password.text.toString())
+               // val loginrequest = LoginRequestNew(binding.emailtext.text.toString(),binding.password.text.toString())
 
 
-                model.login(loginrequest = loginrequest,email = binding.emailtext.text.toString(), password = binding.password.text.toString(),
+                model.login(loginrequest = LoginRequestNew(binding.emailtext.text.toString(),binding.password.text.toString()),email = binding.emailtext.text.toString(), password = binding.password.text.toString(),
                     item.Result.TokenKey)
 
                 ApplicationSharedPref.write(ApplicationSharedPref.TOKEN, item.Result.TokenKey)
@@ -308,12 +318,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.login.setOnClickListener {
 
-           val android_id = Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID)
+         //  val android_id = Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID)
 
-            println("==deviceid==$android_id")
+         //   println("==deviceid==$android_id")
 
             val loginrequest = LoginRequest(binding.emailtext.text.toString(),binding.password.text.toString(),
-            android_id,"elemica")
+                Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID),"elemica")
 
 
             println("==loginrequest==${loginrequest}")
@@ -352,12 +362,12 @@ class MainActivity : AppCompatActivity() {
 
         LoadingView.displayLoadingWithText(this,"Please wait", false)
 
-        val android_id = Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID)
+       // val android_id = Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID)
 
-        println("==deviceid==$android_id")
+     //   println("==deviceid==$android_id")
 
         val request = LoginRequest(binding.emailtext.text.toString(),
-            binding.password.text.toString(),android_id,"elemica"
+            binding.password.text.toString(),Secure.getString(applicationContext.contentResolver, Secure.ANDROID_ID),"elemica"
            )
 
 
@@ -379,7 +389,7 @@ class MainActivity : AppCompatActivity() {
 
                          //   LoadingView.hideLoading()
 
-                            Toast.makeText(this@MainActivity,"IN", Toast.LENGTH_SHORT).show()
+                           // Toast.makeText(this@MainActivity,"IN", Toast.LENGTH_SHORT).show()
 
                             doSome2(response.body())
 
@@ -393,7 +403,7 @@ class MainActivity : AppCompatActivity() {
 
                             LoadingView.hideLoading()
                            // viewDialog!!.hideDialog()
-                            Toast.makeText(this@MainActivity, getString(R.string.servererror), Toast.LENGTH_SHORT).show()
+                           // Toast.makeText(this@MainActivity, getString(R.string.servererror), Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -432,13 +442,15 @@ class MainActivity : AppCompatActivity() {
 
         if (body?.StatusCode == 200){
 
-            Toast.makeText(this, body.Result.TokenKey, Toast.LENGTH_SHORT).show()
+            toast(body.Result.TokenKey)
+
+          //  Toast.makeText(this, body.Result.TokenKey, Toast.LENGTH_SHORT).show()
 
 
         }
         else if (body?.StatusCode!!.equals("401")){
 
-            Toast.makeText(this, body.Result.toString(), Toast.LENGTH_SHORT).show()
+         //   Toast.makeText(this, body.Result.toString(), Toast.LENGTH_SHORT).show()
 
         }
 
@@ -809,7 +821,7 @@ class MainActivity : AppCompatActivity() {
                         val errorMessage = "Location settings are inadequate, and cannot be " +
                                 "fixed here. Fix in Settings."
                         Log.e(ContentValues.TAG, errorMessage)
-                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                    //    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
                 updateLocationUI()
